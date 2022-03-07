@@ -1,0 +1,6 @@
+int decl;
+string decl2;
+bool decl1;
+int a, b, c, d;
+string asdf, basdf;
+bool basdf,asdf,asdfdas;

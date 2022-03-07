@@ -1,0 +1,6 @@
+int decl()
+string decl2()
+bool decl1(int a)
+int a(string b, bool c, int d)
+string asdf(string basdf)
+bool basdf(bool asdf, bool asdfdas)

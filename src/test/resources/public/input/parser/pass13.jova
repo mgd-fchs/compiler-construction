@@ -1,0 +1,27 @@
+class Test {
+
+ private int foo;
+ private string bar;
+
+
+  Test() {
+    foo = 42;
+    bar = "Jon Skeet can divide by zero.";
+  }
+
+  Test(int fooo, string barr) {
+    foo = fooo;
+    bar = barr;
+  }
+
+  public int test()
+  {
+    int i;
+    string a;
+
+    i = foo;
+    a = bar;
+
+    return 0;
+  }
+}
