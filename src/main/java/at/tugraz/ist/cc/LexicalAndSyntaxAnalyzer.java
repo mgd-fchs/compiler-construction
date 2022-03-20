@@ -36,9 +36,6 @@ public class LexicalAndSyntaxAnalyzer {
 
         List<Token> tk = (List<Token>) jl.getAllTokens();
 
-//        ErrorHandler.INSTANCE.addLexerError();
-        ErrorHandler.INSTANCE.printLexerErrors();
-
         return ErrorHandler.INSTANCE.getNumLexErrors();
     }
 
