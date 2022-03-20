@@ -29,7 +29,7 @@ public class LexicalAndSyntaxAnalyzer {
         }
     }
 
-    private JovaLexer lexing(String file_path, boolean debug)
+    public JovaLexer lexing(String file_path, boolean debug)
     {
         CharStream tmp = null;
         try {
@@ -52,6 +52,14 @@ public class LexicalAndSyntaxAnalyzer {
         return jl;
     }
 
+    public JovaParser createParser(JovaLexer jl){
+        JovaParser parser = new JovaParser(new CommonTokenStream(jl));
+        parser.removeErrorListeners();
+        parser.addErrorListener(new ParserErrorListener());
+
+        return parser;
+    }
+
     public int lexer(String file_path, boolean debug) {
         // TODO: implement
 
@@ -71,10 +79,8 @@ public class LexicalAndSyntaxAnalyzer {
         }
 
         jl.reset();
+        JovaParser parser = createParser(jl);
 
-        JovaParser parser = new JovaParser(new CommonTokenStream(jl));
-        parser.removeErrorListeners();
-        parser.addErrorListener(new ParserErrorListener());
 
         parser.program();
 
