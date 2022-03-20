@@ -34,7 +34,7 @@ DOTOP : '.';
 
 // TODO: finish INT_LIT (0.1) here...
 //INT_LIT : DIGIT ;
-INT_LIT : '0' | (DIGIT)(DIGIT0)* |  (DIGIT)(DIGIT0)*;
+INT_LIT : '0' | (DIGIT)(DIGIT0)* | -(DIGIT)(DIGIT0)*;
 BOOL_LIT : 'true' | 'false';
 
 fragment DIGIT : '1'..'9';
@@ -115,6 +115,7 @@ expr : primary_expr
      | expr RELOP expr
      | expr AND   expr
      | expr OR    expr
+     |<assoc=right> expr '?' expr ':' expr
      ;
 
 unary_expr : (NOT | ADDOP) primary_expr;
