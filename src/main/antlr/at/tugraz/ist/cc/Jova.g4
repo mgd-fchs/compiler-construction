@@ -33,7 +33,8 @@ NOT : '!';
 DOTOP : '.';
 
 // TODO: finish INT_LIT (0.1) here...
-INT_LIT : DIGIT ;
+//INT_LIT : DIGIT ;
+INT_LIT : '0' | (DIGIT)(DIGIT0)* |  (DIGIT)(DIGIT0)*;
 BOOL_LIT : 'true' | 'false';
 
 fragment DIGIT : '1'..'9';
