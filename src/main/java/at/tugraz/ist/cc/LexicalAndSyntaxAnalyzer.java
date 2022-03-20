@@ -41,6 +41,7 @@ public class LexicalAndSyntaxAnalyzer {
         JovaLexer jl = new JovaLexer(tmp);
         jl.removeErrorListeners();
         jl.addErrorListener(new LexerErrorListener());
+
         List<Token> tk = (List<Token>) jl.getAllTokens();
 
         if (debug)
@@ -54,7 +55,7 @@ public class LexicalAndSyntaxAnalyzer {
     public int lexer(String file_path, boolean debug) {
         // TODO: implement
 
-        lexing(file_path, debug);
+        JovaLexer jl = lexing(file_path, debug);
 
         return ErrorHandler.INSTANCE.getNumLexErrors();
     }
@@ -68,6 +69,8 @@ public class LexicalAndSyntaxAnalyzer {
         {
             return ErrorHandler.INSTANCE.getNumLexErrors();
         }
+
+        jl.reset();
 
         JovaParser parser = new JovaParser(new CommonTokenStream(jl));
         parser.removeErrorListeners();
