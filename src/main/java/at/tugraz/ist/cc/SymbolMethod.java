@@ -6,9 +6,12 @@ public class SymbolMethod {
     private SymbolModifier accessSymbol;
     private String name;
     private Type returnValue;
-    Collection<SymbolVariable> params;
+    // TODO refactor
+    Collection<Object> params;
+    // TODO add reference to return value if class
 
-    public SymbolMethod(SymbolModifier accessSymbol, String name, Type returnValue, Collection<SymbolVariable> params) {
+    public SymbolMethod(SymbolModifier accessSymbol, String name, Type returnValue, Collection<Object> params) {
+        // TODO check if there are no params with same name
         this.accessSymbol = accessSymbol;
         this.name = name;
         this.returnValue = returnValue;
@@ -27,7 +30,7 @@ public class SymbolMethod {
         return returnValue;
     }
 
-    public Collection<SymbolVariable> getParams() {
+    public Collection<Object> getParams() {
         return params;
     }
 }

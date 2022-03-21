@@ -6,13 +6,19 @@ public class SymbolClass {
     private final String className;
     private Collection<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> memberPrimitives;
     private Collection<AbstractMap.SimpleEntry<SymbolModifier, SymbolClass>> memberClasses;
-    private Collection<String> methods;
+    private Collection<SymbolMethod> methods;
 
 
     private SymbolModifier currentModifier;
-    private int type;
+    private int currentType;
     List<String> currentIds;
     private String currentPrimitiveType;
+    private SymbolMethod currentMethod;
+    private List<Object> currentParams;
+
+    public void setCurrentParams(List<Object> currentParams) {
+        this.currentParams = currentParams;
+    }
 
 
     // TODO check if ctor is really necessary in assigment sheet
@@ -26,8 +32,12 @@ public class SymbolClass {
         this.currentPrimitiveType = currentPrimitiveType;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setCurrentType(int currentType) {
+        this.currentType = currentType;
+    }
+
+    public String getClassName() {
+        return className;
     }
 
     public void setCurrentIds(List<String> currentIds) {
@@ -40,6 +50,7 @@ public class SymbolClass {
         this.memberClasses = new ArrayList<>();
         this.methods = new ArrayList<>();
         hasCtor = false;
+        currentParams = new ArrayList<>();
         currentIds = new ArrayList<>();
     }
 
@@ -63,30 +74,30 @@ public class SymbolClass {
     public void buildCurrentMembers(String modifierString){
 
         if (    currentIds == null ||
-                currentPrimitiveType == null ||
-                currentModifier == null) {
+                currentType == 0 ||
+                currentType == 32 && currentPrimitiveType == null) {
             // should be non reachable!!!!
             System.exit(-999);
         }
         // TODO remove magic values!
         //     private static final int TYPE_CLASS = 31;
         //    private static final int TYPE_PRIMITIVE = 32;
-        SymbolModifier mod = (modifierString == "PRIVATE") ? SymbolModifier.PRIVATE : SymbolModifier.PUBLIC;
+        SymbolModifier mod = (modifierString.equals("private")) ? SymbolModifier.PRIVATE : SymbolModifier.PUBLIC;
         currentIds.forEach(id -> {
-            if (type == 31) {
+            if (currentType == 31) {
                 memberClasses.add(new AbstractMap.SimpleEntry<>(mod, new SymbolClass(id)));
-            } else if(type == 32) {
+            } else if(currentType == 32) {
                 SymbolVariable<?> variable = null;
                 switch (currentPrimitiveType){
 
                     case "int":
-                        variable = new SymbolVariable<>(Type.INT, 0, id);
+                        variable = new SymbolVariable<>(PrimitveType.INT, 0, id);
                         break;
                     case "string":
-                        variable = new SymbolVariable<>(Type.STRING, 0, id);
+                        variable = new SymbolVariable<>(PrimitveType.STRING, 0, id);
                         break;
                     case "bool":
-                        variable = new SymbolVariable<>(Type.BOOL, 0, id);
+                        variable = new SymbolVariable<>(PrimitveType.BOOL, 0, id);
                         break;
                     default:
                         System.exit(-999);
@@ -101,6 +112,29 @@ public class SymbolClass {
         currentIds = null;
         currentModifier = null;
         currentPrimitiveType = null;
+        currentType = 0;
 
+    }
+
+    public void addMethod(String modifierString, String name){
+        if (
+                currentType == 0 ||
+                currentType == 32 && currentPrimitiveType == null) {
+            // should be non reachable!!!!
+            System.exit(-999);
+        }
+        // TODO check if class is already there => name is not enough => function overloading
+        SymbolModifier mod = (modifierString.equals("private")) ? SymbolModifier.PRIVATE : SymbolModifier.PUBLIC;
+        // TODO check if already exists
+        if (currentType == 31) {
+            methods.add(new SymbolMethod(mod, name, Type.CLASS, currentParams));
+        } else if(currentType == 32) {
+            methods.add(new SymbolMethod(mod, name,Type.PRIMITIVE , currentParams));
+        }
+
+        currentModifier = null;
+        currentPrimitiveType = null;
+        currentType = 0;
+        currentParams = new ArrayList<>();
     }
 }

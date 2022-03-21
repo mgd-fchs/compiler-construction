@@ -2,6 +2,7 @@ package at.tugraz.ist.cc;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 public class SymbolTable {
     private Collection<SymbolClass> classes;
@@ -19,5 +20,10 @@ public class SymbolTable {
 
         classes.add(symbolClass);
         return 0;
+    }
+
+    public SymbolClass getClassByName(String name) {
+        Optional<SymbolClass>  found = classes.stream().filter(element -> element.getClassName().equals(name)).findFirst();
+        return found.get(); // TODO check if exist => get lead otherwise to exception
     }
 }

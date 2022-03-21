@@ -1,5 +1,32 @@
-class Main {
+class ASDF{
+
 }
 
-class Main {
+class ASDF2{
+
 }
+
+class Evaluation{
+
+  private int func1(){
+    return 1;
+  }
+
+   public int func1(){
+     return 1;
+   }
+
+   public ASDF2 func1(){
+     return 1;
+   }
+
+   public ASDF2 func1(int a){
+      return 1;
+   }
+
+   public ASDF2 func1(int a, int b, ASDF2 asdf){
+      return 1;
+   }
+
+}
+
