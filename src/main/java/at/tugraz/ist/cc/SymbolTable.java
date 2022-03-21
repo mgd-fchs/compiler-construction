@@ -9,4 +9,15 @@ public class SymbolTable {
     public SymbolTable() {
         this.classes = new ArrayList<>();
     }
+
+
+    public int addClass(SymbolClass symbolClass){
+        boolean found = this.classes.contains(symbolClass);
+        if (found) {
+            return -1;
+        }
+
+        classes.add(symbolClass);
+        return 0;
+    }
 }

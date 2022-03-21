@@ -49,6 +49,8 @@ public class LexicalAndSyntaxAnalyzer {
             ErrorHandler.INSTANCE.printLexerErrors();
         }
 
+        jl.reset();
+
         return jl;
     }
 

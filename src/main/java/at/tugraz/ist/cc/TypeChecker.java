@@ -14,7 +14,9 @@ public class TypeChecker {
         JovaParser parser = analyzer.createParser(analyzer.lexing(file_path, debug));
 
         TypeCheckerJovaImpl checker = new TypeCheckerJovaImpl();
+        parser.reset();
         ParseTree parseTree = parser.program();
+        // TODO check for parse error
         checker.visit(parseTree);
 
         return 0;

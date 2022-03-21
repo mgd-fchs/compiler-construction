@@ -1,5 +1,5 @@
 package at.tugraz.ist.cc;
 
-public enum AccessSymbol {
+public enum SymbolModifier {
     PUBLIC, PRIVATE;
 }
