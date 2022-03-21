@@ -13,11 +13,16 @@ public class SymbolClass {
     private int currentType;
     List<String> currentIds;
     private String currentPrimitiveType;
+    private String currentClassType;
     private SymbolMethod currentMethod;
     private List<Object> currentParams;
 
     public void setCurrentParams(List<Object> currentParams) {
         this.currentParams = currentParams;
+    }
+
+    public SymbolMethod getCurrentMethod() {
+        return currentMethod;
     }
 
 
@@ -29,7 +34,11 @@ public class SymbolClass {
     }
 
     public void setPrimitiveType(String currentPrimitiveType) {
-        this.currentPrimitiveType = currentPrimitiveType;
+        this.currentPrimitiveType = currentPrimitiveType.toUpperCase();
+    }
+
+    public void setCurrentClassType(String currentClassType) {
+        this.currentClassType = currentClassType;
     }
 
     public void setCurrentType(int currentType) {
@@ -87,22 +96,7 @@ public class SymbolClass {
             if (currentType == 31) {
                 memberClasses.add(new AbstractMap.SimpleEntry<>(mod, new SymbolClass(id)));
             } else if(currentType == 32) {
-                SymbolVariable<?> variable = null;
-                switch (currentPrimitiveType){
-
-                    case "int":
-                        variable = new SymbolVariable<>(PrimitveType.INT, 0, id);
-                        break;
-                    case "string":
-                        variable = new SymbolVariable<>(PrimitveType.STRING, 0, id);
-                        break;
-                    case "bool":
-                        variable = new SymbolVariable<>(PrimitveType.BOOL, 0, id);
-                        break;
-                    default:
-                        System.exit(-999);
-                }
-
+                SymbolVariable<?> variable = new SymbolVariable<>(PrimitveType.valueOf(currentPrimitiveType), 0, id);
                 memberPrimitives.add(new AbstractMap.SimpleEntry<>(mod, variable));
             } else {
                 System.exit(666);
@@ -126,13 +120,34 @@ public class SymbolClass {
         // TODO check if class is already there => name is not enough => function overloading
         SymbolModifier mod = (modifierString.equals("private")) ? SymbolModifier.PRIVATE : SymbolModifier.PUBLIC;
         // TODO check if already exists
+
+        SymbolMethod method = null;
         if (currentType == 31) {
-            methods.add(new SymbolMethod(mod, name, Type.CLASS, currentParams));
+            method = new SymbolMethod(mod, name, Type.CLASS, currentParams);
         } else if(currentType == 32) {
-            methods.add(new SymbolMethod(mod, name,Type.PRIMITIVE , currentParams));
+            method = new SymbolMethod(mod, name,Type.PRIMITIVE , currentParams);
         }
 
+        methods.add(method);
+        currentMethod = method;
+
         currentModifier = null;
+        currentPrimitiveType = null;
+        currentType = 0;
+        currentParams = new ArrayList<>();
+    }
+
+    public void saveLocalVariables()
+    {
+        for (String s : currentIds) {
+
+            if (currentType == 31) {
+                currentMethod.addVariable(SymbolTable.getInstance().getClassByName(currentClassType));
+            } else if(currentType == 32) {
+                currentMethod.addVariable(new SymbolVariable<>(PrimitveType.valueOf(currentPrimitiveType), 0, s));
+            }
+        }
+
         currentPrimitiveType = null;
         currentType = 0;
         currentParams = new ArrayList<>();

@@ -1,5 +1,6 @@
 package at.tugraz.ist.cc;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class SymbolMethod {
@@ -10,12 +11,17 @@ public class SymbolMethod {
     Collection<Object> params;
     // TODO add reference to return value if class
 
+    private Collection<Object> localVariables;
+
+
     public SymbolMethod(SymbolModifier accessSymbol, String name, Type returnValue, Collection<Object> params) {
         // TODO check if there are no params with same name
         this.accessSymbol = accessSymbol;
         this.name = name;
         this.returnValue = returnValue;
         this.params = params;
+
+        localVariables = new ArrayList<>();
     }
 
     public SymbolModifier getAccessSymbol() {
@@ -32,5 +38,10 @@ public class SymbolMethod {
 
     public Collection<Object> getParams() {
         return params;
+    }
+
+    public void addVariable(Object obj)
+    {
+        localVariables.add(obj);
     }
 }

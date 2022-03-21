@@ -5,9 +5,18 @@ import java.util.Collection;
 import java.util.Optional;
 
 public class SymbolTable {
+    private static SymbolTable symbolTable = null;
+    public static SymbolTable getInstance()
+    {
+        if (symbolTable == null)
+            symbolTable = new SymbolTable();
+
+        return symbolTable;
+    }
+
     private Collection<SymbolClass> classes;
 
-    public SymbolTable() {
+    private SymbolTable() {
         this.classes = new ArrayList<>();
     }
 

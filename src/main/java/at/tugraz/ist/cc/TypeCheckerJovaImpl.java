@@ -25,7 +25,7 @@ public class TypeCheckerJovaImpl extends JovaBaseVisitor<Integer>{
     private SymbolTable symbolTable;
 
     public TypeCheckerJovaImpl() {
-        symbolTable = new SymbolTable();
+        symbolTable = SymbolTable.getInstance();
         currentClass = null;
     }
 
@@ -46,6 +46,7 @@ public class TypeCheckerJovaImpl extends JovaBaseVisitor<Integer>{
     public Integer visitType(JovaParser.TypeContext ctx) {
         System.out.println("visitType");
         if (ctx.CLASS_TYPE() != null){
+            currentClass.setCurrentClassType(ctx.CLASS_TYPE().toString());
             currentClass.setCurrentType(TYPE_CLASS);
             return TYPE_CLASS;
 
@@ -142,7 +143,8 @@ public class TypeCheckerJovaImpl extends JovaBaseVisitor<Integer>{
     }
 
     @Override public Integer visitMethod_body(JovaParser.Method_bodyContext ctx) {
-        return visitChildren(ctx); }
+        return visitChildren(ctx);
+    }
 
     @Override public Integer visitStmt(JovaParser.StmtContext ctx) {
         return visitChildren(ctx); }
@@ -151,7 +153,15 @@ public class TypeCheckerJovaImpl extends JovaBaseVisitor<Integer>{
         return visitChildren(ctx); }
 
     @Override public Integer visitDeclaration(JovaParser.DeclarationContext ctx) {
-        return visitChildren(ctx); }
+        // TODO: implement shadowing
+
+        Integer returnValue = visit(ctx.id_list());
+        Integer result = visit(ctx.type());
+
+        currentClass.saveLocalVariables();
+
+        return returnValue;
+    }
 
     @Override public Integer visitRet_stmt(JovaParser.Ret_stmtContext ctx) {
         return visitChildren(ctx); }
