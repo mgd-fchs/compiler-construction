@@ -13,7 +13,7 @@ public class TypeChecker {
         LexicalAndSyntaxAnalyzer analyzer = new LexicalAndSyntaxAnalyzer();
         JovaParser parser = analyzer.createParser(analyzer.lexing(file_path, debug));
 
-        TypeCheckerJovaImpl checker = new TypeCheckerJovaImpl();
+        TypeCheckerJovaVisitorImpl checker = new TypeCheckerJovaVisitorImpl();
         parser.reset();
         ParseTree parseTree = parser.program();
         // TODO check for parse error

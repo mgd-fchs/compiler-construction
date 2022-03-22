@@ -1,11 +1,12 @@
 package at.tugraz.ist.cc;
 
+import at.tugraz.ist.cc.symbol_table.*;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class TypeCheckerJovaImpl extends JovaBaseVisitor<Integer>{
+public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     private static final int TypeMethod = 2;
     private static final int TypeMember = 3;
     private static final int TypeVariable = 4;
@@ -24,7 +25,7 @@ public class TypeCheckerJovaImpl extends JovaBaseVisitor<Integer>{
     private SymbolClass currentClass;
     private SymbolTable symbolTable;
 
-    public TypeCheckerJovaImpl() {
+    public TypeCheckerJovaVisitorImpl() {
         symbolTable = SymbolTable.getInstance();
         currentClass = null;
     }
@@ -126,9 +127,9 @@ public class TypeCheckerJovaImpl extends JovaBaseVisitor<Integer>{
 
         List<Object> params = new ArrayList<>();
         for (int id = 0; id < ids.size(); ++id){
-            Type type = null;
+            SymbolType type = null;
             if(types.get(id).PRIMITIVE_TYPE() != null){
-                params.add(new SymbolVariable(PrimitveType.valueOf(types.get(id).PRIMITIVE_TYPE().toString().toUpperCase()), 0, ids.get(id).toString()));
+                params.add(new SymbolVariable(SymbolPrimitveType.valueOf(types.get(id).PRIMITIVE_TYPE().toString().toUpperCase()), 0, ids.get(id).toString()));
             }else if(types.get(id).CLASS_TYPE() != null){
                 // TODO check if class exits
                  params.add(symbolTable.getClassByName(types.get(id).CLASS_TYPE().toString()));

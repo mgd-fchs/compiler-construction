@@ -1,4 +1,4 @@
-package at.tugraz.ist.cc;
+package at.tugraz.ist.cc.symbol_table;
 
 import java.util.*;
 
@@ -96,7 +96,7 @@ public class SymbolClass {
             if (currentType == 31) {
                 memberClasses.add(new AbstractMap.SimpleEntry<>(mod, new SymbolClass(id)));
             } else if(currentType == 32) {
-                SymbolVariable<?> variable = new SymbolVariable<>(PrimitveType.valueOf(currentPrimitiveType), 0, id);
+                SymbolVariable<?> variable = new SymbolVariable<>(SymbolPrimitveType.valueOf(currentPrimitiveType), 0, id);
                 memberPrimitives.add(new AbstractMap.SimpleEntry<>(mod, variable));
             } else {
                 System.exit(666);
@@ -123,9 +123,9 @@ public class SymbolClass {
 
         SymbolMethod method = null;
         if (currentType == 31) {
-            method = new SymbolMethod(mod, name, Type.CLASS, currentParams);
+            method = new SymbolMethod(mod, name, SymbolType.CLASS, currentParams);
         } else if(currentType == 32) {
-            method = new SymbolMethod(mod, name,Type.PRIMITIVE , currentParams);
+            method = new SymbolMethod(mod, name, SymbolType.PRIMITIVE , currentParams);
         }
 
         methods.add(method);
@@ -144,7 +144,7 @@ public class SymbolClass {
             if (currentType == 31) {
                 currentMethod.addVariable(SymbolTable.getInstance().getClassByName(currentClassType));
             } else if(currentType == 32) {
-                currentMethod.addVariable(new SymbolVariable<>(PrimitveType.valueOf(currentPrimitiveType), 0, s));
+                currentMethod.addVariable(new SymbolVariable<>(SymbolPrimitveType.valueOf(currentPrimitiveType), 0, s));
             }
         }
 

@@ -1,4 +1,4 @@
-package at.tugraz.ist.cc;
+package at.tugraz.ist.cc.symbol_table;
 
 import java.util.ArrayList;
 import java.util.Collection;

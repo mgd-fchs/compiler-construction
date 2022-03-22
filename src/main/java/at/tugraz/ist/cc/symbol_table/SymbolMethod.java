@@ -1,4 +1,4 @@
-package at.tugraz.ist.cc;
+package at.tugraz.ist.cc.symbol_table;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,7 +6,7 @@ import java.util.Collection;
 public class SymbolMethod {
     private SymbolModifier accessSymbol;
     private String name;
-    private Type returnValue;
+    private SymbolType returnValue;
     // TODO refactor
     Collection<Object> params;
     // TODO add reference to return value if class
@@ -14,7 +14,7 @@ public class SymbolMethod {
     private Collection<Object> localVariables;
 
 
-    public SymbolMethod(SymbolModifier accessSymbol, String name, Type returnValue, Collection<Object> params) {
+    public SymbolMethod(SymbolModifier accessSymbol, String name, SymbolType returnValue, Collection<Object> params) {
         // TODO check if there are no params with same name
         this.accessSymbol = accessSymbol;
         this.name = name;
@@ -32,7 +32,7 @@ public class SymbolMethod {
         return name;
     }
 
-    public Type getReturnValue() {
+    public SymbolType getReturnValue() {
         return returnValue;
     }
 
