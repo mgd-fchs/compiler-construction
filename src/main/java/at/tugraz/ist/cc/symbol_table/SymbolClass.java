@@ -65,10 +65,10 @@ public class SymbolClass {
 
         switch (currentSymbolType){
             case CLASS:
-                currentMethod = new SymbolMethod(modifier, name, SymbolType.CLASS, currentParams);
+                currentMethod = new SymbolMethod(modifier, name, new SymbolVariable(SymbolType.CLASS, SymbolTable.getInstance().getClassByName(currentClassName), null), currentParams);
                 break;
             case PRIMITIVE:
-                currentMethod = new SymbolMethod(modifier, name, PRIMITIVE , currentParams);
+                currentMethod = new SymbolMethod(modifier, name, new SymbolVariable(SymbolType.PRIMITIVE, currentSymbolPrimitiveType, null) , currentParams);
                 break;
             default:
                 System.exit(666);
