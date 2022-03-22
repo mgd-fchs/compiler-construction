@@ -72,6 +72,30 @@ public class TypeCheckerPublicTest {
     }
 
     @Test
+    public void testPass09() {
+        // check nested assignments, previously 'pass_own_simple.jova'
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "pass05.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPass10() {
+        // check assignment to 'nix'
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "pass06.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPass11() {
+        // check assignments of id_lists
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "pass07.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
     public void testAccFail01() {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail+ "access/fail01.jova", debug);
@@ -163,14 +187,38 @@ public class TypeCheckerPublicTest {
         int result = typeChecker.checkTypes(path_fail+ "incompatible_condition/fail02.jova", debug);
         assertTrue(result > 0);
     }
-    
+
     @Test
+    public void testCondFail03() {
+        // incompatible while condition 1
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "incompatible_condition/fail03.jova", debug);
+        assertTrue(result > 0);
+    }
+
+    @Test
+    public void testCondFail04() {
+        // incompatible while condition 2
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "incompatible_condition/fail04.jova", debug);
+        assertTrue(result > 0);
+    }
+    
+  /*  @Test
     public void testRetFail01() {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail+ "incompatible_return/fail01.jova", debug);
         assertTrue(result > 0);
+    }*/
+
+    @Test
+    public void testRetFail02() {
+        // check coerced assignment of nix
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "incompatible_return/fail02.jova", debug);
+        assertTrue(result > 0);
     }
-    
+
     @Test
     public void testOpFail01() {
         ErrorHandler.INSTANCE.reset();
@@ -238,6 +286,14 @@ public class TypeCheckerPublicTest {
     public void testMainFail02() {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail+ "main_structure/fail02.jova", debug);
+        assertTrue(result > 0);
+    }
+
+    @Test
+    public void testMainFail03() {
+        // additional method in main
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "main_structure/fail03.jova", debug);
         assertTrue(result > 0);
     }
    

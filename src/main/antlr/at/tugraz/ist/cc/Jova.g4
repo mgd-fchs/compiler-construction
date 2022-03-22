@@ -32,8 +32,6 @@ ADDOP : '+' | '-';
 NOT : '!';
 DOTOP : '.';
 
-// TODO: finish INT_LIT (0.1) here...
-//INT_LIT : DIGIT ;
 INT_LIT : '0' | (DIGIT)(DIGIT0)* | '-'(DIGIT)(DIGIT0)*;
 BOOL_LIT : 'true' | 'false';
 
@@ -108,7 +106,6 @@ id_expr : (KEY_THIS | ID | method_invocation) member_access*;
 
 arg_list : expr (',' expr)*;
 
-// TODO: add Ternary OP (0.2) here...
 expr : primary_expr
      | expr MULOP expr
      | expr ADDOP expr
