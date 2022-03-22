@@ -2,6 +2,7 @@ package at.tugraz.ist.cc.symbol_table;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 public class SymbolMethod {
@@ -9,13 +10,13 @@ public class SymbolMethod {
     private final String name;
     private final SymbolVariable returnValue;
     // TODO refactor
-    private final Collection<Object> params;
+    private final List<SymbolVariable> params;
     // TODO add reference to return value if class
 
-    private final Collection<Object> localVariables;
+    private final List<SymbolVariable> localVariables;
 
 
-    public SymbolMethod(SymbolModifier accessSymbol, String name, SymbolVariable returnValue, Collection<Object> params) {
+    public SymbolMethod(SymbolModifier accessSymbol, String name, SymbolVariable returnValue, List<SymbolVariable> params) {
         // TODO check if there are no params with same name
         this.accessSymbol = accessSymbol;
         this.name = name;
@@ -36,23 +37,37 @@ public class SymbolMethod {
         return returnValue;
     }
 
-    public Collection<Object> getParams() {
+    public Collection<SymbolVariable> getParams() {
         return params;
     }
 
-    public void addVariable(Object obj)
+    public void addVariable(SymbolVariable symbolVariable)
     {
-        localVariables.add(obj);
+        localVariables.add(symbolVariable);
     }
 
+    /**
+     * returns true if the objects are the same or if the names of the methods and also
+     * the parameter order and types are the same. the return value of the method is not
+     * taken into account
+     * @param o
+     * @return
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SymbolMethod that = (SymbolMethod) o;
 
-        // TODO check if Objects.equals(params, that.params) really considers also the order of the elements
-        // if a method is equal only the name an the params are relevant
-        return Objects.equals(name, that.name) || Objects.equals(params, that.params);
+        if (!Objects.equals(name, that.name)) return false;
+        if (params.size() != that.params.size()) return false;
+
+        for (int i = 0; i < params.size(); ++i) {
+            if (params.get(i).type != that.params.get(i).type) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

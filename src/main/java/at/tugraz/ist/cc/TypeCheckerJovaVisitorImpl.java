@@ -124,11 +124,11 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     public Integer visitParam_list(JovaParser.Param_listContext ctx) {
         List<TerminalNode> ids = ctx.ID();
         List<JovaParser.TypeContext> types = ctx.type();
-        List<Object> params = new ArrayList<>();
+        List<SymbolVariable> params = new ArrayList<>();
 
         for (int id = 0; id < ids.size(); ++id){
             String variableName = ids.get(id).toString();
-            Object variable = null;
+            SymbolVariable variable = null;
             if(types.get(id).PRIMITIVE_TYPE() != null) {
                 SymbolPrimitiveType symbolPrimitiveType = SymbolPrimitiveType.valueOf(types.get(id).PRIMITIVE_TYPE().toString().toUpperCase());
                 variable = new SymbolVariable(SymbolType.PRIMITIVE, symbolPrimitiveType, variableName);

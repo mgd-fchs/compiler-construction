@@ -15,7 +15,7 @@ public class SymbolClass {
     private String currentClassName;
     private Collection<String> currentIds;
     private SymbolMethod currentMethod;
-    private Collection<Object> currentParams;
+    private List<SymbolVariable> currentParams;
 
     public SymbolClass(String name) {
         className = name;
@@ -114,7 +114,7 @@ public class SymbolClass {
         return Objects.hash(className, member, methods);
     }
 
-    public void setCurrentParams(List<Object> currentParams) {
+    public void setCurrentParams(List<SymbolVariable> currentParams) {
         this.currentParams = currentParams;
     }
 
