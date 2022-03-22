@@ -12,7 +12,7 @@ public class SymbolClass {
     private SymbolPrimitiveType currentSymbolPrimitiveType;
     private String currentClassName;
 
-    private SymbolModifier currentModifier;
+
 
 
     List<String> currentIds;
@@ -28,9 +28,6 @@ public class SymbolClass {
     // TODO check if ctor is really necessary in assigment sheet
     private boolean hasCtor;
 
-    public void setCurrentModifier(SymbolModifier currentModifier) {
-        this.currentModifier = currentModifier;
-    }
 
 
     public void setCurrentClassName(String currentClassName) {
@@ -80,7 +77,7 @@ public class SymbolClass {
         return Objects.hash(className, memberPrimitives, memberClasses, methods);
     }
 
-    public void buildCurrentMembers(String modifierString){
+    public void buildCurrentMembers(SymbolModifier modifier){
 
         if (    currentIds == null ||
                 currentSymbolType == null ||
@@ -88,16 +85,15 @@ public class SymbolClass {
             // should be non reachable!!!!
             System.exit(-999);
         }
-
-        SymbolModifier mod = (modifierString.equals("private")) ? SymbolModifier.PRIVATE : SymbolModifier.PUBLIC;
+        // TODO check if member already with same name already exists
         currentIds.forEach(id -> {
             switch (currentSymbolType){
                 case CLASS:
-                    memberClasses.add(new AbstractMap.SimpleEntry<>(mod, new SymbolClass(id)));
+                    memberClasses.add(new AbstractMap.SimpleEntry<>(modifier, new SymbolClass(id)));
                     break;
                 case PRIMITIVE:
                     SymbolVariable<?> variable = new SymbolVariable<>(currentSymbolPrimitiveType, 0, id);
-                    memberPrimitives.add(new AbstractMap.SimpleEntry<>(mod, variable));
+                    memberPrimitives.add(new AbstractMap.SimpleEntry<>(modifier, variable));
                     break;
                 default:
                     System.exit(666);
@@ -105,7 +101,6 @@ public class SymbolClass {
         });
 
         currentIds = null;
-        currentModifier = null;
         currentSymbolPrimitiveType = null;
         currentSymbolType = null;
     }
@@ -133,7 +128,6 @@ public class SymbolClass {
 
         methods.add(currentMethod);
 
-        currentModifier = null;
         currentSymbolPrimitiveType = null;
         currentSymbolType = null;
         currentParams = new ArrayList<>();
