@@ -5,14 +5,14 @@ import java.util.Collection;
 import java.util.Objects;
 
 public class SymbolMethod {
-    private SymbolModifier accessSymbol;
-    private String name;
-    private SymbolVariable returnValue;
+    private final SymbolModifier accessSymbol;
+    private final String name;
+    private final SymbolVariable returnValue;
     // TODO refactor
-    private Collection<Object> params;
+    private final Collection<Object> params;
     // TODO add reference to return value if class
 
-    private Collection<Object> localVariables;
+    private final Collection<Object> localVariables;
 
 
     public SymbolMethod(SymbolModifier accessSymbol, String name, SymbolVariable returnValue, Collection<Object> params) {
@@ -21,7 +21,6 @@ public class SymbolMethod {
         this.name = name;
         this.returnValue = returnValue;
         this.params = params;
-
         localVariables = new ArrayList<>();
     }
 
@@ -54,10 +53,6 @@ public class SymbolMethod {
 
         // TODO check if Objects.equals(params, that.params) really considers also the order of the elements
         // if a method is equal only the name an the params are relevant
-        if (Objects.equals(name, that.name) || Objects.equals(params, that.params)) {
-            return true;
-        } else {
-            return false;
-        }
+        return Objects.equals(name, that.name) || Objects.equals(params, that.params);
     }
 }
