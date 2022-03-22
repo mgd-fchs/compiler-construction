@@ -32,6 +32,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitProgram(JovaParser.ProgramContext ctx){
+        // TODO: GENERAL remove all outputs like this, before submission
         System.out.println("visitProgram");
         visitChildren(ctx);
         return 0;
@@ -47,19 +48,19 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     public Integer visitType(JovaParser.TypeContext ctx) {
         System.out.println("visitType");
         if (ctx.CLASS_TYPE() != null){
-            currentClass.setCurrentClassType(ctx.CLASS_TYPE().toString());
-            currentClass.setCurrentType(TYPE_CLASS);
-            return TYPE_CLASS;
+            currentClass.setCurrentClassName(ctx.CLASS_TYPE().toString());
+            currentClass.setCurrentSymbolType(SymbolType.CLASS);
 
+            return TYPE_CLASS;
         } else if(ctx.PRIMITIVE_TYPE() != null) {
-            currentClass.setPrimitiveType(ctx.PRIMITIVE_TYPE().toString());
-            currentClass.setCurrentType(TYPE_PRIMITIVE);
+            currentClass.setCurrentSymbolPrimitiveType(SymbolPrimitiveType.valueOf(ctx.PRIMITIVE_TYPE().toString().toUpperCase()));
+            currentClass.setCurrentSymbolType(SymbolType.PRIMITIVE);
+
             return TYPE_PRIMITIVE;
         } else {
             // TODO create different errors
             return TypeError;
         }
-        // return visitChildren(ctx); // recheck if there are really not children
     }
 
     @Override public Integer visitClass_head(JovaParser.Class_headContext ctx) {
@@ -129,7 +130,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         for (int id = 0; id < ids.size(); ++id){
             SymbolType type = null;
             if(types.get(id).PRIMITIVE_TYPE() != null){
-                params.add(new SymbolVariable(SymbolPrimitveType.valueOf(types.get(id).PRIMITIVE_TYPE().toString().toUpperCase()), 0, ids.get(id).toString()));
+                params.add(new SymbolVariable(SymbolPrimitiveType.valueOf(types.get(id).PRIMITIVE_TYPE().toString().toUpperCase()), 0, ids.get(id).toString()));
             }else if(types.get(id).CLASS_TYPE() != null){
                 // TODO check if class exits
                  params.add(symbolTable.getClassByName(types.get(id).CLASS_TYPE().toString()));

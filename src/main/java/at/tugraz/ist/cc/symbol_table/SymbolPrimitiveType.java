@@ -1,7 +1,5 @@
 package at.tugraz.ist.cc.symbol_table;
 
-public enum SymbolPrimitveType {
+public enum SymbolPrimitiveType {
     BOOL, STRING, INT;
-
-
 }
