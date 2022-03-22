@@ -1,6 +1,7 @@
 package at.tugraz.ist.cc;
 
 
+import at.tugraz.ist.cc.error.ErrorHandler;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 /**
@@ -15,12 +16,21 @@ public class TypeChecker {
         JovaParser parser = analyzer.createParser(analyzer.lexing(file_path, debug));
         parser.reset();
         ParseTree parseTree = parser.program();
-        // TODO check for parse error
+
+        if (ErrorHandler.INSTANCE.getNumParseErrors() != 0) {
+            return ErrorHandler.INSTANCE.getNumParseErrors();
+        }
 
         TypeCheckerJovaVisitorImpl checker = new TypeCheckerJovaVisitorImpl();
         checker.visit(parseTree);
 
-        // TODO: which return value?
+        if (debug) {
+            ErrorHandler.INSTANCE.printTypeErrors();
+        }
+
+        if (ErrorHandler.INSTANCE.getNumTypeErrors() != 0) {
+            return ErrorHandler.INSTANCE.getNumTypeErrors();
+        }
         return 0;
     }
 

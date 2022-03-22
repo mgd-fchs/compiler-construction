@@ -1,0 +1,14 @@
+class Evaluation{
+
+  private int func1(){
+    return 1;
+  }
+
+   public string func1(int a, int b, string asdf){
+      int x, zz;
+
+      return 1;
+   }
+
+}
+

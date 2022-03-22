@@ -1,5 +1,6 @@
 package at.tugraz.ist.cc;
 
+import at.tugraz.ist.cc.error.ErrorHandler;
 import at.tugraz.ist.cc.symbol_table.*;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -58,8 +59,8 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     public Integer visitClass_head(JovaParser.Class_headContext ctx) {
         SymbolClass newClass = new SymbolClass(ctx.CLASS_TYPE().toString());
         if(symbolTable.addClass(newClass) != 0){
-            // TODO add error message
             // TODO remove exit
+            ErrorHandler.INSTANCE.addClassDoubleDefError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), String.valueOf(ctx.stop.getText()));
             System.out.println("duplicate class name");
             System.exit(-1);
             return -1;
@@ -164,7 +165,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitDeclaration(JovaParser.DeclarationContext ctx) {
-        // TODO: implement shadowing
+        // TODO: implement shadowing -> check if this is bonus task
 
         Integer returnValue = visit(ctx.id_list());
         Integer result = visit(ctx.type());
