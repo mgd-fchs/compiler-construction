@@ -15,7 +15,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
 
     private SymbolClass currentClass;
-    private SymbolTable symbolTable;
+    private final SymbolTable symbolTable;
 
     public TypeCheckerJovaVisitorImpl() {
         symbolTable = SymbolTable.getInstance();
@@ -56,8 +56,8 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitClass_head(JovaParser.Class_headContext ctx) {
-        SymbolClass class_ = new SymbolClass(ctx.CLASS_TYPE().toString());
-        if(symbolTable.addClass(class_) != 0){
+        SymbolClass newClass = new SymbolClass(ctx.CLASS_TYPE().toString());
+        if(symbolTable.addClass(newClass) != 0){
             // TODO add error message
             // TODO remove exit
             System.out.println("duplicate class name");
@@ -65,7 +65,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             return -1;
         }
 
-        currentClass = class_;
+        currentClass = newClass;
         return visitChildren(ctx);
     }
 
@@ -74,12 +74,16 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     }
 
     @Override
-    public Integer visitCtor(JovaParser.CtorContext ctx) { return visitChildren(ctx); }
+    public Integer visitCtor(JovaParser.CtorContext ctx) {
+        return visitChildren(ctx); }
 
     @Override
-    public Integer visitCtor_body(JovaParser.Ctor_bodyContext ctx) { return visitChildren(ctx); }
+    public Integer visitCtor_body(JovaParser.Ctor_bodyContext ctx) {
+        return visitChildren(ctx);
+    }
 
-    @Override public Integer visitMember_decl(JovaParser.Member_declContext ctx) {
+    @Override
+    public Integer visitMember_decl(JovaParser.Member_declContext ctx) {
         // TODO check if there are no member with the same name: consider primitives and classes
         Integer returnValue = visit(ctx.id_list());
         Integer result = visit(ctx.type());
@@ -92,7 +96,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     public Integer visitId_list(JovaParser.Id_listContext ctx) {
         List<TerminalNode> ids = ctx.ID();
         List<String> idsString = ids.stream().map(Object::toString).collect(Collectors.toList());
-
         currentClass.setCurrentIds(idsString);
 
         return OK;
@@ -102,11 +105,12 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         return visitChildren(ctx);
     }
 
-    @Override public Integer visitMethod_head(JovaParser.Method_headContext ctx) {
-        // TODO handle errors
+    @Override
+    public Integer visitMethod_head(JovaParser.Method_headContext ctx) {
         visit(ctx.type());
         visit(ctx.params());
-        currentClass.addMethod(ctx.AMOD().toString(), ctx.ID().toString());
+
+        currentClass.addMethod(SymbolModifier.valueOf(ctx.AMOD().toString().toUpperCase()), ctx.ID().toString());
 
         return visitChildren(ctx);
     }
@@ -120,23 +124,25 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     public Integer visitParam_list(JovaParser.Param_listContext ctx) {
         List<TerminalNode> ids = ctx.ID();
         List<JovaParser.TypeContext> types = ctx.type();
-
         List<Object> params = new ArrayList<>();
+
         for (int id = 0; id < ids.size(); ++id){
-            SymbolType type = null;
-            if(types.get(id).PRIMITIVE_TYPE() != null){
-                params.add(new SymbolVariable(SymbolPrimitiveType.valueOf(types.get(id).PRIMITIVE_TYPE().toString().toUpperCase()), 0, ids.get(id).toString()));
-            }else if(types.get(id).CLASS_TYPE() != null){
+            if(types.get(id).PRIMITIVE_TYPE() != null) {
+                SymbolPrimitiveType symbolPrimitiveType = SymbolPrimitiveType.valueOf(types.get(id).PRIMITIVE_TYPE().toString().toUpperCase());
+                String variableName = ids.get(id).toString();
+                params.add(new SymbolVariable(symbolPrimitiveType, 0, variableName));
+            } else if(types.get(id).CLASS_TYPE() != null){
                 // TODO check if class exits
-                 params.add(symbolTable.getClassByName(types.get(id).CLASS_TYPE().toString()));
+                String className = types.get(id).CLASS_TYPE().toString();
+                // TODO: we do not save the name of the param => only which class it is
+                params.add(symbolTable.getClassByName(className));
             } else {
                 System.exit(-8);
             }
-
         }
 
         currentClass.setCurrentParams(params);
-        return 1;
+        return OK;
     }
 
     @Override
@@ -150,7 +156,8 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitCompound_stmt(JovaParser.Compound_stmtContext ctx) {
-        return visitChildren(ctx); }
+        return visitChildren(ctx);
+    }
 
     @Override
     public Integer visitDeclaration(JovaParser.DeclarationContext ctx) {
@@ -237,6 +244,4 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     public Integer visitWhile_stmt(JovaParser.While_stmtContext ctx) {
         return visitChildren(ctx);
     }
-
-
 }

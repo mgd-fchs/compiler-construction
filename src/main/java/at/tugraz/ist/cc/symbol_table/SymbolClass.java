@@ -4,77 +4,24 @@ import java.util.*;
 
 public class SymbolClass {
     private final String className;
-    private Collection<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> memberPrimitives;
-    private Collection<AbstractMap.SimpleEntry<SymbolModifier, SymbolClass>> memberClasses;
-    private Collection<SymbolMethod> methods;
+    // TODO: maybe change the Object to a Interface and the the SymbolVariable and the SymbolClass implements the interface
+    private final Collection<AbstractMap.SimpleEntry<SymbolModifier, Object>> member;
+    private final Collection<SymbolMethod> methods;
 
+    // TODO: maybe move the current things to the TypeCheckerJovaVisitorImpl or to a new singleton class?
     private SymbolType currentSymbolType;
     private SymbolPrimitiveType currentSymbolPrimitiveType;
     private String currentClassName;
-
-
-
-
-    List<String> currentIds;
-
-
+    private Collection<String> currentIds;
     private SymbolMethod currentMethod;
-    private List<Object> currentParams;
-
-    public void setCurrentParams(List<Object> currentParams) {
-        this.currentParams = currentParams;
-    }
-
-    // TODO check if ctor is really necessary in assigment sheet
-    private boolean hasCtor;
-
-
-
-    public void setCurrentClassName(String currentClassName) {
-        this.currentClassName = currentClassName;
-    }
-
-    public void setCurrentSymbolType(SymbolType currentSymbolType) {
-        this.currentSymbolType = currentSymbolType;
-    }
-
-    public void setCurrentSymbolPrimitiveType(SymbolPrimitiveType currentSymbolPrimitiveType) {
-        this.currentSymbolPrimitiveType = currentSymbolPrimitiveType;
-    }
-
-    public String getClassName() {
-        return className;
-    }
-
-    public void setCurrentIds(List<String> currentIds) {
-        this.currentIds = currentIds;
-    }
+    private Collection<Object> currentParams;
 
     public SymbolClass(String name) {
         className = name;
-        this.memberPrimitives = new ArrayList<>();
-        this.memberClasses = new ArrayList<>();
+        this.member = new ArrayList<>();
         this.methods = new ArrayList<>();
-        hasCtor = false;
         currentParams = new ArrayList<>();
         currentIds = new ArrayList<>();
-    }
-
-    public boolean hasCtor(){
-        return hasCtor;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SymbolClass that = (SymbolClass) o;
-        return Objects.equals(className, that.className);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(className, memberPrimitives, memberClasses, methods);
     }
 
     public void buildCurrentMembers(SymbolModifier modifier){
@@ -89,11 +36,10 @@ public class SymbolClass {
         currentIds.forEach(id -> {
             switch (currentSymbolType){
                 case CLASS:
-                    memberClasses.add(new AbstractMap.SimpleEntry<>(modifier, new SymbolClass(id)));
+                    member.add(new AbstractMap.SimpleEntry<>(modifier, SymbolTable.getInstance().getClassByName(id)));
                     break;
                 case PRIMITIVE:
-                    SymbolVariable<?> variable = new SymbolVariable<>(currentSymbolPrimitiveType, 0, id);
-                    memberPrimitives.add(new AbstractMap.SimpleEntry<>(modifier, variable));
+                    member.add(new AbstractMap.SimpleEntry<>(modifier, new SymbolVariable<>(currentSymbolPrimitiveType, 0, id)));
                     break;
                 default:
                     System.exit(666);
@@ -105,22 +51,21 @@ public class SymbolClass {
         currentSymbolType = null;
     }
 
-    public void addMethod(String modifierString, String name){
+    public void addMethod(SymbolModifier modifier, String name){
         if (    currentSymbolType == null ||
                 currentSymbolType == SymbolType.PRIMITIVE && currentSymbolPrimitiveType == null) {
             // should be non reachable!!!!
             System.exit(-999);
         }
         // TODO check if class is already there => name is not enough => function overloading
-        SymbolModifier mod = (modifierString.equals("private")) ? SymbolModifier.PRIVATE : SymbolModifier.PUBLIC;
         // TODO check if already exists
 
         switch (currentSymbolType){
             case CLASS:
-                currentMethod = new SymbolMethod(mod, name, SymbolType.CLASS, currentParams);
+                currentMethod = new SymbolMethod(modifier, name, SymbolType.CLASS, currentParams);
                 break;
             case PRIMITIVE:
-                currentMethod = new SymbolMethod(mod, name, SymbolType.PRIMITIVE , currentParams);
+                currentMethod = new SymbolMethod(modifier, name, SymbolType.PRIMITIVE , currentParams);
                 break;
             default:
                 System.exit(666);
@@ -151,5 +96,42 @@ public class SymbolClass {
         currentSymbolPrimitiveType = null;
         currentSymbolType = null;
         currentParams = new ArrayList<>();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SymbolClass that = (SymbolClass) o;
+        return Objects.equals(className, that.className);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(className, member, methods);
+    }
+
+    public void setCurrentParams(List<Object> currentParams) {
+        this.currentParams = currentParams;
+    }
+
+    public void setCurrentClassName(String currentClassName) {
+        this.currentClassName = currentClassName;
+    }
+
+    public void setCurrentSymbolType(SymbolType currentSymbolType) {
+        this.currentSymbolType = currentSymbolType;
+    }
+
+    public void setCurrentIds(List<String> currentIds) {
+        this.currentIds = currentIds;
+    }
+
+    public void setCurrentSymbolPrimitiveType(SymbolPrimitiveType currentSymbolPrimitiveType) {
+        this.currentSymbolPrimitiveType = currentSymbolPrimitiveType;
+    }
+
+    public String getClassName() {
+        return className;
     }
 }
