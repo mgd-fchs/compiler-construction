@@ -11,14 +11,16 @@ public class TypeChecker {
 
     public int checkTypes(String file_path, boolean debug) {
         LexicalAndSyntaxAnalyzer analyzer = new LexicalAndSyntaxAnalyzer();
-        JovaParser parser = analyzer.createParser(analyzer.lexing(file_path, debug));
 
-        TypeCheckerJovaVisitorImpl checker = new TypeCheckerJovaVisitorImpl();
+        JovaParser parser = analyzer.createParser(analyzer.lexing(file_path, debug));
         parser.reset();
         ParseTree parseTree = parser.program();
         // TODO check for parse error
+
+        TypeCheckerJovaVisitorImpl checker = new TypeCheckerJovaVisitorImpl();
         checker.visit(parseTree);
 
+        // TODO: which return value?
         return 0;
     }
 

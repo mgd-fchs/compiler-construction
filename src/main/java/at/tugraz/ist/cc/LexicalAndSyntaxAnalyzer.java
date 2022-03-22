@@ -21,8 +21,6 @@ public class LexicalAndSyntaxAnalyzer {
         }
     }
 
-
-
     private class ParserErrorListener extends BaseErrorListener {
         @Override
         public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
@@ -30,33 +28,36 @@ public class LexicalAndSyntaxAnalyzer {
         }
     }
 
-    public JovaLexer lexing(String file_path, boolean debug)
-    {
-        CharStream tmp = null;
+    public JovaLexer lexing(String file_path, boolean debug) {
+        CharStream charStream = null;
         try {
-            tmp = CharStreams.fromFileName(file_path);
+            charStream = CharStreams.fromFileName(file_path);
         } catch (IOException e) {
-            e.printStackTrace();
+            if (debug) {
+                System.out.println("The given file path (" + file_path + ") can not be accessed.");
+                System.out.println(e.getLocalizedMessage());
+                e.printStackTrace();
+            }
+            System.exit(-1);
         }
 
-        JovaLexer jl = new JovaLexer(tmp);
-        jl.removeErrorListeners();
-        jl.addErrorListener(new LexerErrorListener());
+        JovaLexer lexer = new JovaLexer(charStream);
+        lexer.removeErrorListeners();
+        lexer.addErrorListener(new LexerErrorListener());
 
-        List<Token> tk = (List<Token>) jl.getAllTokens();
+        // necessary to check if there are errors
+        List<? extends Token> tokens = lexer.getAllTokens();
 
-        if (debug)
-        {
+        if (debug) {
             ErrorHandler.INSTANCE.printLexerErrors();
         }
 
-        jl.reset();
-
-        return jl;
+        lexer.reset();
+        return lexer;
     }
 
-    public JovaParser createParser(JovaLexer jl){
-        JovaParser parser = new JovaParser(new CommonTokenStream(jl));
+    public JovaParser createParser(JovaLexer lexer){
+        JovaParser parser = new JovaParser(new CommonTokenStream(lexer));
         parser.removeErrorListeners();
         parser.addErrorListener(new ParserErrorListener());
 
@@ -64,35 +65,24 @@ public class LexicalAndSyntaxAnalyzer {
     }
 
     public int lexer(String file_path, boolean debug) {
-        // TODO: implement
-
-        JovaLexer jl = lexing(file_path, debug);
-
+        JovaLexer lexer = lexing(file_path, debug);
         return ErrorHandler.INSTANCE.getNumLexErrors();
     }
 
     public int parser(String file_path, boolean debug) {
-        // TODO: implement
+        JovaLexer lexer = lexing(file_path, debug);
 
-        JovaLexer jl = lexing(file_path, debug);
-
-        if (ErrorHandler.INSTANCE.getNumLexErrors() != 0)
-        {
+        if (ErrorHandler.INSTANCE.getNumLexErrors() != 0) {
             return ErrorHandler.INSTANCE.getNumLexErrors();
         }
 
-        jl.reset();
-        JovaParser parser = createParser(jl);
-
-
+        JovaParser parser = createParser(lexer);
         parser.program();
 
-        if (debug)
-        {
+        if (debug) {
             ErrorHandler.INSTANCE.printParserErrors();
         }
 
         return ErrorHandler.INSTANCE.getNumParseErrors();
     }
-
 }
