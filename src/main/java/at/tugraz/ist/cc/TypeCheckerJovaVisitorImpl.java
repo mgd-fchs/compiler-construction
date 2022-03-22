@@ -127,18 +127,21 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         List<Object> params = new ArrayList<>();
 
         for (int id = 0; id < ids.size(); ++id){
+            String variableName = ids.get(id).toString();
+            Object variable = null;
             if(types.get(id).PRIMITIVE_TYPE() != null) {
                 SymbolPrimitiveType symbolPrimitiveType = SymbolPrimitiveType.valueOf(types.get(id).PRIMITIVE_TYPE().toString().toUpperCase());
-                String variableName = ids.get(id).toString();
-                params.add(new SymbolVariable(symbolPrimitiveType, 0, variableName));
+                variable = new SymbolVariable(SymbolType.PRIMITIVE, symbolPrimitiveType, variableName);
             } else if(types.get(id).CLASS_TYPE() != null){
                 // TODO check if class exits
                 String className = types.get(id).CLASS_TYPE().toString();
+                variable = new SymbolVariable(SymbolType.CLASS, symbolTable.getClassByName(className), variableName);
                 // TODO: we do not save the name of the param => only which class it is
-                params.add(symbolTable.getClassByName(className));
             } else {
                 System.exit(-8);
             }
+            params.add(variable);
+
         }
 
         currentClass.setCurrentParams(params);

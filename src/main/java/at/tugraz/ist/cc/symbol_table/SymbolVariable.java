@@ -1,13 +1,19 @@
 package at.tugraz.ist.cc.symbol_table;
 
-public class SymbolVariable<T> {
-    SymbolPrimitiveType type;
-    T value;
+public class SymbolVariable {
+    SymbolType type;
+    Object actualType;
     String name;
 
-    public SymbolVariable(SymbolPrimitiveType type, T value, String name) {
+    public SymbolVariable(SymbolType type, Object actualType, String name) {
+        // TODO maybe change this kind of checks to asserts
+        if (type == SymbolType.PRIMITIVE && !(actualType instanceof SymbolPrimitiveType) ||
+            type == SymbolType.CLASS && !(actualType instanceof  SymbolClass)) {
+            System.exit(-1);
+        }
+
         this.type = type;
-        this.value = value;
+        this.actualType = actualType;
         this.name = name;
     }
 }

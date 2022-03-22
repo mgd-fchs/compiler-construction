@@ -2,10 +2,11 @@ package at.tugraz.ist.cc.symbol_table;
 
 import java.util.*;
 
+import static at.tugraz.ist.cc.symbol_table.SymbolType.PRIMITIVE;
+
 public class SymbolClass {
     private final String className;
-    // TODO: maybe change the Object to a Interface and the the SymbolVariable and the SymbolClass implements the interface
-    private final Collection<AbstractMap.SimpleEntry<SymbolModifier, Object>> member;
+    private final Collection<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> member;
     private final Collection<SymbolMethod> methods;
 
     // TODO: maybe move the current things to the TypeCheckerJovaVisitorImpl or to a new singleton class?
@@ -28,7 +29,7 @@ public class SymbolClass {
 
         if (    currentIds == null ||
                 currentSymbolType == null ||
-                currentSymbolType == SymbolType.PRIMITIVE && currentSymbolPrimitiveType == null) {
+                currentSymbolType == PRIMITIVE && currentSymbolPrimitiveType == null) {
             // should be non reachable!!!!
             System.exit(-999);
         }
@@ -36,10 +37,12 @@ public class SymbolClass {
         currentIds.forEach(id -> {
             switch (currentSymbolType){
                 case CLASS:
-                    member.add(new AbstractMap.SimpleEntry<>(modifier, SymbolTable.getInstance().getClassByName(id)));
+                    member.add(new AbstractMap.SimpleEntry<>(modifier,
+                            new SymbolVariable(SymbolType.CLASS, SymbolTable.getInstance().getClassByName(currentClassName), id)));
                     break;
                 case PRIMITIVE:
-                    member.add(new AbstractMap.SimpleEntry<>(modifier, new SymbolVariable<>(currentSymbolPrimitiveType, 0, id)));
+                    member.add(new AbstractMap.SimpleEntry<>(modifier,
+                            new SymbolVariable(SymbolType.PRIMITIVE, currentSymbolPrimitiveType, id)));
                     break;
                 default:
                     System.exit(666);
@@ -53,7 +56,7 @@ public class SymbolClass {
 
     public void addMethod(SymbolModifier modifier, String name){
         if (    currentSymbolType == null ||
-                currentSymbolType == SymbolType.PRIMITIVE && currentSymbolPrimitiveType == null) {
+                currentSymbolType == PRIMITIVE && currentSymbolPrimitiveType == null) {
             // should be non reachable!!!!
             System.exit(-999);
         }
@@ -65,7 +68,7 @@ public class SymbolClass {
                 currentMethod = new SymbolMethod(modifier, name, SymbolType.CLASS, currentParams);
                 break;
             case PRIMITIVE:
-                currentMethod = new SymbolMethod(modifier, name, SymbolType.PRIMITIVE , currentParams);
+                currentMethod = new SymbolMethod(modifier, name, PRIMITIVE , currentParams);
                 break;
             default:
                 System.exit(666);
@@ -80,13 +83,13 @@ public class SymbolClass {
 
     public void saveLocalVariables()
     {
-        for (String s : currentIds) {
+        for (String id : currentIds) {
             switch (currentSymbolType){
                 case CLASS:
-                    currentMethod.addVariable(SymbolTable.getInstance().getClassByName(currentClassName));
+                    currentMethod.addVariable(new SymbolVariable(SymbolType.CLASS, SymbolTable.getInstance().getClassByName(currentClassName), id));
                     break;
                 case PRIMITIVE:
-                    currentMethod.addVariable(new SymbolVariable<>(currentSymbolPrimitiveType, 0, s));
+                    currentMethod.addVariable(new SymbolVariable(SymbolType.PRIMITIVE, currentSymbolPrimitiveType, id));
                     break;
                 default:
                     System.exit(666);
