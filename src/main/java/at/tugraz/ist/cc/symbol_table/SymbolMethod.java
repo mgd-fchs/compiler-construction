@@ -41,6 +41,21 @@ public class SymbolMethod {
         return params;
     }
 
+    public String[] getParamTypesAsString() {
+        return params.stream().map(element -> {
+            Object actualType = element.getActualType();
+            if (actualType instanceof SymbolClass) {
+                return ((SymbolClass) actualType).getClassName();
+            } else if (actualType instanceof SymbolPrimitiveType) {
+                return ((SymbolPrimitiveType) actualType).toString().toLowerCase();
+            } else {
+                // should not be reachable
+                System.exit(-1);
+                return null;
+            }
+        }).toArray(String[]::new);
+    }
+
     public void addVariable(SymbolVariable symbolVariable)
     {
         localVariables.add(symbolVariable);
@@ -63,7 +78,7 @@ public class SymbolMethod {
         if (params.size() != that.params.size()) return false;
 
         for (int i = 0; i < params.size(); ++i) {
-            if (params.get(i).type != that.params.get(i).type) {
+            if (params.get(i).getType() != that.params.get(i).getType()) {
                 return false;
             }
         }

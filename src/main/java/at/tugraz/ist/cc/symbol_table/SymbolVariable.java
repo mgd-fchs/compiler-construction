@@ -1,9 +1,9 @@
 package at.tugraz.ist.cc.symbol_table;
 
 public class SymbolVariable {
-    SymbolType type;
-    Object actualType;
-    String name;
+    private SymbolType type;
+    private Object actualType;
+    private String name;
 
     public SymbolVariable(SymbolType type, Object actualType, String name) {
         // TODO maybe change this kind of checks to asserts
@@ -15,5 +15,13 @@ public class SymbolVariable {
         this.type = type;
         this.actualType = actualType;
         this.name = name;
+    }
+
+    public SymbolType getType() {
+        return type;
+    }
+
+    public Object getActualType() {
+        return actualType;
     }
 }

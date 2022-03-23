@@ -1,6 +1,7 @@
 package at.tugraz.ist.cc.symbol_table;
 
 import at.tugraz.ist.cc.JovaParser;
+import at.tugraz.ist.cc.error.ErrorHandler;
 
 import java.util.*;
 
@@ -56,7 +57,7 @@ public class SymbolClass {
         currentSymbolType = null;
     }
 
-    public void addMethod(SymbolModifier modifier, String name){
+    public int addMethod(SymbolModifier modifier, String name,JovaParser.Method_headContext ctx){
         if (    currentSymbolType == null ||
                 currentSymbolType == PRIMITIVE && currentSymbolPrimitiveType == null) {
             // should be non reachable!!!!
@@ -64,23 +65,33 @@ public class SymbolClass {
         }
         // TODO check if class is already there => name is not enough => function overloading
         // TODO check if already exists
-
+        SymbolMethod symbolMethod = null;
         switch (currentSymbolType){
             case CLASS:
-                currentMethod = new SymbolMethod(modifier, name, new SymbolVariable(SymbolType.CLASS, SymbolTable.getInstance().getClassByName(currentClassName), null), currentParams);
+                symbolMethod = new SymbolMethod(modifier, name, new SymbolVariable(SymbolType.CLASS, SymbolTable.getInstance().getClassByName(currentClassName), null), currentParams);
                 break;
             case PRIMITIVE:
-                currentMethod = new SymbolMethod(modifier, name, new SymbolVariable(SymbolType.PRIMITIVE, currentSymbolPrimitiveType, null) , currentParams);
+                symbolMethod = new SymbolMethod(modifier, name, new SymbolVariable(SymbolType.PRIMITIVE, currentSymbolPrimitiveType, null) , currentParams);
                 break;
             default:
                 System.exit(666);
         }
 
-        methods.add(currentMethod);
-
         currentSymbolPrimitiveType = null;
         currentSymbolType = null;
         currentParams = new ArrayList<>();
+
+        boolean found = methods.contains(symbolMethod);
+        if (found) {
+            ErrorHandler.INSTANCE.addMethodDoubleDefError(
+                    ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                    symbolMethod.getName(), className, symbolMethod.getParamTypesAsString());
+            return -1;
+        }
+
+        methods.add(symbolMethod);
+        currentMethod = symbolMethod;
+        return 0;
     }
 
     public void saveLocalVariables()

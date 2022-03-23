@@ -1,6 +1,5 @@
 package at.tugraz.ist.cc;
 
-import at.tugraz.ist.cc.error.ErrorHandler;
 import at.tugraz.ist.cc.symbol_table.*;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -15,6 +14,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     private static final int TYPE_ERROR = -30;
 
     private static final int ERROR_DOUBLE_DECLARATION_CLASS = -50;
+    private static final int ERROR_DOUBLE_DECLARATION_METHOD = -51;
 
 
     private SymbolClass currentClass;
@@ -112,7 +112,11 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         visit(ctx.type());
         visit(ctx.params());
 
-        currentClass.addMethod(SymbolModifier.valueOf(ctx.AMOD().toString().toUpperCase()), ctx.ID().toString());
+        if (currentClass.addMethod(
+                SymbolModifier.valueOf(ctx.AMOD().toString().toUpperCase()), ctx.ID().toString(), ctx) != 0) {
+            // skip further checking of the method if it is a method double deceleration
+            return ERROR_DOUBLE_DECLARATION_METHOD;
+        }
 
         return visitChildren(ctx);
     }
