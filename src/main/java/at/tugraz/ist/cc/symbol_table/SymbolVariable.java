@@ -47,6 +47,6 @@ public class SymbolVariable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SymbolVariable that = (SymbolVariable) o;
-        return type == that.type && Objects.equals(actualType, that.actualType) && Objects.equals(name, that.name);
+        return Objects.equals(name, that.name);
     }
 }

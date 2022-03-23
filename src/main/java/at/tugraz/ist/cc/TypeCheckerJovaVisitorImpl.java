@@ -92,7 +92,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         Integer returnValue = visit(ctx.id_list());
         Integer result = visit(ctx.type());
 
-        currentClass.buildCurrentMembers(SymbolModifier.valueOf(ctx.AMOD().toString().toUpperCase()));
+        currentClass.buildCurrentMembers(SymbolModifier.valueOf(ctx.AMOD().toString().toUpperCase()), ctx);
         return returnValue;
     }
 

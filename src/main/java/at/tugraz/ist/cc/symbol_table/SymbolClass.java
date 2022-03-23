@@ -10,7 +10,7 @@ import static at.tugraz.ist.cc.symbol_table.SymbolType.PRIMITIVE;
 
 public class SymbolClass {
     private final String className;
-    private final Collection<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> member;
+    private final Collection<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> members;
     private final Collection<SymbolMethod> methods;
 
     // TODO: maybe move the current things to the TypeCheckerJovaVisitorImpl or to a new singleton class?
@@ -23,13 +23,13 @@ public class SymbolClass {
 
     public SymbolClass(String name) {
         className = name;
-        this.member = new ArrayList<>();
+        this.members = new ArrayList<>();
         this.methods = new ArrayList<>();
         currentParams = new ArrayList<>();
         currentIds = new ArrayList<>();
     }
 
-    public void buildCurrentMembers(SymbolModifier modifier){
+    public int buildCurrentMembers(SymbolModifier modifier, JovaParser.Member_declContext ctx){
 
         if (    currentIds == null ||
                 currentSymbolType == null ||
@@ -38,24 +38,37 @@ public class SymbolClass {
             System.exit(-999);
         }
         // TODO check if member already with same name already exists
-        currentIds.forEach(id -> {
+        for (String id : currentIds) {
+            SymbolVariable member = null;
             switch (currentSymbolType){
                 case CLASS:
-                    member.add(new AbstractMap.SimpleEntry<>(modifier,
-                            new SymbolVariable(SymbolType.CLASS, SymbolTable.getInstance().getClassByName(currentClassName), id)));
+                    member = new SymbolVariable(SymbolType.CLASS, SymbolTable.getInstance().getClassByName(currentClassName), id);
                     break;
                 case PRIMITIVE:
-                    member.add(new AbstractMap.SimpleEntry<>(modifier,
-                            new SymbolVariable(SymbolType.PRIMITIVE, currentSymbolPrimitiveType, id)));
+                    member = new SymbolVariable(SymbolType.PRIMITIVE, currentSymbolPrimitiveType, id);
                     break;
                 default:
                     System.exit(666);
             }
-        });
+
+            SymbolVariable finalMemberHelper = member;
+            if(members.stream().anyMatch(element -> element.getValue().equals(finalMemberHelper))) {
+                ErrorHandler.INSTANCE.addMemberDoubleDefError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                        member.getName(), member.getTypeAsString(), modifier.toString());
+                currentIds = null;
+                currentSymbolPrimitiveType = null;
+                currentSymbolType = null;
+
+                return TypeCheckerJovaVisitorImpl.ERROR_DOUBLE_DECLARATION_VARIABLE;
+            }
+
+            members.add(new AbstractMap.SimpleEntry<>(modifier, member));
+        }
 
         currentIds = null;
         currentSymbolPrimitiveType = null;
         currentSymbolType = null;
+        return 0;
     }
 
     public int addMethod(SymbolModifier modifier, String name,JovaParser.Method_headContext ctx){
@@ -121,7 +134,7 @@ public class SymbolClass {
 
     @Override
     public int hashCode() {
-        return Objects.hash(className, member, methods);
+        return Objects.hash(className, members, methods);
     }
 
     public void setCurrentParams(List<SymbolVariable> currentParams) {
