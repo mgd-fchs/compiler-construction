@@ -1,5 +1,6 @@
 package at.tugraz.ist.cc;
 
+import at.tugraz.ist.cc.error.ErrorHandler;
 import at.tugraz.ist.cc.symbol_table.*;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -7,14 +8,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
-    private static final int OK = 0;
+    public static final int OK = 0;
 
-    private static final int TYPE_CLASS = 31;
-    private static final int TYPE_PRIMITIVE = 32;
-    private static final int TYPE_ERROR = -30;
+    public static final int TYPE_CLASS = 31;
+    public static final int TYPE_PRIMITIVE = 32;
+    public static final int TYPE_ERROR = -30;
 
-    private static final int ERROR_DOUBLE_DECLARATION_CLASS = -50;
-    private static final int ERROR_DOUBLE_DECLARATION_METHOD = -51;
+    public static final int ERROR_DOUBLE_DECLARATION_CLASS = -50;
+    public static final int ERROR_DOUBLE_DECLARATION_METHOD = -51;
+    public static final int ERROR_DOUBLE_DECLARATION_VARIABLE = -52;
 
 
     private SymbolClass currentClass;
@@ -147,7 +149,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                 System.exit(-8);
             }
             params.add(variable);
-
         }
 
         currentClass.setCurrentParams(params);

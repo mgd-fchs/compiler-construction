@@ -1,5 +1,8 @@
 package at.tugraz.ist.cc.symbol_table;
 
+import at.tugraz.ist.cc.JovaParser;
+import at.tugraz.ist.cc.error.ErrorHandler;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -59,6 +62,21 @@ public class SymbolMethod {
     public void addVariable(SymbolVariable symbolVariable)
     {
         localVariables.add(symbolVariable);
+    }
+
+    public int checkParamDoubleDeclaration(JovaParser.Param_listContext ctx) {
+        Collection<String> names = new ArrayList<>();
+        for (int i = 0; i < params.size(); ++i) {
+            String currentName = params.get(i).getName();
+            if (names.contains(currentName)){
+
+                ErrorHandler.INSTANCE.addVarDoubleDefError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                        currentName, params.get(i).getTypeAsString(), this.getName());
+                return -1;
+            }
+            names.add(currentName);
+        }
+        return 0;
     }
 
     /**

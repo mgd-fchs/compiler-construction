@@ -1,6 +1,7 @@
 package at.tugraz.ist.cc.symbol_table;
 
 import at.tugraz.ist.cc.JovaParser;
+import at.tugraz.ist.cc.TypeCheckerJovaVisitorImpl;
 import at.tugraz.ist.cc.error.ErrorHandler;
 
 import java.util.*;
@@ -86,7 +87,11 @@ public class SymbolClass {
             ErrorHandler.INSTANCE.addMethodDoubleDefError(
                     ctx.start.getLine(), ctx.start.getCharPositionInLine(),
                     symbolMethod.getName(), className, symbolMethod.getParamTypesAsString());
-            return -1;
+            return TypeCheckerJovaVisitorImpl.ERROR_DOUBLE_DECLARATION_METHOD;
+        }
+
+        if(symbolMethod.checkParamDoubleDeclaration(ctx.params().param_list()) != 0) {
+            return TypeCheckerJovaVisitorImpl.ERROR_DOUBLE_DECLARATION_VARIABLE;
         }
 
         methods.add(symbolMethod);
