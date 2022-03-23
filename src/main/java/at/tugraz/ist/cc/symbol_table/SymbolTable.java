@@ -14,6 +14,12 @@ public class SymbolTable {
         return symbolTable;
     }
 
+    public static void reset()
+    {
+        symbolTable = new SymbolTable();
+    }
+
+
     private Collection<SymbolClass> classes;
 
     private SymbolTable() {

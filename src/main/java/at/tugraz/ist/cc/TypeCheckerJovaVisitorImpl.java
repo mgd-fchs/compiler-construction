@@ -26,8 +26,16 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     @Override
     public Integer visitProgram(JovaParser.ProgramContext ctx){
         // TODO: GENERAL remove all outputs like this, before submission
-        System.out.println("visitProgram");
-        visitChildren(ctx);
+        try {
+            System.out.println("visitProgram");
+            visitChildren(ctx);
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            // TODO change singleton to normal class?
+            SymbolTable.reset();
+        }
+
         return 0;
     }
 
