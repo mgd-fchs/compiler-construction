@@ -276,7 +276,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             }
 
             // check types are compatible
-            if (!this.checkOperatorComp(lhs_type, rhs_type, ctx)){
+            if (!this.checkOperatorCompatibility(lhs_type, rhs_type, ctx)){
                 return TYPE_ERROR;
             } else {
                 return OK;
@@ -347,13 +347,29 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     // TODO: This can't stay here
     // TODO: Check if generated error messages are correct (must include type!)
-    public boolean checkOperatorComp(Integer lhs_type, Integer rhs_type, JovaParser.ExprContext ctx){
+    public boolean checkOperatorCompatibility(Integer lhs_type, Integer rhs_type, JovaParser.ExprContext ctx){
 
-        if (ctx.ADDOP() != null || ctx.MULOP() != null){
-            if (((lhs_type == TYPE_INT) || (lhs_type ==TYPE_BOOL)) && ((rhs_type == TYPE_INT) || (rhs_type ==TYPE_BOOL))){
+        // arithmetic and relational operations
+        if (ctx.ADDOP() != null || ctx.MULOP() != null || ctx.RELOP() != null){
+            if (lhs_type == TYPE_INT && rhs_type == TYPE_INT){
                 return true;
+            } else if (lhs_type == TYPE_BOOL || rhs_type == TYPE_BOOL){
+                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.op.getText(), lhs_type.toString(), rhs_type.toString(), "int", "int");
+                return true;
+            } else {
+                ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), lhs_type.toString(), rhs_type.toString(), ctx.op.getText());
+                return false;
             }
-            else {
+        }
+
+        // logical operations
+        if (ctx.AND() != null || ctx.OR() != null){
+            if (lhs_type == TYPE_BOOL && rhs_type == TYPE_BOOL){
+                return true;
+            } else if (lhs_type == TYPE_INT || rhs_type == TYPE_INT){
+                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.op.getText(), lhs_type.toString(), rhs_type.toString(), "bool", "bool");
+                return true;
+            } else {
                 ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), lhs_type.toString(), rhs_type.toString(), ctx.op.getText());
                 return false;
             }
@@ -362,5 +378,15 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         else {
             return false;
         }
+    }
+
+    // TODO: This can't stay here either
+    // TODO: Check if generated error messages are correct (must include type!)
+    public boolean checkTernaryOperatorCompatibility(Integer lhs_type, Integer middle_type, Integer rhs_type, JovaParser.ExprContext ctx){
+        return false;
+    }
+
+    public boolean checkConditionCompatibility(Integer lhs_type, Integer rhs_type, JovaParser.ExprContext ctx){
+        return false;
     }
 }
