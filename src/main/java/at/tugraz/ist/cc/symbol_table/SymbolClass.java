@@ -1,5 +1,7 @@
 package at.tugraz.ist.cc.symbol_table;
 
+import at.tugraz.ist.cc.JovaParser;
+
 import java.util.*;
 
 import static at.tugraz.ist.cc.symbol_table.SymbolType.PRIMITIVE;
@@ -102,14 +104,6 @@ public class SymbolClass {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SymbolClass that = (SymbolClass) o;
-        return Objects.equals(className, that.className);
-    }
-
-    @Override
     public int hashCode() {
         return Objects.hash(className, member, methods);
     }
@@ -136,5 +130,13 @@ public class SymbolClass {
 
     public String getClassName() {
         return className;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SymbolClass that = (SymbolClass) o;
+        return Objects.equals(className, that.className);
     }
 }

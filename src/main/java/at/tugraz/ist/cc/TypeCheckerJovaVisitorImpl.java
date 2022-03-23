@@ -14,6 +14,8 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     private static final int TYPE_PRIMITIVE = 32;
     private static final int TYPE_ERROR = -30;
 
+    private static final int ERROR_DOUBLE_DECLARATION_CLASS = -50;
+
 
     private SymbolClass currentClass;
     private final SymbolTable symbolTable;
@@ -58,12 +60,11 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     @Override
     public Integer visitClass_head(JovaParser.Class_headContext ctx) {
         SymbolClass newClass = new SymbolClass(ctx.CLASS_TYPE().toString());
-        if(symbolTable.addClass(newClass) != 0){
-            // TODO remove exit
-            ErrorHandler.INSTANCE.addClassDoubleDefError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), String.valueOf(ctx.stop.getText()));
-            System.out.println("duplicate class name");
-            System.exit(-1);
-            return -1;
+
+        if(symbolTable.addClass(newClass, ctx) != 0) {
+            // skip further checking of the class if it is a class double deceleration
+            currentClass = null;
+            return ERROR_DOUBLE_DECLARATION_CLASS;
         }
 
         currentClass = newClass;
