@@ -40,7 +40,7 @@ public class SymbolMethod {
         return returnValue;
     }
 
-    public Collection<SymbolVariable> getParams() {
+    public List<SymbolVariable> getParams() {
         return params;
     }
 
@@ -77,6 +77,10 @@ public class SymbolMethod {
             names.add(currentName);
         }
         return 0;
+    }
+
+    public List<SymbolVariable> getLocalVariables() {
+        return localVariables;
     }
 
     /**

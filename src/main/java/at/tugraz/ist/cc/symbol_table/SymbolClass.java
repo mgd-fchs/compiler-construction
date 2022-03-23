@@ -112,24 +112,42 @@ public class SymbolClass {
         return 0;
     }
 
-    public void saveLocalVariables()
+    public int saveLocalVariables(JovaParser.DeclarationContext ctx)
     {
         for (String id : currentIds) {
-            switch (currentSymbolType){
+            SymbolVariable symbolVariable = null;
+            switch (currentSymbolType) {
                 case CLASS:
-                    currentMethod.addVariable(new SymbolVariable(SymbolType.CLASS, SymbolTable.getInstance().getClassByName(currentClassName), id));
+                    symbolVariable = new SymbolVariable(SymbolType.CLASS, SymbolTable.getInstance().getClassByName(currentClassName), id);
                     break;
                 case PRIMITIVE:
-                    currentMethod.addVariable(new SymbolVariable(SymbolType.PRIMITIVE, currentSymbolPrimitiveType, id));
+                    symbolVariable = new SymbolVariable(SymbolType.PRIMITIVE, currentSymbolPrimitiveType, id);
                     break;
                 default:
                     System.exit(666);
             }
+
+            // TODO (Richard) why do I need this helper var?
+            SymbolVariable finalSymbolVariableHelper = symbolVariable;
+            if( currentMethod.getParams().stream().anyMatch(element -> element.equals(finalSymbolVariableHelper)) ||
+                currentMethod.getLocalVariables().stream().anyMatch(element -> element.equals(finalSymbolVariableHelper))) {
+                ErrorHandler.INSTANCE.addVarDoubleDefError(
+                        ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                        symbolVariable.getName(), symbolVariable.getTypeAsString(), currentMethod.getName(),
+                        currentMethod.getParamTypesAsString());
+                currentSymbolPrimitiveType = null;
+                currentSymbolType = null;
+                currentParams = new ArrayList<>();
+                return TypeCheckerJovaVisitorImpl.ERROR_DOUBLE_DECLARATION_VARIABLE;
+            }
+
+            currentMethod.addVariable(symbolVariable);
         }
 
         currentSymbolPrimitiveType = null;
         currentSymbolType = null;
         currentParams = new ArrayList<>();
+        return 0;
     }
 
     @Override

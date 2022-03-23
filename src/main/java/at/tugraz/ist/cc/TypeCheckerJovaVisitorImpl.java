@@ -180,13 +180,10 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     @Override
     public Integer visitDeclaration(JovaParser.DeclarationContext ctx) {
         // TODO: implement shadowing -> check if this is bonus task
-
         Integer returnValue = visit(ctx.id_list());
         Integer result = visit(ctx.type());
 
-        currentClass.saveLocalVariables();
-
-        return returnValue;
+        return currentClass.saveLocalVariables(ctx);
     }
 
     @Override
