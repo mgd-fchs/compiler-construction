@@ -18,6 +18,10 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     public static final int ERROR_DOUBLE_DECLARATION_METHOD = -51;
     public static final int ERROR_DOUBLE_DECLARATION_VARIABLE = -52;
 
+    public static final int ERROR_MAIN_INSTANTIATION = -60;
+    public static final int ERROR_MAIN_WITH_MEMBER = -61;
+    public static final int ERROR_MAIN_WITH_WRONG_METHOD = -62;
+
 
     private SymbolClass currentClass;
     private final SymbolTable symbolTable;
@@ -87,7 +91,8 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitCtor(JovaParser.CtorContext ctx) {
-        return visitChildren(ctx); }
+        return visitChildren(ctx);
+    }
 
     @Override
     public Integer visitCtor_body(JovaParser.Ctor_bodyContext ctx) {
@@ -96,12 +101,15 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitMember_decl(JovaParser.Member_declContext ctx) {
-        // TODO check if there are no member with the same name: consider primitives and classes
+        if (currentClass.getClassName().equals(SymbolClass.MAIN_CLASS_NAME)) {
+            ErrorHandler.INSTANCE.addMainMemberError(ctx.start.getLine(), ctx.start.getCharPositionInLine());
+            return ERROR_MAIN_WITH_MEMBER;
+        }
+
         Integer returnValue = visit(ctx.id_list());
         Integer result = visit(ctx.type());
 
-        currentClass.buildCurrentMembers(SymbolModifier.valueOf(ctx.AMOD().toString().toUpperCase()), ctx);
-        return returnValue;
+        return currentClass.buildCurrentMembers(SymbolModifier.valueOf(ctx.AMOD().toString().toUpperCase()), ctx);
     }
 
     @Override
@@ -122,10 +130,12 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         visit(ctx.type());
         visit(ctx.params());
 
-        if (currentClass.addMethod(
-                SymbolModifier.valueOf(ctx.AMOD().toString().toUpperCase()), ctx.ID().toString(), ctx) != 0) {
-            // skip further checking of the method if it is a method double deceleration
-            return ERROR_DOUBLE_DECLARATION_METHOD;
+        int error = currentClass.addMethod(
+                SymbolModifier.valueOf(ctx.AMOD().toString().toUpperCase()), ctx.ID().toString(), ctx);
+
+        if (error != 0) {
+            // skip further checking of the method if it is a error
+            return error;
         }
 
         return visitChildren(ctx);
@@ -165,6 +175,10 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitMethod_body(JovaParser.Method_bodyContext ctx) {
+        /* TODO if an error occurs at a child we should stop i think?
+            if so, it will be necessary to visit the childs by "hand" without callingv isitChildren.
+            or we override the visitChildren like a previous idea i think
+        * */
         return visitChildren(ctx);
     }
 

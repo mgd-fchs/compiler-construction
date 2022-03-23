@@ -6,9 +6,11 @@ import at.tugraz.ist.cc.error.ErrorHandler;
 
 import java.util.*;
 
+import static at.tugraz.ist.cc.symbol_table.SymbolType.CLASS;
 import static at.tugraz.ist.cc.symbol_table.SymbolType.PRIMITIVE;
 
 public class SymbolClass {
+    public static final String MAIN_CLASS_NAME = "Main";
     private final String className;
     private final Collection<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> members;
     private final Collection<SymbolMethod> methods;
@@ -103,6 +105,14 @@ public class SymbolClass {
             return TypeCheckerJovaVisitorImpl.ERROR_DOUBLE_DECLARATION_METHOD;
         }
 
+        if ( className.equals(SymbolClass.MAIN_CLASS_NAME) &&
+                    (symbolMethod.getAccessSymbol() != SymbolModifier.PUBLIC ||
+                    !(symbolMethod.getReturnValue().getActualType() instanceof SymbolPrimitiveType) ||
+                    symbolMethod.getReturnValue().getActualType() != SymbolPrimitiveType.INT)){
+            ErrorHandler.INSTANCE.addMainMemberError(ctx.start.getLine(), ctx.start.getCharPositionInLine());
+            return TypeCheckerJovaVisitorImpl.ERROR_MAIN_WITH_WRONG_METHOD;
+        }
+
         if(symbolMethod.checkParamDoubleDeclaration(ctx.params().param_list()) != 0) {
             return TypeCheckerJovaVisitorImpl.ERROR_DOUBLE_DECLARATION_VARIABLE;
         }
@@ -114,6 +124,11 @@ public class SymbolClass {
 
     public int saveLocalVariables(JovaParser.DeclarationContext ctx)
     {
+        if (currentSymbolType == CLASS && currentClassName.equals(SymbolClass.MAIN_CLASS_NAME)) {
+            ErrorHandler.INSTANCE.addMainInstatiationError(ctx.start.getLine(), ctx.start.getCharPositionInLine());
+            return TypeCheckerJovaVisitorImpl.ERROR_MAIN_INSTANTIATION;
+        }
+
         for (String id : currentIds) {
             SymbolVariable symbolVariable = null;
             switch (currentSymbolType) {
