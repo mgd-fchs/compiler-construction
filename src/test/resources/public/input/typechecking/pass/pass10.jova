@@ -1,0 +1,25 @@
+class Evaluation{
+
+  private int func1(){
+    return 1;
+  }
+
+   public string func2(int a, int b, string asdf){
+      int x, zz;
+
+      return 1;
+   }
+
+}
+
+class Testing {
+    private Evaluation e;
+
+    public int func2() {
+
+        return e.func1();
+    }
+}
+
+
+

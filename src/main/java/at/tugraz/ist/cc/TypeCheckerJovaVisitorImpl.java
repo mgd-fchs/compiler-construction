@@ -194,6 +194,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         System.out.println("visitMethod_invocation");
 
         Collection<SymbolMethod> methods = currentClass.getMatchingMethods(ctx.ID().toString());
+        currentClass.setArgList();
         if (ctx.arg_list() != null) {
             visit(ctx.arg_list());
         }
@@ -264,6 +265,19 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitLiteral(JovaParser.LiteralContext ctx) {
+        if (currentClass.currentlyGatheringArguments()) {
+            SymbolPrimitiveType type = null;
+            if (ctx.BOOL_LIT() != null) {
+                type = SymbolPrimitiveType.BOOL;
+            } else if (ctx.INT_LIT() != null) {
+                type = SymbolPrimitiveType.INT;
+            } else if (ctx.STRING_LIT() != null) {
+                type = SymbolPrimitiveType.STRING;
+            }
+
+            currentClass.addPrimitiveArgument(type);
+        }
+
         return visitChildren(ctx);
     }
 

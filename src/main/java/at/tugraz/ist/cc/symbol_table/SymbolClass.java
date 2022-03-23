@@ -25,7 +25,9 @@ public class SymbolClass {
         this.methods = new ArrayList<>();
         currentParams = new ArrayList<>();
         currentIds = new ArrayList<>();
-        currentArgList = new ArrayList<>();
+
+        // needs to be 0 to signal that no method-invocation is currently checked
+        currentArgList = null;
     }
 
     public void buildCurrentMembers(SymbolModifier modifier){
@@ -108,6 +110,10 @@ public class SymbolClass {
         return methods.stream().filter(element -> element.getName().equals(method)).collect(Collectors.toCollection(ArrayList::new));
     }
 
+    public void addPrimitiveArgument(SymbolPrimitiveType type) {
+        currentArgList.add(new SymbolVariable(PRIMITIVE, type, ""));
+    }
+
     public boolean checkIfVariableExists(String arg) {
         SymbolVariable var = getCurrentScopeVariable(arg);
 
@@ -167,7 +173,15 @@ public class SymbolClass {
     }
 
     public void resetArgList() {
+        currentArgList = null;
+    }
+
+    public void setArgList() {
         currentArgList = new ArrayList<>();
+    }
+
+    public boolean currentlyGatheringArguments() {
+        return (currentArgList != null);
     }
 
     public String getArgListTypes()

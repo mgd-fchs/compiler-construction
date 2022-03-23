@@ -4,8 +4,8 @@ class Testing {
     }
 
     public int func2(int x) {
-            return func1();
-        }
+        return func1();
+    }
 
     public int func2(string y) {
         return func1();
@@ -40,7 +40,7 @@ class Testing {
         int a;
         string y;
 
-        return func2(a,y, y);
+        return func2(a,y);
     }
 }
 
