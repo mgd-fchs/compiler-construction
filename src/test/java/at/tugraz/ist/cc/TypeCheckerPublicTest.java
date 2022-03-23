@@ -99,7 +99,7 @@ public class TypeCheckerPublicTest {
     public void testPass12() {
         // check compatibility ADDOP
         ErrorHandler.INSTANCE.reset();
-        int result = typeChecker.checkTypes(path_pass + "pass08.jova", debug);
+        int result = typeChecker.checkTypes(path_pass + "pass18.jova", debug);
         ErrorHandler.INSTANCE.printTypeErrors();
         assertEquals(0, result);
     }

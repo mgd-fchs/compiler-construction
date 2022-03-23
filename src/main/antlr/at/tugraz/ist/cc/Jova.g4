@@ -112,7 +112,7 @@ expr : prim=primary_expr
      | left=expr op=RELOP right=expr
      | left=expr op=AND   right=expr
      | left=expr op=OR    right=expr
-    // |<assoc=right> expr '?' expr ':' expr -> define this separately
+     |<assoc=right> left=expr '?' mid=expr ':' right=expr
      ;
 
 unary_expr : (NOT | ADDOP) primary_expr;

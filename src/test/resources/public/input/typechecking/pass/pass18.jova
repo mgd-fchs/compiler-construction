@@ -1,0 +1,25 @@
+class Evaluation{
+
+  private int func1(){
+    int a, b, c, d;
+    bool b1, b2;
+
+    // arithmetic ops
+    a = 2 + true;
+    b = false * true;
+    // d = 1;
+    // c = 2 + d;
+
+    // logical ops
+    f = true;
+    b1 = true || false;
+    b2 = true && 1;
+
+    // relational ops
+    a = 2 < 3;
+    b = 3 > 1;
+
+    return a;
+  }
+}
+
