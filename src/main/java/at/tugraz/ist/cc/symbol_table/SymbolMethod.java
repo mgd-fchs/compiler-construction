@@ -37,13 +37,29 @@ public class SymbolMethod {
         return returnValue;
     }
 
-    public Collection<SymbolVariable> getParams() {
+    public List<SymbolVariable> getParams() {
         return params;
     }
 
     public void addVariable(SymbolVariable symbolVariable)
     {
         localVariables.add(symbolVariable);
+    }
+
+    public SymbolVariable getMethodVariable(String name) {
+        for (SymbolVariable v : params) {
+            if (v.name.equals(name)) {
+                return v;
+            }
+        }
+
+        for (SymbolVariable v : localVariables) {
+            if (v.name.equals(name)) {
+                return v;
+            }
+        }
+
+        return null;
     }
 
     /**

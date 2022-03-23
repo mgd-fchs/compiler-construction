@@ -191,10 +191,43 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     }
 
     @Override public Integer visitMethod_invocation(JovaParser.Method_invocationContext ctx) {
-        return visitChildren(ctx);
+        System.out.println("visitMethod_invocation");
+
+        Collection<SymbolMethod> methods = currentClass.getMatchingMethods(ctx.ID().toString());
+        if (ctx.arg_list() != null) {
+            visit(ctx.arg_list());
+        }
+
+        for (SymbolMethod method : methods) {
+            if (currentClass.checkValidArgList(method)) {
+                currentClass.resetArgList();
+                return 0;
+            }
+        }
+
+        String params = "";
+        if (ctx.arg_list() != null) {
+            params = currentClass.getArgListTypes();
+        }
+
+
+        // TODO add params to error msg
+        ErrorHandler.INSTANCE.addUndefMethodError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.ID().toString(), params);
+        currentClass.resetArgList();
+        return 0;
     }
 
     @Override public Integer visitId_expr(JovaParser.Id_exprContext ctx) {
+        if (ctx.ID() != null) {
+            if (!currentClass.checkIfVariableExists(ctx.ID().toString())) {
+                // TODO: add which error?
+                ErrorHandler.INSTANCE.addUndefIdError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.ID().toString());
+                return -1;
+            }
+
+            return 0;
+        }
+
         return visitChildren(ctx);
     }
 

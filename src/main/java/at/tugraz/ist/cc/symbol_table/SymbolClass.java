@@ -1,6 +1,7 @@
 package at.tugraz.ist.cc.symbol_table;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static at.tugraz.ist.cc.symbol_table.SymbolType.PRIMITIVE;
 
@@ -16,6 +17,7 @@ public class SymbolClass {
     private Collection<String> currentIds;
     private SymbolMethod currentMethod;
     private List<SymbolVariable> currentParams;
+    private List<SymbolVariable> currentArgList;
 
     public SymbolClass(String name) {
         className = name;
@@ -23,6 +25,7 @@ public class SymbolClass {
         this.methods = new ArrayList<>();
         currentParams = new ArrayList<>();
         currentIds = new ArrayList<>();
+        currentArgList = new ArrayList<>();
     }
 
     public void buildCurrentMembers(SymbolModifier modifier){
@@ -81,10 +84,9 @@ public class SymbolClass {
         currentParams = new ArrayList<>();
     }
 
-    public void saveLocalVariables()
-    {
+    public void saveLocalVariables() {
         for (String id : currentIds) {
-            switch (currentSymbolType){
+            switch (currentSymbolType) {
                 case CLASS:
                     currentMethod.addVariable(new SymbolVariable(SymbolType.CLASS, SymbolTable.getInstance().getClassByName(currentClassName), id));
                     break;
@@ -98,8 +100,90 @@ public class SymbolClass {
 
         currentSymbolPrimitiveType = null;
         currentSymbolType = null;
+        currentClassName = null;
         currentParams = new ArrayList<>();
     }
+
+    public Collection<SymbolMethod> getMatchingMethods(String method) {
+        return methods.stream().filter(element -> element.getName().equals(method)).collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    public boolean checkIfVariableExists(String arg) {
+        SymbolVariable var = getCurrentScopeVariable(arg);
+
+        if (var == null) {
+            return false;
+        }
+
+        currentArgList.add(var);
+        return true;
+    }
+
+    private SymbolVariable getCurrentScopeVariable(String name) {
+        SymbolVariable var = null;
+
+        try {
+            var = getMember(name);
+        } catch (IndexOutOfBoundsException ex) {
+
+        }
+
+        if (var == null) {
+            var = getLocalVariable(name);
+        }
+
+        return var;
+    }
+
+    private SymbolVariable getMember(String name) {
+        return member.stream().filter(element -> element.getValue().name.equals(name))
+                .collect(Collectors.toCollection(ArrayList::new)).get(0).getValue();
+    }
+
+    private SymbolVariable getLocalVariable(String name) {
+        return currentMethod.getMethodVariable(name);
+    }
+
+
+    public boolean checkValidArgList(SymbolMethod method) {
+        int size = method.getParams().size();
+
+        if (size != currentArgList.size()) {
+            return false;
+        }
+
+        if (size == 0) {
+            return true;
+        }
+
+        for (int i = 0; i < size; i++) {
+            if (method.getParams().get(i).type == currentArgList.get(i).type
+                && method.getParams().get(i).actualType == currentArgList.get(i).actualType)
+                return true;
+
+        }
+
+        return false;
+    }
+
+    public void resetArgList() {
+        currentArgList = new ArrayList<>();
+    }
+
+    public String getArgListTypes()
+    {
+        StringBuilder types = new StringBuilder();
+
+        for (SymbolVariable var : currentArgList) {
+            types.append(var.actualType.toString().toLowerCase());
+            types.append(" ");
+        }
+
+        types.delete(types.length() -1, types.length());
+
+        return types.toString();
+    }
+
 
     @Override
     public boolean equals(Object o) {
