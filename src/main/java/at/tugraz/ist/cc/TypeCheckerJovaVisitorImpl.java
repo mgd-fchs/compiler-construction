@@ -26,6 +26,16 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     public static final int ERROR_ID_UNDEF = -80;
 
+    private static final int TYPE_INT = 41;
+    private static final int TYPE_STR = 42;
+    private static final int TYPE_BOOL = 43;
+    private static final int TYPE_NIX = 44;
+/*
+    private static final int MULOP = 51;
+    private static final int ADDOP = 52;
+    private static final int RELOP = 53;
+    private static final int AND = 54;
+    private static final int OR = 55;*/
 
     private SymbolClass currentClass;
     private final SymbolTable symbolTable;
@@ -250,7 +260,32 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     }
 
     @Override public Integer visitExpr(JovaParser.ExprContext ctx) {
-        return visitChildren(ctx);
+        // TODO: Needs to work for variables
+        System.out.println("Visit expression!");
+
+        if (ctx.op != null){
+            // check operand types
+            System.out.println("Visit operation!");
+            Integer lhs_type = visit(ctx.left);
+            Integer rhs_type = visit(ctx.right);
+
+            // check both types are valid
+            if (lhs_type == TYPE_ERROR || rhs_type == TYPE_ERROR) {
+                // TODO: Check that errors are added in respective visitor functions
+                return TYPE_ERROR;
+            }
+
+            // check types are compatible
+            if (!this.checkOperatorComp(lhs_type, rhs_type, ctx)){
+                return TYPE_ERROR;
+            } else {
+                return OK;
+            }
+
+        } else {
+            // case: unary expression
+            return visitChildren(ctx.prim);
+        }
     }
 
     @Override public Integer visitUnary_expr(JovaParser.Unary_exprContext ctx) {
@@ -258,6 +293,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     }
 
     @Override public Integer visitPrimary_expr(JovaParser.Primary_exprContext ctx) {
+
         return visitChildren(ctx);
     }
 
@@ -278,7 +314,20 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitLiteral(JovaParser.LiteralContext ctx) {
-        return visitChildren(ctx);
+        // return the type of the literal
+
+        if (ctx.BOOL_LIT() != null){
+            return TYPE_BOOL;
+        } else if (ctx.STRING_LIT() != null){
+            return TYPE_STR;
+        } else if (ctx.INT_LIT() != null){
+            return TYPE_INT;
+        } else if (ctx.KEY_NIX() != null){
+            return TYPE_NIX;
+        } else {
+            ErrorHandler.INSTANCE.addUnknownTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), String.valueOf(ctx.stop.getText()));
+            return TYPE_ERROR;
+        }
     }
 
     @Override
@@ -294,5 +343,24 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     @Override
     public Integer visitWhile_stmt(JovaParser.While_stmtContext ctx) {
         return visitChildren(ctx);
+    }
+
+    // TODO: This can't stay here
+    // TODO: Check if generated error messages are correct (must include type!)
+    public boolean checkOperatorComp(Integer lhs_type, Integer rhs_type, JovaParser.ExprContext ctx){
+
+        if (ctx.ADDOP() != null || ctx.MULOP() != null){
+            if (((lhs_type == TYPE_INT) || (lhs_type ==TYPE_BOOL)) && ((rhs_type == TYPE_INT) || (rhs_type ==TYPE_BOOL))){
+                return true;
+            }
+            else {
+                ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), lhs_type.toString(), rhs_type.toString(), ctx.op.getText());
+                return false;
+            }
+        }
+
+        else {
+            return false;
+        }
     }
 }

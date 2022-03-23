@@ -678,7 +678,7 @@ public enum ErrorHandler {
      *            not the memeber already defined earlier
      * @param class_scope
      *            a string containing the Jova source code representation of the
-     *            memeber's class
+     *            member's class
      */
     public void addMemberDoubleDefError(int line, int char_pos, String mem_id, String mem_type, String class_scope) {
         errors.get(TYPE_ERR).add(fact.createMemberDoubleDefError(line, char_pos, mem_id, mem_type, class_scope));

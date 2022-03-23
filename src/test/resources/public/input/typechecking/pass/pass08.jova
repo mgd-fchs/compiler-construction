@@ -1,0 +1,12 @@
+class Evaluation{
+
+  private int func1(){
+    int a, b, c, d;
+    // d = 1;
+    a = 2 + true;
+    b = false * true;
+    // c = 2 + d;
+    return a;
+  }
+}
+

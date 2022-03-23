@@ -106,13 +106,13 @@ id_expr : (KEY_THIS | ID | method_invocation) member_access*;
 
 arg_list : expr (',' expr)*;
 
-expr : primary_expr
-     | expr MULOP expr
-     | expr ADDOP expr
-     | expr RELOP expr
-     | expr AND   expr
-     | expr OR    expr
-     |<assoc=right> expr '?' expr ':' expr
+expr : prim=primary_expr
+     | left=expr op=MULOP right=expr
+     | left=expr op=ADDOP right=expr
+     | left=expr op=RELOP right=expr
+     | left=expr op=AND   right=expr
+     | left=expr op=OR    right=expr
+    // |<assoc=right> expr '?' expr ':' expr -> define this separately
      ;
 
 unary_expr : (NOT | ADDOP) primary_expr;
