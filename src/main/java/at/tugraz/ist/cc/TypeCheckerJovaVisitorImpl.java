@@ -26,17 +26,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     public static final int ERROR_ID_UNDEF = -80;
 
-    private static final int TYPE_INT = 41;
-    private static final int TYPE_STR = 42;
-    private static final int TYPE_BOOL = 43;
-    private static final int TYPE_NIX = 44;
-/*
-    private static final int MULOP = 51;
-    private static final int ADDOP = 52;
-    private static final int RELOP = 53;
-    private static final int AND = 54;
-    private static final int OR = 55;*/
-
     private SymbolClass currentClass;
     private final SymbolTable symbolTable;
 
@@ -260,12 +249,11 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     }
 
     @Override public Integer visitExpr(JovaParser.ExprContext ctx) {
-        // TODO: Needs to work for variables
+        // TODO: If id_expr -> check if ID already exists and get its type
         System.out.println("Visit expression!");
 
         if (ctx.op != null){
-            // check operand types
-            System.out.println("Visit operation!");
+            // case: operation, check operand types
             Integer lhs_type = visit(ctx.left);
             Integer rhs_type = visit(ctx.right);
 
@@ -276,16 +264,16 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             }
 
             // check types are compatible
-            if (!this.checkOperatorCompatibility(lhs_type, rhs_type, ctx)){
+            if (!CompatibilityCheckUtils.checkOperatorCompatibility(lhs_type, rhs_type, ctx)){
                 return TYPE_ERROR;
             } else {
                 return OK;
             }
-
         } else {
-            // case: unary expression
+            // case: primary expression
             return visitChildren(ctx.prim);
         }
+
     }
 
     @Override public Integer visitUnary_expr(JovaParser.Unary_exprContext ctx) {
@@ -293,7 +281,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     }
 
     @Override public Integer visitPrimary_expr(JovaParser.Primary_exprContext ctx) {
-
         return visitChildren(ctx);
     }
 
@@ -317,13 +304,13 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         // return the type of the literal
 
         if (ctx.BOOL_LIT() != null){
-            return TYPE_BOOL;
+            return CompatibilityCheckUtils.TYPE_BOOL;
         } else if (ctx.STRING_LIT() != null){
-            return TYPE_STR;
+            return CompatibilityCheckUtils.TYPE_STR;
         } else if (ctx.INT_LIT() != null){
-            return TYPE_INT;
+            return CompatibilityCheckUtils.TYPE_INT;
         } else if (ctx.KEY_NIX() != null){
-            return TYPE_NIX;
+            return CompatibilityCheckUtils.TYPE_NIX;
         } else {
             ErrorHandler.INSTANCE.addUnknownTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), String.valueOf(ctx.stop.getText()));
             return TYPE_ERROR;
@@ -345,48 +332,4 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         return visitChildren(ctx);
     }
 
-    // TODO: This can't stay here
-    // TODO: Check if generated error messages are correct (must include type!)
-    public boolean checkOperatorCompatibility(Integer lhs_type, Integer rhs_type, JovaParser.ExprContext ctx){
-
-        // arithmetic and relational operations
-        if (ctx.ADDOP() != null || ctx.MULOP() != null || ctx.RELOP() != null){
-            if (lhs_type == TYPE_INT && rhs_type == TYPE_INT){
-                return true;
-            } else if (lhs_type == TYPE_BOOL || rhs_type == TYPE_BOOL){
-                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.op.getText(), lhs_type.toString(), rhs_type.toString(), "int", "int");
-                return true;
-            } else {
-                ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), lhs_type.toString(), rhs_type.toString(), ctx.op.getText());
-                return false;
-            }
-        }
-
-        // logical operations
-        if (ctx.AND() != null || ctx.OR() != null){
-            if (lhs_type == TYPE_BOOL && rhs_type == TYPE_BOOL){
-                return true;
-            } else if (lhs_type == TYPE_INT || rhs_type == TYPE_INT){
-                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.op.getText(), lhs_type.toString(), rhs_type.toString(), "bool", "bool");
-                return true;
-            } else {
-                ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), lhs_type.toString(), rhs_type.toString(), ctx.op.getText());
-                return false;
-            }
-        }
-
-        else {
-            return false;
-        }
-    }
-
-    // TODO: This can't stay here either
-    // TODO: Check if generated error messages are correct (must include type!)
-    public boolean checkTernaryOperatorCompatibility(Integer lhs_type, Integer middle_type, Integer rhs_type, JovaParser.ExprContext ctx){
-        return false;
-    }
-
-    public boolean checkConditionCompatibility(Integer lhs_type, Integer rhs_type, JovaParser.ExprContext ctx){
-        return false;
-    }
 }
