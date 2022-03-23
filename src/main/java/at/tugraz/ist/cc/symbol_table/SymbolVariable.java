@@ -1,9 +1,9 @@
 package at.tugraz.ist.cc.symbol_table;
 
 public class SymbolVariable {
-    private SymbolType type;
-    private Object actualType;
-    private String name;
+    private final SymbolType type;
+    private final Object actualType;
+    private final String name;
 
     public SymbolVariable(SymbolType type, Object actualType, String name) {
         // TODO maybe change this kind of checks to asserts
