@@ -2,6 +2,7 @@ package at.tugraz.ist.cc.symbol_table;
 
 import at.tugraz.ist.cc.JovaParser;
 import at.tugraz.ist.cc.error.ErrorHandler;
+import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,8 +43,15 @@ public class SymbolTable {
         return 0;
     }
 
-    public SymbolClass getClassByName(String name) {
-        Optional<SymbolClass>  found = classes.stream().filter(element -> element.getClassName().equals(name)).findFirst();
-        return found.get(); // TODO check if exist => get lead otherwise to exception
+    public Optional<SymbolClass> getClassByName(String name, ParserRuleContext ctx) {
+        Optional<SymbolClass> found =  classes.stream().filter(
+                element -> element.getClassName().equals(name)).findFirst();
+
+        if (found.isEmpty()){
+            ErrorHandler.INSTANCE.addUndefIdError(
+                    ctx.start.getLine(), ctx.start.getCharPositionInLine(), name);
+        }
+
+        return found;
     }
 }

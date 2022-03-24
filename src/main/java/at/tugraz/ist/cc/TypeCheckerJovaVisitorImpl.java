@@ -22,6 +22,8 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     public static final int ERROR_MAIN_WITH_MEMBER = -61;
     public static final int ERROR_MAIN_WITH_WRONG_METHOD = -62;
 
+    public static final int ERROR_UNKOWN_TYPE = -70;
+
 
     private SymbolClass currentClass;
     private final SymbolTable symbolTable;
@@ -161,8 +163,13 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             } else if(types.get(id).CLASS_TYPE() != null){
                 // TODO check if class exits
                 String className = types.get(id).CLASS_TYPE().toString();
-                variable = new SymbolVariable(SymbolType.CLASS, symbolTable.getClassByName(className), variableName);
-                // TODO: we do not save the name of the param => only which class it is
+                Optional<SymbolClass> foundClass = symbolTable.getClassByName(className, ctx);
+
+                if (foundClass.isPresent()){
+                    variable = new SymbolVariable(SymbolType.CLASS, foundClass.get(), variableName);
+                } else {
+                    return ERROR_UNKOWN_TYPE;
+                }
             } else {
                 System.exit(-8);
             }

@@ -44,7 +44,14 @@ public class SymbolClass {
             SymbolVariable member = null;
             switch (currentSymbolType){
                 case CLASS:
-                    member = new SymbolVariable(SymbolType.CLASS, SymbolTable.getInstance().getClassByName(currentClassName), id);
+                    Optional<SymbolClass> foundClass = SymbolTable.getInstance().getClassByName(currentClassName, ctx);
+
+                    if (foundClass.isPresent()){
+                        member = new SymbolVariable(SymbolType.CLASS, foundClass.get(), id);
+                    } else {
+                        return TypeCheckerJovaVisitorImpl.ERROR_UNKOWN_TYPE;
+                    }
+
                     break;
                 case PRIMITIVE:
                     member = new SymbolVariable(SymbolType.PRIMITIVE, currentSymbolPrimitiveType, id);
@@ -84,7 +91,15 @@ public class SymbolClass {
         SymbolMethod symbolMethod = null;
         switch (currentSymbolType){
             case CLASS:
-                symbolMethod = new SymbolMethod(modifier, name, new SymbolVariable(SymbolType.CLASS, SymbolTable.getInstance().getClassByName(currentClassName), null), currentParams);
+                Optional<SymbolClass> foundClass = SymbolTable.getInstance().getClassByName(currentClassName, ctx);
+
+                if (foundClass.isPresent()){
+                    symbolMethod = new SymbolMethod(modifier, name, new SymbolVariable(SymbolType.CLASS, foundClass.get(), null), currentParams);
+                } else {
+                    // TODO: I think we have to continue parsing the params for right logging => so the return would be false?
+                    return TypeCheckerJovaVisitorImpl.ERROR_UNKOWN_TYPE;
+                }
+
                 break;
             case PRIMITIVE:
                 symbolMethod = new SymbolMethod(modifier, name, new SymbolVariable(SymbolType.PRIMITIVE, currentSymbolPrimitiveType, null) , currentParams);
@@ -133,7 +148,14 @@ public class SymbolClass {
             SymbolVariable symbolVariable = null;
             switch (currentSymbolType) {
                 case CLASS:
-                    symbolVariable = new SymbolVariable(SymbolType.CLASS, SymbolTable.getInstance().getClassByName(currentClassName), id);
+                    Optional<SymbolClass> foundClass = SymbolTable.getInstance().getClassByName(currentClassName, ctx);
+
+                    if (foundClass.isPresent()){
+                        symbolVariable = new SymbolVariable(SymbolType.CLASS, foundClass.get(), id);
+                    } else {
+                        // TODO I think the names has to be checkder furhter in this one line, so returning is not right?
+                        return TypeCheckerJovaVisitorImpl.ERROR_UNKOWN_TYPE;
+                    }
                     break;
                 case PRIMITIVE:
                     symbolVariable = new SymbolVariable(SymbolType.PRIMITIVE, currentSymbolPrimitiveType, id);
