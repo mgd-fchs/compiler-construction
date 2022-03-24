@@ -1,5 +1,8 @@
 package at.tugraz.ist.cc.symbol_table;
 
+import at.tugraz.ist.cc.JovaParser;
+import at.tugraz.ist.cc.error.ErrorHandler;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -37,13 +40,47 @@ public class SymbolMethod {
         return returnValue;
     }
 
-    public Collection<SymbolVariable> getParams() {
+    public List<SymbolVariable> getParams() {
         return params;
+    }
+
+    public String[] getParamTypesAsString() {
+        return params.stream().map(element -> {
+            Object actualType = element.getActualType();
+            if (actualType instanceof SymbolClass) {
+                return ((SymbolClass) actualType).getClassName();
+            } else if (actualType instanceof SymbolPrimitiveType) {
+                return ((SymbolPrimitiveType) actualType).toString().toLowerCase();
+            } else {
+                // should not be reachable
+                System.exit(-1);
+                return null;
+            }
+        }).toArray(String[]::new);
     }
 
     public void addVariable(SymbolVariable symbolVariable)
     {
         localVariables.add(symbolVariable);
+    }
+
+    public int checkParamDoubleDeclaration(JovaParser.Param_listContext ctx) {
+        Collection<String> names = new ArrayList<>();
+        for (int i = 0; i < params.size(); ++i) {
+            String currentName = params.get(i).getName();
+            if (names.contains(currentName)){
+
+                ErrorHandler.INSTANCE.addVarDoubleDefError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                        currentName, params.get(i).getTypeAsString(), this.getName());
+                return -1;
+            }
+            names.add(currentName);
+        }
+        return 0;
+    }
+
+    public List<SymbolVariable> getLocalVariables() {
+        return localVariables;
     }
 
     /**
@@ -63,7 +100,7 @@ public class SymbolMethod {
         if (params.size() != that.params.size()) return false;
 
         for (int i = 0; i < params.size(); ++i) {
-            if (params.get(i).type != that.params.get(i).type) {
+            if (params.get(i).getType() != that.params.get(i).getType()) {
                 return false;
             }
         }
