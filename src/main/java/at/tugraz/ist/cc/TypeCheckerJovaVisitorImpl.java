@@ -258,6 +258,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             }
         } else {
             ErrorHandler.INSTANCE.addUndefIdError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), String.valueOf(ctx.ID().getText()));
+            return TYPE_ERROR;
         }
 
         return visitChildren(ctx);
@@ -268,10 +269,9 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     }
 
     @Override public Integer visitExpr(JovaParser.ExprContext ctx) {
-        // TODO: If id_expr -> check if ID already exists and get its type
         System.out.println("Visit expression!");
 
-        if (ctx.op != null){
+        if (ctx.op != null) {
             // case: operation, check operand types
 
             Integer lhs_type = visit(ctx.left);
@@ -284,11 +284,16 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             }
 
             // check types are compatible
-            if (!CompatibilityCheckUtils.checkOperatorCompatibility(lhs_type, rhs_type, ctx)){
+            if (!CompatibilityCheckUtils.checkOperatorCompatibility(lhs_type, rhs_type, ctx)) {
                 return TYPE_ERROR;
             } else {
                 return OK;
             }
+
+        } else if(ctx.then != null){
+            // case: ternary operator
+            return OK;
+
         } else {
             // case: primary expression
             return visitChildren(ctx.prim);
@@ -297,7 +302,8 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     }
 
     @Override public Integer visitUnary_expr(JovaParser.Unary_exprContext ctx) {
-        return visitChildren(ctx);
+        Integer returnValue = visit(ctx.primary_expr());
+        return returnValue;
     }
 
     @Override public Integer visitPrimary_expr(JovaParser.Primary_exprContext ctx) {
@@ -316,7 +322,8 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitParan_expr(JovaParser.Paran_exprContext ctx) {
-        return visitChildren(ctx);
+        Integer returnValue = visit(ctx.expr());
+        return returnValue;
     }
 
     @Override

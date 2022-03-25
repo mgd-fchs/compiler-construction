@@ -5,13 +5,14 @@ class Evaluation{
     bool b1, b2;
 
     // arithmetic ops
-    a = 2 + true;
-    b = false * true;
-    // d = 1;
-    // c = 2 + d;
+    a = 2;
+    b = (a) + true;
+    d = 1;
+    c = 2 + b1;
+    b1 = true;
+    c = b1 ? 1 : 2;
 
     // logical ops
-    f = true;
     b1 = true || false;
     b2 = true && 1;
 
