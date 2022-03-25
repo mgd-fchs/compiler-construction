@@ -1,6 +1,7 @@
 package at.tugraz.ist.cc.symbol_table;
 
 import at.tugraz.ist.cc.JovaParser;
+import at.tugraz.ist.cc.TypeCheckerJovaVisitorImpl;
 import at.tugraz.ist.cc.error.ErrorHandler;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -36,7 +37,7 @@ public class SymbolTable {
         if (found) {
             ErrorHandler.INSTANCE.addClassDoubleDefError(
                     ctx.start.getLine(), ctx.start.getCharPositionInLine(), symbolClass.getClassName());
-            return -1;
+            return TypeCheckerJovaVisitorImpl.ERROR_DOUBLE_DEFINITION_CLASS;
         }
 
         classes.add(symbolClass);

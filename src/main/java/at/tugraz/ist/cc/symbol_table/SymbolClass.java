@@ -31,7 +31,7 @@ public class SymbolClass {
         currentIds = new ArrayList<>();
     }
 
-    public int buildCurrentMembers(SymbolModifier modifier, JovaParser.Member_declContext ctx){
+    public void  buildCurrentMembers(SymbolModifier modifier, JovaParser.Member_declContext ctx){
 
         if (    currentIds == null ||
                 currentSymbolType == null ||
@@ -39,45 +39,43 @@ public class SymbolClass {
             // should be non reachable!!!!
             System.exit(-999);
         }
-        // TODO check if member already with same name already exists
+
         for (String id : currentIds) {
             SymbolVariable member = null;
+            String typeName = null;
+
             switch (currentSymbolType){
                 case CLASS:
+                    typeName = currentClassName;
                     Optional<SymbolClass> foundClass = SymbolTable.getInstance().getClassByName(currentClassName, ctx);
 
                     if (foundClass.isPresent()){
                         member = new SymbolVariable(SymbolType.CLASS, foundClass.get(), id);
-                    } else {
-                        return TypeCheckerJovaVisitorImpl.ERROR_UNKOWN_TYPE;
                     }
 
                     break;
                 case PRIMITIVE:
+                    typeName = currentSymbolPrimitiveType.toString();
                     member = new SymbolVariable(SymbolType.PRIMITIVE, currentSymbolPrimitiveType, id);
                     break;
                 default:
                     System.exit(666);
             }
 
-            SymbolVariable finalMemberHelper = member;
-            if(members.stream().anyMatch(element -> element.getValue().equals(finalMemberHelper))) {
+
+            if(members.stream().anyMatch(element -> element.getValue().getName().equals(id))) {
                 ErrorHandler.INSTANCE.addMemberDoubleDefError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
-                        member.getName(), member.getTypeAsString(), modifier.toString());
-                currentIds = null;
-                currentSymbolPrimitiveType = null;
-                currentSymbolType = null;
-
-                return TypeCheckerJovaVisitorImpl.ERROR_DOUBLE_DECLARATION_VARIABLE;
+                        id, typeName, modifier.toString());
+            } else {
+                if (member != null){
+                    members.add(new AbstractMap.SimpleEntry<>(modifier, member));
+                }
             }
-
-            members.add(new AbstractMap.SimpleEntry<>(modifier, member));
         }
 
         currentIds = null;
         currentSymbolPrimitiveType = null;
         currentSymbolType = null;
-        return 0;
     }
 
     public int addMethod(SymbolModifier modifier, String name,JovaParser.Method_headContext ctx){
@@ -89,6 +87,7 @@ public class SymbolClass {
         // TODO check if class is already there => name is not enough => function overloading
         // TODO check if already exists
         SymbolMethod symbolMethod = null;
+        int errorOccurred = 0;
         switch (currentSymbolType){
             case CLASS:
                 Optional<SymbolClass> foundClass = SymbolTable.getInstance().getClassByName(currentClassName, ctx);
@@ -97,7 +96,7 @@ public class SymbolClass {
                     symbolMethod = new SymbolMethod(modifier, name, new SymbolVariable(SymbolType.CLASS, foundClass.get(), null), currentParams);
                 } else {
                     // TODO: I think we have to continue parsing the params for right logging => so the return would be false?
-                    return TypeCheckerJovaVisitorImpl.ERROR_UNKOWN_TYPE;
+                    errorOccurred = TypeCheckerJovaVisitorImpl.ERROR_ID_UNDEF;
                 }
 
                 break;
@@ -112,14 +111,7 @@ public class SymbolClass {
         currentSymbolType = null;
         currentParams = new ArrayList<>();
 
-        boolean found = methods.contains(symbolMethod);
-        if (found) {
-            ErrorHandler.INSTANCE.addMethodDoubleDefError(
-                    ctx.start.getLine(), ctx.start.getCharPositionInLine(),
-                    symbolMethod.getName(), className, symbolMethod.getParamTypesAsString());
-            return TypeCheckerJovaVisitorImpl.ERROR_DOUBLE_DECLARATION_METHOD;
-        }
-
+        // TODO it might be the case that the output order of the errors is not right.
         if ( className.equals(SymbolClass.MAIN_CLASS_NAME) &&
                     (symbolMethod.getAccessSymbol() != SymbolModifier.PUBLIC ||
                     !(symbolMethod.getReturnValue().getActualType() instanceof SymbolPrimitiveType) ||
@@ -129,56 +121,64 @@ public class SymbolClass {
         }
 
         if(symbolMethod.checkParamDoubleDeclaration(ctx.params().param_list()) != 0) {
-            return TypeCheckerJovaVisitorImpl.ERROR_DOUBLE_DECLARATION_VARIABLE;
+            errorOccurred = TypeCheckerJovaVisitorImpl.ERROR_DOUBLE_DECLARATION_VARIABLE;
         }
 
-        methods.add(symbolMethod);
-        currentMethod = symbolMethod;
-        return 0;
+        if (methods.contains(symbolMethod)) {
+            ErrorHandler.INSTANCE.addMethodDoubleDefError(
+                    ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                    symbolMethod.getName(), className, symbolMethod.getParamTypesAsString());
+            errorOccurred = TypeCheckerJovaVisitorImpl.ERROR_DOUBLE_DECLARATION_METHOD;
+        }
+
+        if (errorOccurred == 0) {
+            methods.add(symbolMethod);
+            currentMethod = symbolMethod;
+        }
+
+        return errorOccurred;
     }
 
     public int saveLocalVariables(JovaParser.DeclarationContext ctx)
     {
-        if (currentSymbolType == CLASS && currentClassName.equals(SymbolClass.MAIN_CLASS_NAME)) {
-            ErrorHandler.INSTANCE.addMainInstatiationError(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-            return TypeCheckerJovaVisitorImpl.ERROR_MAIN_INSTANTIATION;
-        }
-
         for (String id : currentIds) {
             SymbolVariable symbolVariable = null;
+            String typeName = null;
+
             switch (currentSymbolType) {
                 case CLASS:
+                    typeName = currentClassName;
                     Optional<SymbolClass> foundClass = SymbolTable.getInstance().getClassByName(currentClassName, ctx);
 
                     if (foundClass.isPresent()){
                         symbolVariable = new SymbolVariable(SymbolType.CLASS, foundClass.get(), id);
-                    } else {
-                        // TODO I think the names has to be checkder furhter in this one line, so returning is not right?
-                        return TypeCheckerJovaVisitorImpl.ERROR_UNKOWN_TYPE;
                     }
+
                     break;
                 case PRIMITIVE:
+                    typeName = currentSymbolPrimitiveType.toString();
                     symbolVariable = new SymbolVariable(SymbolType.PRIMITIVE, currentSymbolPrimitiveType, id);
                     break;
                 default:
                     System.exit(666);
             }
 
-            // TODO (Richard) why do I need this helper var?
-            SymbolVariable finalSymbolVariableHelper = symbolVariable;
-            if( currentMethod.getParams().stream().anyMatch(element -> element.equals(finalSymbolVariableHelper)) ||
-                currentMethod.getLocalVariables().stream().anyMatch(element -> element.equals(finalSymbolVariableHelper))) {
+            if( currentMethod.getParams().stream().anyMatch(element -> element.getName().equals(id)) ||
+                currentMethod.getLocalVariables().stream().anyMatch(element -> element.getName().equals(id))) {
                 ErrorHandler.INSTANCE.addVarDoubleDefError(
                         ctx.start.getLine(), ctx.start.getCharPositionInLine(),
-                        symbolVariable.getName(), symbolVariable.getTypeAsString(), currentMethod.getName(),
+                        id, typeName, currentMethod.getName(),
                         currentMethod.getParamTypesAsString());
-                currentSymbolPrimitiveType = null;
-                currentSymbolType = null;
-                currentParams = new ArrayList<>();
-                return TypeCheckerJovaVisitorImpl.ERROR_DOUBLE_DECLARATION_VARIABLE;
+                continue;
             }
 
-            currentMethod.addVariable(symbolVariable);
+            if (symbolVariable != null) {
+                if (currentSymbolType == CLASS && currentClassName.equals(SymbolClass.MAIN_CLASS_NAME)) {
+                    ErrorHandler.INSTANCE.addMainInstatiationError(ctx.start.getLine(), ctx.start.getCharPositionInLine());
+                    continue;
+                }
+                currentMethod.addVariable(symbolVariable);
+            }
         }
 
         currentSymbolPrimitiveType = null;

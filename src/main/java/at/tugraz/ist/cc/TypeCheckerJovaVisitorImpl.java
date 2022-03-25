@@ -14,7 +14,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     public static final int TYPE_PRIMITIVE = 32;
     public static final int TYPE_ERROR = -30;
 
-    public static final int ERROR_DOUBLE_DECLARATION_CLASS = -50;
+    public static final int ERROR_DOUBLE_DEFINITION_CLASS = -50;
     public static final int ERROR_DOUBLE_DECLARATION_METHOD = -51;
     public static final int ERROR_DOUBLE_DECLARATION_VARIABLE = -52;
 
@@ -23,6 +23,8 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     public static final int ERROR_MAIN_WITH_WRONG_METHOD = -62;
 
     public static final int ERROR_UNKOWN_TYPE = -70;
+
+    public static final int ERROR_ID_UNDEF = -80;
 
 
     private SymbolClass currentClass;
@@ -78,9 +80,9 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         SymbolClass newClass = new SymbolClass(ctx.CLASS_TYPE().toString());
 
         if(symbolTable.addClass(newClass, ctx) != 0) {
-            // skip further checking of the class if it is a class double deceleration
+            // skip further checking of the class if it is a class double definition
             currentClass = null;
-            return ERROR_DOUBLE_DECLARATION_CLASS;
+            return ERROR_DOUBLE_DEFINITION_CLASS;
         }
 
         currentClass = newClass;
@@ -108,10 +110,10 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             return ERROR_MAIN_WITH_MEMBER;
         }
 
-        Integer returnValue = visit(ctx.id_list());
-        Integer result = visit(ctx.type());
+        visitChildren(ctx);
 
-        return currentClass.buildCurrentMembers(SymbolModifier.valueOf(ctx.AMOD().toString().toUpperCase()), ctx);
+        currentClass.buildCurrentMembers(SymbolModifier.valueOf(ctx.AMOD().toString().toUpperCase()), ctx);
+        return OK;
     }
 
     @Override
@@ -124,13 +126,19 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     }
 
     @Override public Integer visitMethod_decl(JovaParser.Method_declContext ctx) {
-        return visitChildren(ctx);
+        int headStatus = visitMethod_head(ctx.method_head());
+
+        // if the head is not ok or double definition we stop looking at the method
+        if (headStatus != OK) {
+            return headStatus;
+        }
+
+        return visitMethod_body(ctx.method_body());
     }
 
     @Override
     public Integer visitMethod_head(JovaParser.Method_headContext ctx) {
-        visit(ctx.type());
-        visit(ctx.params());
+        visitChildren(ctx);
 
         int error = currentClass.addMethod(
                 SymbolModifier.valueOf(ctx.AMOD().toString().toUpperCase()), ctx.ID().toString(), ctx);
@@ -140,7 +148,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             return error;
         }
 
-        return visitChildren(ctx);
+        return OK;
     }
 
     @Override
