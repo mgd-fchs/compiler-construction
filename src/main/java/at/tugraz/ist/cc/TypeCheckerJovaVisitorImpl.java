@@ -279,7 +279,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
             // check both types are valid
             if (lhs_type == TYPE_ERROR || rhs_type == TYPE_ERROR) {
-                // TODO: Check that errors are added in respective visitor functions
                 return TYPE_ERROR;
             }
 

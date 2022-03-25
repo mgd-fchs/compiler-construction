@@ -1,10 +1,32 @@
 package at.tugraz.ist.cc.symbol_table;
 
-public enum SymbolPrimitiveType {
-    BOOL, STRING, INT;
+import java.util.HashMap;
+import java.util.Map;
 
-    @Override
-    public String toString() {
-        return super.toString().toLowerCase();
+public enum SymbolPrimitiveType {
+    BOOL(1), STRING(2), INT(3);
+
+    private int value;
+    private static Map intmap = new HashMap<>();
+
+
+    private SymbolPrimitiveType(int value) {
+        this.value = value;
+
     }
+
+    static {
+        for (SymbolPrimitiveType type : SymbolPrimitiveType.values()) {
+            intmap.put(type.value, type);
+        }
+    }
+
+    public static SymbolPrimitiveType valueOf(int type) {
+        return (SymbolPrimitiveType) intmap.get(type);
+    }
+
+    public int getValue() {
+        return value;
+    }
+
 }
