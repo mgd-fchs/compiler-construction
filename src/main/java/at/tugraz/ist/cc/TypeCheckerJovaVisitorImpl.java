@@ -102,7 +102,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
         visitParams(ctx.params());
         currentClass.buildConstructor(ctx.CLASS_TYPE().toString(), ctx);
-        return visitChildren(ctx);
+        return visitCtor_body(ctx.ctor_body());
     }
 
     @Override
