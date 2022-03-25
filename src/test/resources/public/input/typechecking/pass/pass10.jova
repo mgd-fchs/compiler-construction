@@ -1,6 +1,7 @@
 class Evaluation{
+    public int x;
 
-  private int func1(){
+  public int func1(){
     return 1;
   }
 
@@ -16,8 +17,9 @@ class Testing {
     private Evaluation e;
 
     public int func2() {
-
-        return e.func1();
+        int x;
+        return e.func2(e.x, "ff", "fff");
+        //return e.func2(2);
     }
 }
 

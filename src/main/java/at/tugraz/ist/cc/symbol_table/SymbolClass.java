@@ -16,6 +16,7 @@ public class SymbolClass {
     private String currentClassName;
     private Collection<String> currentIds;
     private SymbolMethod currentMethod;
+    private SymbolVariable currentMemberAccess;
     private List<SymbolVariable> currentParams;
     private List<SymbolVariable> currentArgList;
 
@@ -25,6 +26,7 @@ public class SymbolClass {
         this.methods = new ArrayList<>();
         currentParams = new ArrayList<>();
         currentIds = new ArrayList<>();
+        currentMemberAccess = null;
 
         // needs to be 0 to signal that no method-invocation is currently checked
         currentArgList = null;
@@ -121,11 +123,13 @@ public class SymbolClass {
             return false;
         }
 
-        currentArgList.add(var);
+        if (currentlyGatheringArguments()) {
+            currentArgList.add(var);
+        }
         return true;
     }
 
-    private SymbolVariable getCurrentScopeVariable(String name) {
+    public SymbolVariable getCurrentScopeVariable(String name) {
         SymbolVariable var = null;
 
         try {
@@ -234,5 +238,13 @@ public class SymbolClass {
 
     public String getClassName() {
         return className;
+    }
+
+    public SymbolVariable getCurrentMemberAccess() {
+        return currentMemberAccess;
+    }
+
+    public void setCurrentMemberAccess(SymbolVariable currentMemberAccess) {
+        this.currentMemberAccess = currentMemberAccess;
     }
 }

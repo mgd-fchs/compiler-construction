@@ -16,4 +16,12 @@ public class SymbolVariable {
         this.actualType = actualType;
         this.name = name;
     }
+
+    public SymbolType getType() {
+        return type;
+    }
+
+    public Object getActualType() {
+        return actualType;
+    }
 }

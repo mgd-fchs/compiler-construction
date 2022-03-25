@@ -23,9 +23,11 @@ class Testing {
         return func1("true 69");
     }
 
+/*
     public int func2d() {
-            return func1(nix);
-        }
+        return func1(nix);
+    }
+*/
 }
 
 

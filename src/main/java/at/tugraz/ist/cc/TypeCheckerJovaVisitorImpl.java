@@ -197,33 +197,80 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     public Integer visitMember_access(JovaParser.Member_accessContext ctx) {
         // TODO: support method_invocation + member_access? (hier gemeint mit Class als return-type?
 
+        if (ctx.DOTOP() == null) {
+            // TODO: is this possible?
+            System.out.println("no dot found at memberaccess???");
+            System.exit(34);
+        }
+
+        SymbolVariable var = currentClass.getCurrentMemberAccess();
+
+        if (var.getType() == SymbolType.PRIMITIVE) {
+            // TODO: put error in member-access
+            String id = (ctx.ID() != null) ? ctx.ID().toString() : "";
+            ErrorHandler.INSTANCE.addDoesNotHaveFieldError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                    var.getType().toString().toLowerCase(), id);
+            return -1;
+        }
+
+        SymbolClass class_accessed = (SymbolClass) var.getActualType();
+
+        if (ctx.ID() != null) {
+            if (class_accessed.checkIfVariableExists(ctx.ID().toString())) {
+                ErrorHandler.INSTANCE.addDoesNotHaveFieldError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                        class_accessed.getClassName(), ctx.ID().toString());
+            }
+        }
+
+        if (ctx.method_invocation() != null) {
+            // TODO implement multiple method-invocs
+            if (class_accessed.getMatchingMethods(ctx.method_invocation().ID().toString()).size() > 0) {
+                return visitChildren(ctx);
+            }
+            else {
+                ErrorHandler.INSTANCE.addDoesNotHaveFieldError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                        class_accessed.getClassName(), ctx.method_invocation().ID().toString());
+            }
+        }
+
         return visitChildren(ctx);
     }
 
     @Override public Integer visitMethod_invocation(JovaParser.Method_invocationContext ctx) {
         System.out.println("visitMethod_invocation");
 
-        Collection<SymbolMethod> methods = currentClass.getMatchingMethods(ctx.ID().toString());
-        currentClass.setArgList();
+        SymbolClass class_accessed = currentClass;
+        if (currentClass.getCurrentMemberAccess() != null) {
+            class_accessed = (SymbolClass) currentClass.getCurrentMemberAccess().getActualType();
+        }
+
+        Collection<SymbolMethod> methods = class_accessed.getMatchingMethods(ctx.ID().toString());
+        class_accessed.setArgList();
         if (ctx.arg_list() != null) {
             visit(ctx.arg_list());
         }
 
         for (SymbolMethod method : methods) {
-            if (currentClass.checkValidArgList(method)) {
-                currentClass.resetArgList();
+            if (class_accessed.checkValidArgList(method)) {
+                class_accessed.resetArgList();
                 return 0;
             }
         }
 
         String params = "";
         if (ctx.arg_list() != null) {
-            params = currentClass.getArgListTypes();
+            params = class_accessed.getArgListTypes();
         }
 
 
-        // TODO add params to error msg
-        ErrorHandler.INSTANCE.addUndefMethodError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.ID().toString(), params);
+        if (currentClass.getCurrentMemberAccess() != null) {
+            ErrorHandler.INSTANCE.addCannotInvokeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                    class_accessed.getClassName(), ctx.ID().toString(), params);
+        }
+        else {
+            ErrorHandler.INSTANCE.addUndefMethodError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.ID().toString(), params);
+        }
+
         currentClass.resetArgList();
         return 0;
     }
@@ -239,6 +286,24 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
                 return 0;
             }
+        }
+
+        if (ctx.member_access() != null) {
+            SymbolVariable var_accessed = null;
+            if (ctx.KEY_THIS() != null) {
+                var_accessed = new SymbolVariable(SymbolType.CLASS, currentClass, "");
+            } else if (ctx.ID() != null) {
+                var_accessed = currentClass.getCurrentScopeVariable(ctx.ID().toString());
+                if (var_accessed == null) {
+                    ErrorHandler.INSTANCE.addUndefIdError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.ID().toString());
+                    return -1;
+                }
+            }
+
+            currentClass.setCurrentMemberAccess(var_accessed);
+            int ret = visitChildren(ctx);
+            currentClass.setCurrentMemberAccess(null);
+            return ret;
         }
 
         return visitChildren(ctx);
@@ -277,8 +342,13 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitLiteral(JovaParser.LiteralContext ctx) {
-        if (currentClass.currentlyGatheringArguments()) {
-            SymbolPrimitiveType type = SymbolPrimitiveType.NIX;
+        SymbolClass class_accessed = currentClass;
+        if (currentClass.getCurrentMemberAccess() != null) {
+            class_accessed = (SymbolClass) currentClass.getCurrentMemberAccess().getActualType();
+        }
+
+        if (class_accessed.currentlyGatheringArguments()) {
+            SymbolPrimitiveType type = null; //SymbolPrimitiveType.NIX;
             if (ctx.BOOL_LIT() != null) {
                 type = SymbolPrimitiveType.BOOL;
             } else if (ctx.INT_LIT() != null) {
@@ -287,7 +357,13 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                 type = SymbolPrimitiveType.STRING;
             }
 
-            currentClass.addPrimitiveArgument(type);
+            if (type != null) {
+                class_accessed.addPrimitiveArgument(type);
+            }
+            else {
+                System.out.println("visitLiteral: invalid type");
+                System.exit(25);
+            }
         }
 
         return visitChildren(ctx);
