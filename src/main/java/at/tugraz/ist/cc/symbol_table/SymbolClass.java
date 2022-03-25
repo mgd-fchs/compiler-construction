@@ -256,4 +256,7 @@ public class SymbolClass {
         SymbolClass that = (SymbolClass) o;
         return Objects.equals(className, that.className);
     }
+
+    public SymbolMethod getCurrentMethod() {return currentMethod;}
+
 }

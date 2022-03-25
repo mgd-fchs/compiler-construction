@@ -27,11 +27,13 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     public static final int ERROR_ID_UNDEF = -80;
 
     private SymbolClass currentClass;
+    private SymbolVariable currentVar;
     private final SymbolTable symbolTable;
 
     public TypeCheckerJovaVisitorImpl() {
         symbolTable = SymbolTable.getInstance();
         currentClass = null;
+        currentVar = null;
     }
 
     @Override
@@ -185,7 +187,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                     return ERROR_UNKOWN_TYPE;
                 }
             } else {
-                System.exit(-8);
+                System.out.println(-8);
             }
             params.add(variable);
         }
@@ -241,6 +243,23 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     }
 
     @Override public Integer visitId_expr(JovaParser.Id_exprContext ctx) {
+        System.out.println("Visiting ID expression!");
+
+        if(ctx.ID() != null) {
+            currentVar = currentClass.getCurrentMethod().getLocalVariableById(ctx.ID().getText());
+            Object varType = currentVar.getActualType();
+
+            if (varType == SymbolPrimitiveType.BOOL){
+                return CompatibilityCheckUtils.TYPE_BOOL;
+            } else if (varType == SymbolPrimitiveType.INT){
+                return CompatibilityCheckUtils.TYPE_INT;
+            } else if (varType == SymbolPrimitiveType.STRING){
+                return CompatibilityCheckUtils.TYPE_STR;
+            }
+        } else {
+            ErrorHandler.INSTANCE.addUndefIdError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), String.valueOf(ctx.ID().getText()));
+        }
+
         return visitChildren(ctx);
     }
 
@@ -254,6 +273,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
         if (ctx.op != null){
             // case: operation, check operand types
+
             Integer lhs_type = visit(ctx.left);
             Integer rhs_type = visit(ctx.right);
 
