@@ -196,7 +196,7 @@ public class SymbolClass {
         }
 
 
-        SymbolConstructor symbolConstructor = new SymbolConstructor(currentParams, className);
+        SymbolConstructor symbolConstructor = new SymbolConstructor(className, currentParams);
 
         int errorOccurred = 0;
         if(symbolConstructor.checkParamDoubleDeclaration(ctx.params().param_list()) != 0) {
