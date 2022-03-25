@@ -1,0 +1,14 @@
+image: istcc:latest
+
+stages:
+  - test
+
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+  - /prep.sh
+java:
+  stage: test
+  script:
+    - run_tests.sh
+
+
