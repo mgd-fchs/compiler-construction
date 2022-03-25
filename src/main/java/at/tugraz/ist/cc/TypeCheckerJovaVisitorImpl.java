@@ -195,6 +195,8 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitMember_access(JovaParser.Member_accessContext ctx) {
+        // TODO: support method_invocation + member_access? (hier gemeint mit Class als return-type?
+
         return visitChildren(ctx);
     }
 
@@ -227,14 +229,16 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     }
 
     @Override public Integer visitId_expr(JovaParser.Id_exprContext ctx) {
-        if (ctx.ID() != null) {
-            if (!currentClass.checkIfVariableExists(ctx.ID().toString())) {
-                // TODO: add which error?
-                ErrorHandler.INSTANCE.addUndefIdError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.ID().toString());
-                return -1;
-            }
+        if (currentClass.currentlyGatheringArguments()) {
+            if (ctx.ID() != null) {
+                if (!currentClass.checkIfVariableExists(ctx.ID().toString())) {
+                    // TODO: add which error?
+                    ErrorHandler.INSTANCE.addUndefIdError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.ID().toString());
+                    return -1;
+                }
 
-            return 0;
+                return 0;
+            }
         }
 
         return visitChildren(ctx);
@@ -274,7 +278,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     @Override
     public Integer visitLiteral(JovaParser.LiteralContext ctx) {
         if (currentClass.currentlyGatheringArguments()) {
-            SymbolPrimitiveType type = null;
+            SymbolPrimitiveType type = SymbolPrimitiveType.NIX;
             if (ctx.BOOL_LIT() != null) {
                 type = SymbolPrimitiveType.BOOL;
             } else if (ctx.INT_LIT() != null) {

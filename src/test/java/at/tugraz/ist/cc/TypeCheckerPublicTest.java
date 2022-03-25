@@ -17,6 +17,33 @@ public class TypeCheckerPublicTest {
     boolean debug = true;
 
     @Test
+    public void testPass10() {
+        // check nested assignments, previously 'pass_own_simple.jova'
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "pass07.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPass11() {
+        // check nested assignments, previously 'pass_own_simple.jova'
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "pass08.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPass12() {
+        // check nested assignments, previously 'pass_own_simple.jova'
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "pass09.jova", debug);
+        assertEquals(0, result);
+    }
+
+
+
+    /*
+    @Test
     public void testPass01() {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_pass + "pass01.jova", debug);
@@ -204,12 +231,12 @@ public class TypeCheckerPublicTest {
         assertTrue(result > 0);
     }
     
-  /*  @Test
+    @Test
     public void testRetFail01() {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail+ "incompatible_return/fail01.jova", debug);
         assertTrue(result > 0);
-    }*/
+    }
 
     @Test
     public void testRetFail02() {
@@ -331,4 +358,6 @@ public class TypeCheckerPublicTest {
         int result = typeChecker.checkTypes(path_fail+ "undeclared_id/fail05.jova", debug);
         assertTrue(result > 0);
     }
+
+    */
 }
