@@ -95,6 +95,13 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitCtor(JovaParser.CtorContext ctx) {
+        if (currentClass.getClassName().equals(SymbolClass.MAIN_CLASS_NAME)) {
+            ErrorHandler.INSTANCE.addMainMemberError(ctx.start.getLine(), ctx.start.getCharPositionInLine());
+            return ERROR_MAIN_WITH_MEMBER;
+        }
+
+        visitParams(ctx.params());
+        currentClass.buildConstructor(ctx.CLASS_TYPE().toString(), ctx);
         return visitChildren(ctx);
     }
 

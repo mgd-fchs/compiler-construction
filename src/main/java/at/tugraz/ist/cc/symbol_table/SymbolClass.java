@@ -14,6 +14,7 @@ public class SymbolClass {
     private final String className;
     private final Collection<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> members;
     private final Collection<SymbolMethod> methods;
+    private final Collection<SymbolConstructor> constructors;
 
     // TODO: maybe move the current things to the TypeCheckerJovaVisitorImpl or to a new singleton class?
     private SymbolType currentSymbolType;
@@ -21,6 +22,7 @@ public class SymbolClass {
     private String currentClassName;
     private Collection<String> currentIds;
     private SymbolMethod currentMethod;
+    private SymbolConstructor currentConstructor;
     private List<SymbolVariable> currentParams;
 
     public SymbolClass(String name) {
@@ -29,6 +31,7 @@ public class SymbolClass {
         this.methods = new ArrayList<>();
         currentParams = new ArrayList<>();
         currentIds = new ArrayList<>();
+        constructors = new ArrayList<>();
     }
 
     public void  buildCurrentMembers(SymbolModifier modifier, JovaParser.Member_declContext ctx){
@@ -185,6 +188,36 @@ public class SymbolClass {
         currentSymbolType = null;
         currentParams = new ArrayList<>();
         return 0;
+    }
+
+    public int buildConstructor(String className, JovaParser.CtorContext ctx) {
+        if (!this.className.equals(className)) {
+            ; // TODO which error?
+        }
+
+
+        SymbolConstructor symbolConstructor = new SymbolConstructor(currentParams, className);
+
+        int errorOccurred = 0;
+        if(symbolConstructor.checkParamDoubleDeclaration(ctx.params().param_list()) != 0) {
+            errorOccurred = TypeCheckerJovaVisitorImpl.ERROR_DOUBLE_DECLARATION_VARIABLE;
+        }
+
+        if (constructors.contains(symbolConstructor)) {
+            ErrorHandler.INSTANCE.addMethodDoubleDefError(
+                    ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                    className, className, symbolConstructor.getParamTypesAsString());
+            errorOccurred = TypeCheckerJovaVisitorImpl.ERROR_DOUBLE_DECLARATION_METHOD;
+        }
+
+        if (errorOccurred == 0) {
+            constructors.add(symbolConstructor);
+            currentConstructor = symbolConstructor;
+        }
+
+        currentParams = new ArrayList<>();
+
+        return errorOccurred;
     }
 
     @Override
