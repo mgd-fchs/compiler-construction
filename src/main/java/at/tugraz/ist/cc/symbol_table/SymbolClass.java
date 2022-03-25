@@ -247,4 +247,11 @@ public class SymbolClass {
     public void setCurrentMemberAccess(SymbolVariable currentMemberAccess) {
         this.currentMemberAccess = currentMemberAccess;
     }
+
+    public SymbolClass getCurrentClassAccess() {
+        if (getCurrentMemberAccess() != null) {
+            return (SymbolClass) getCurrentMemberAccess().getActualType();
+        }
+        return this;
+    }
 }

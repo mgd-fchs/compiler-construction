@@ -195,6 +195,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitMember_access(JovaParser.Member_accessContext ctx) {
+        System.out.println("visitMember_access");
         // TODO: support method_invocation + member_access? (hier gemeint mit Class als return-type?
 
         if (ctx.DOTOP() == null) {
@@ -216,10 +217,13 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         SymbolClass class_accessed = (SymbolClass) var.getActualType();
 
         if (ctx.ID() != null) {
-            if (class_accessed.checkIfVariableExists(ctx.ID().toString())) {
+            if (!class_accessed.checkIfVariableExists(ctx.ID().toString())) {
                 ErrorHandler.INSTANCE.addDoesNotHaveFieldError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
                         class_accessed.getClassName(), ctx.ID().toString());
+                return -1;
             }
+
+            return 0;
         }
 
         if (ctx.method_invocation() != null) {
@@ -230,6 +234,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             else {
                 ErrorHandler.INSTANCE.addDoesNotHaveFieldError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
                         class_accessed.getClassName(), ctx.method_invocation().ID().toString());
+                return -1;
             }
         }
 
@@ -239,10 +244,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     @Override public Integer visitMethod_invocation(JovaParser.Method_invocationContext ctx) {
         System.out.println("visitMethod_invocation");
 
-        SymbolClass class_accessed = currentClass;
-        if (currentClass.getCurrentMemberAccess() != null) {
-            class_accessed = (SymbolClass) currentClass.getCurrentMemberAccess().getActualType();
-        }
+        SymbolClass class_accessed = currentClass.getCurrentClassAccess();
 
         Collection<SymbolMethod> methods = class_accessed.getMatchingMethods(ctx.ID().toString());
         class_accessed.setArgList();
@@ -276,7 +278,10 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     }
 
     @Override public Integer visitId_expr(JovaParser.Id_exprContext ctx) {
-        if (currentClass.currentlyGatheringArguments()) {
+        System.out.println("visitId_expr");
+        SymbolClass class_accessed = currentClass.getCurrentClassAccess();
+
+        if (class_accessed.currentlyGatheringArguments()) {
             if (ctx.ID() != null) {
                 if (!currentClass.checkIfVariableExists(ctx.ID().toString())) {
                     // TODO: add which error?
@@ -300,9 +305,10 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                 }
             }
 
+            SymbolVariable backup = currentClass.getCurrentMemberAccess();
             currentClass.setCurrentMemberAccess(var_accessed);
             int ret = visitChildren(ctx);
-            currentClass.setCurrentMemberAccess(null);
+            currentClass.setCurrentMemberAccess(backup);
             return ret;
         }
 
@@ -310,6 +316,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     }
 
     @Override public Integer visitArg_list(JovaParser.Arg_listContext ctx) {
+        System.out.println("visitArg_list");
         return visitChildren(ctx);
     }
 
@@ -342,10 +349,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitLiteral(JovaParser.LiteralContext ctx) {
-        SymbolClass class_accessed = currentClass;
-        if (currentClass.getCurrentMemberAccess() != null) {
-            class_accessed = (SymbolClass) currentClass.getCurrentMemberAccess().getActualType();
-        }
+        SymbolClass class_accessed = currentClass.getCurrentClassAccess();
 
         if (class_accessed.currentlyGatheringArguments()) {
             SymbolPrimitiveType type = null; //SymbolPrimitiveType.NIX;
