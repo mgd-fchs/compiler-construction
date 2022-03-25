@@ -283,15 +283,14 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             }
 
             // check types are compatible
-            if (!CompatibilityCheckUtils.checkOperatorCompatibility(lhs_type, rhs_type, ctx)) {
-                return TYPE_ERROR;
-            } else {
-                return OK;
-            }
+            return CompatibilityCheckUtils.checkOperatorCompatibility(lhs_type, rhs_type, ctx);
 
-        } else if(ctx.then != null){
+        } else if(ctx.when != null){
             // case: ternary operator
-            return OK;
+            Integer whenType = visit(ctx.when);
+            Integer thenType = visit(ctx.then);
+            Integer elseType = visit(ctx.el);
+            return CompatibilityCheckUtils.checkTernaryOperatorCompatibility(whenType, thenType, elseType, ctx);
 
         } else {
             // case: primary expression

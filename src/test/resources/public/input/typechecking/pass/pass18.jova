@@ -6,14 +6,14 @@ class Evaluation{
 
     // arithmetic ops
     a = 2;
-    b = (a) + true;
+    b = (a+c) + !true;
     d = 1;
     c = 2 + b1;
     b1 = true;
-    c = b1 ? 1 : 2;
+    c = 1 ? 1 : 2;
 
     // logical ops
-    b1 = true || false;
+    b1 = !true || false;
     b2 = true && 1;
 
     // relational ops
