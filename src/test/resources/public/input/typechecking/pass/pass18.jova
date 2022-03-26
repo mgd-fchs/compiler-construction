@@ -1,4 +1,5 @@
 class Evaluation{
+  private int c1;
 
   private int func1(){
     int a, b, c, d;
@@ -8,6 +9,7 @@ class Evaluation{
     a = 2;
     b = (a+c) + !true;
     d = 1;
+    d = 1 + c1;
     c = 2 + b1;
     b1 = true;
     c = 1 ? 1 : 2;

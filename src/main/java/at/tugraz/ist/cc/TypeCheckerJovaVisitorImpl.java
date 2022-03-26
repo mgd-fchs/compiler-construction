@@ -246,21 +246,26 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         System.out.println("Visiting ID expression!");
 
         if(ctx.ID() != null) {
-            currentVar = currentClass.getCurrentMethod().getLocalVariableById(ctx.ID().getText());
+            System.out.println(ctx.ID().toString());
+            if (currentClass.getCurrentMethod() != null) {
+                currentVar = currentClass.getCurrentMethod().getLocalVariableById(ctx.ID().getText());
+            }
+            if (currentVar == null) {
+                currentVar = currentClass.getMemberById(ctx.ID().getText());
+            }
             Object varType = currentVar.getActualType();
 
-            if (varType == SymbolPrimitiveType.BOOL){
-                return CompatibilityCheckUtils.TYPE_BOOL;
-            } else if (varType == SymbolPrimitiveType.INT){
-                return CompatibilityCheckUtils.TYPE_INT;
-            } else if (varType == SymbolPrimitiveType.STRING){
-                return CompatibilityCheckUtils.TYPE_STR;
+            if (varType instanceof SymbolPrimitiveType){
+                currentVar = null;
+                return ((SymbolPrimitiveType) varType).getValue();
             }
         } else {
             ErrorHandler.INSTANCE.addUndefIdError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), String.valueOf(ctx.ID().getText()));
+            currentVar = null;
             return TYPE_ERROR;
         }
 
+        currentVar = null;
         return visitChildren(ctx);
     }
 
@@ -273,7 +278,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
         if (ctx.op != null) {
             // case: operation, check operand types
-
             Integer lhs_type = visit(ctx.left);
             Integer rhs_type = visit(ctx.right);
 

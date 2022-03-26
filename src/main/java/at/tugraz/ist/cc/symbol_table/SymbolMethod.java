@@ -28,6 +28,9 @@ public class SymbolMethod extends SimpleCallable{
 
     public SymbolVariable getLocalVariableById(String id){
         Optional<SymbolVariable> found = localVariables.stream().filter(element -> element.getName().equals(id)).findFirst();
+        if(found.isEmpty()){
+            return null;
+        }
         return found.get();
     }
 
