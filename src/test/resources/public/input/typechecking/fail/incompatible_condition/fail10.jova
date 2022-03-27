@@ -1,0 +1,16 @@
+class Evaluation{
+  private int c1;
+
+  private int func1(){
+    int a;
+    bool b1;
+    string f;
+
+    if(nix){
+        a = 0;
+    }
+
+    return a;
+  }
+}
+

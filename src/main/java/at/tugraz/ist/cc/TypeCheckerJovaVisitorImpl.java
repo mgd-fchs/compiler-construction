@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     public static final int OK = 0;
 
-    public static final int TYPE_CLASS = 31;
-    public static final int TYPE_PRIMITIVE = 32;
+    public static final int TYPE_CLASS = SymbolType.CLASS.getValue();
+    public static final int TYPE_PRIMITIVE = SymbolType.PRIMITIVE.getValue();
     public static final int TYPE_ERROR = -30;
 
     public static final int ERROR_DOUBLE_DEFINITION_CLASS = -50;
@@ -26,13 +26,14 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     public static final int ERROR_ID_UNDEF = -80;
 
-
     private SymbolClass currentClass;
+    private SymbolVariable currentVar;
     private final SymbolTable symbolTable;
 
     public TypeCheckerJovaVisitorImpl() {
         symbolTable = SymbolTable.getInstance();
         currentClass = null;
+        currentVar = null;
     }
 
     @Override
@@ -186,7 +187,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                     return ERROR_UNKOWN_TYPE;
                 }
             } else {
-                System.exit(-8);
+                System.out.println(-8);
             }
             params.add(variable);
         }
@@ -242,6 +243,35 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     }
 
     @Override public Integer visitId_expr(JovaParser.Id_exprContext ctx) {
+        System.out.println("Visiting ID expression!");
+
+        if(ctx.ID() != null) {
+            // case: is function-level variable
+            if (currentClass.getCurrentMethod() != null) {
+                currentVar = currentClass.getCurrentMethod().getLocalVariableById(ctx.ID().getText());
+            }
+            // case: is class-level variable
+            if (currentVar == null) {
+                currentVar = currentClass.getMemberById(ctx.ID().getText());
+            }
+            // check variable type and reset current variable
+            Object varType = currentVar.getActualType();
+
+            if (varType instanceof SymbolPrimitiveType){
+                currentVar = null;
+                return ((SymbolPrimitiveType) varType).getValue();
+            } else if (currentVar.getType() instanceof SymbolType) {
+                currentVar = null;
+                return TYPE_CLASS;
+            }
+        } else {
+            // variable cannot be assigned without being defined first
+            ErrorHandler.INSTANCE.addUndefIdError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), String.valueOf(ctx.ID().getText()));
+            currentVar = null;
+            return TYPE_ERROR;
+        }
+
+        currentVar = null;
         return visitChildren(ctx);
     }
 
@@ -250,11 +280,38 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     }
 
     @Override public Integer visitExpr(JovaParser.ExprContext ctx) {
-        return visitChildren(ctx);
+        System.out.println("Visit expression!");
+
+        if (ctx.op != null) {
+            // case: operation, check operand types
+            Integer lhs_type = visit(ctx.left);
+            Integer rhs_type = visit(ctx.right);
+
+            // check both types are valid
+            if (lhs_type == TYPE_ERROR || rhs_type == TYPE_ERROR) {
+                return TYPE_ERROR;
+            }
+
+            // check types are compatible
+            return CompatibilityCheckUtils.checkOperatorCompatibility(lhs_type, rhs_type, ctx);
+
+        } else if(ctx.when != null){
+            // case: ternary operator
+            Integer whenType = visit(ctx.when);
+            Integer thenType = visit(ctx.then);
+            Integer elseType = visit(ctx.el);
+            return CompatibilityCheckUtils.checkTernaryOperatorCompatibility(whenType, thenType, elseType, ctx);
+
+        } else {
+            // case: primary expression
+            return visitChildren(ctx.prim);
+        }
+
     }
 
     @Override public Integer visitUnary_expr(JovaParser.Unary_exprContext ctx) {
-        return visitChildren(ctx);
+        Integer returnValue = visit(ctx.primary_expr());
+        return returnValue;
     }
 
     @Override public Integer visitPrimary_expr(JovaParser.Primary_exprContext ctx) {
@@ -273,12 +330,26 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitParan_expr(JovaParser.Paran_exprContext ctx) {
-        return visitChildren(ctx);
+        Integer returnValue = visit(ctx.expr());
+        return returnValue;
     }
 
     @Override
     public Integer visitLiteral(JovaParser.LiteralContext ctx) {
-        return visitChildren(ctx);
+        // return the type of the literal
+
+        if (ctx.BOOL_LIT() != null){
+            return SymbolPrimitiveType.BOOL.getValue();
+        } else if (ctx.STRING_LIT() != null){
+            return SymbolPrimitiveType.STRING.getValue();
+        } else if (ctx.INT_LIT() != null){
+            return SymbolPrimitiveType.INT.getValue();
+        } else if (ctx.KEY_NIX() != null){
+            return SymbolPrimitiveType.NIX.getValue();
+        } else {
+            ErrorHandler.INSTANCE.addUnknownTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), String.valueOf(ctx.stop.getText()));
+            return TYPE_ERROR;
+        }
     }
 
     @Override
@@ -288,11 +359,21 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitIf_stmt(JovaParser.If_stmtContext ctx) {
+        Integer conditionType = visit(ctx.expr());
+        if (CompatibilityCheckUtils.checkConditionCompatibility(conditionType, ctx.expr()) == TYPE_ERROR){
+            return TYPE_ERROR;
+        }
+
         return visitChildren(ctx);
     }
 
     @Override
     public Integer visitWhile_stmt(JovaParser.While_stmtContext ctx) {
+        Integer conditionType = visit(ctx.expr());
+        if (CompatibilityCheckUtils.checkConditionCompatibility(conditionType, ctx.expr()) == TYPE_ERROR){
+            return TYPE_ERROR;
+        }
         return visitChildren(ctx);
     }
+
 }

@@ -245,6 +245,10 @@ public class SymbolClass {
         this.currentSymbolPrimitiveType = currentSymbolPrimitiveType;
     }
 
+    public SymbolVariable getMemberById(String id){
+        Optional<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> found = members.stream().filter(element -> element.getValue().getName().equals(id)).findFirst();
+        return found.get().getValue();
+    }
     public String getClassName() {
         return className;
     }
@@ -256,4 +260,7 @@ public class SymbolClass {
         SymbolClass that = (SymbolClass) o;
         return Objects.equals(className, that.className);
     }
+
+    public SymbolMethod getCurrentMethod() {return currentMethod;}
+
 }

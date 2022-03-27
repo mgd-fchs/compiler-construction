@@ -1,6 +1,7 @@
 package at.tugraz.ist.cc.symbol_table;
 
 import java.util.List;
+import java.util.Optional;
 
 public class SymbolMethod extends SimpleCallable{
     private final SymbolModifier accessSymbol;
@@ -21,4 +22,17 @@ public class SymbolMethod extends SimpleCallable{
     public SymbolVariable getReturnValue() {
         return returnValue;
     }
+    public Object getLocalVariableType(String id){
+        Optional<SymbolVariable> found = localVariables.stream().filter(element -> element.getName().equals(id)).findFirst();
+        return found.get().getActualType();
+    }
+
+    public SymbolVariable getLocalVariableById(String id){
+        Optional<SymbolVariable> found = localVariables.stream().filter(element -> element.getName().equals(id)).findFirst();
+        if(found.isEmpty()){
+            return null;
+        }
+        return found.get();
+    }
+
 }
