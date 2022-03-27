@@ -16,6 +16,7 @@ public class TypeCheckerPublicTest {
     TypeChecker typeChecker = new TypeChecker();
     boolean debug = true;
 
+    /*
     @Test
     public void testPass10() {
         // check nested assignments, previously 'pass_own_simple.jova'
@@ -39,10 +40,11 @@ public class TypeCheckerPublicTest {
         int result = typeChecker.checkTypes(path_pass + "pass09.jova", debug);
         assertEquals(0, result);
     }
+    */
 
 
 
-    /*
+
     @Test
     public void testPass01() {
         ErrorHandler.INSTANCE.reset();
@@ -393,5 +395,4 @@ public class TypeCheckerPublicTest {
         assertTrue(result > 0);
     }
 
-    */
 }

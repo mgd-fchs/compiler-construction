@@ -333,7 +333,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                 return 0;
             }
         }
-
+/*          TODO: SIMON
         if (ctx.member_access() != null) {
             SymbolVariable var_accessed = null;
             if (ctx.KEY_THIS() != null) {
@@ -351,8 +351,9 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             int ret = visitChildren(ctx);
             currentClass.setCurrentMemberAccess(backup);
             return ret;
-        }
 
+        }
+*/
         if(ctx.ID() != null) {
             // case: is function-level variable
             if (currentClass.getCurrentMethod() != null) {
