@@ -1,6 +1,7 @@
 package at.tugraz.ist.cc.symbol_table;
 
 import java.util.List;
+import java.util.Optional;
 
 public class SymbolMethod extends SimpleCallable{
     private final SymbolModifier accessSymbol;

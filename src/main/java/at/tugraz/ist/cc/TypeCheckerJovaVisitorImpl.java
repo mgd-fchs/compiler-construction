@@ -246,13 +246,15 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         System.out.println("Visiting ID expression!");
 
         if(ctx.ID() != null) {
-            System.out.println(ctx.ID().toString());
+            // case: is function-level variable
             if (currentClass.getCurrentMethod() != null) {
                 currentVar = currentClass.getCurrentMethod().getLocalVariableById(ctx.ID().getText());
             }
+            // case: is class-level variable
             if (currentVar == null) {
                 currentVar = currentClass.getMemberById(ctx.ID().getText());
             }
+            // check variable type and reset current variable
             Object varType = currentVar.getActualType();
 
             if (varType instanceof SymbolPrimitiveType){
@@ -260,6 +262,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                 return ((SymbolPrimitiveType) varType).getValue();
             }
         } else {
+            // variable cannot be assigned without being defined first
             ErrorHandler.INSTANCE.addUndefIdError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), String.valueOf(ctx.ID().getText()));
             currentVar = null;
             return TYPE_ERROR;
@@ -353,11 +356,20 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitIf_stmt(JovaParser.If_stmtContext ctx) {
+        Integer conditionType = visit(ctx.expr());
+        if (CompatibilityCheckUtils.checkConditionCompatibility(conditionType, ctx.expr()) == TYPE_ERROR){
+            return TYPE_ERROR;
+        }
+
         return visitChildren(ctx);
     }
 
     @Override
     public Integer visitWhile_stmt(JovaParser.While_stmtContext ctx) {
+        Integer conditionType = visit(ctx.expr());
+        if (CompatibilityCheckUtils.checkConditionCompatibility(conditionType, ctx.expr()) == TYPE_ERROR){
+            return TYPE_ERROR;
+        }
         return visitChildren(ctx);
     }
 

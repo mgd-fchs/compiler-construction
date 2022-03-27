@@ -65,7 +65,16 @@ public final class CompatibilityCheckUtils {
         }
     }
 
-    public static boolean checkConditionCompatibility(Integer lhs_type, Integer rhs_type, JovaParser.ExprContext ctx){
-        return false;
+    public static Integer checkConditionCompatibility(Integer condition_type, JovaParser.ExprContext ctx){
+        if (condition_type != TYPE_BOOL && condition_type != TYPE_INT) {
+            ErrorHandler.INSTANCE.addIncompatibleCondTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), SymbolPrimitiveType.valueOf(condition_type).toString().toLowerCase());
+            return TYPE_ERROR;
+        } else if (condition_type == TYPE_INT){
+            ErrorHandler.INSTANCE.addConditionTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), SymbolPrimitiveType.valueOf(condition_type).toString().toLowerCase(), "bool");
+            return SymbolPrimitiveType.BOOL.getValue();
+        } else {
+            return SymbolPrimitiveType.BOOL.getValue();
+
+        }
     }
 }

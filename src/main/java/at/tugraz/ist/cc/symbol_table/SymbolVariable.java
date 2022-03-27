@@ -2,6 +2,8 @@ package at.tugraz.ist.cc.symbol_table;
 
 import java.util.Objects;
 
+import java.util.Optional;
+
 public class SymbolVariable {
     private final SymbolType type;
     private final Object actualType;
@@ -10,7 +12,7 @@ public class SymbolVariable {
     public SymbolVariable(SymbolType type, Object actualType, String name) {
         // TODO maybe change this kind of checks to asserts
         if (type == SymbolType.PRIMITIVE && !(actualType instanceof SymbolPrimitiveType) ||
-            type == SymbolType.CLASS && !(actualType instanceof  SymbolClass)) {
+                type == SymbolType.CLASS && !(actualType instanceof  SymbolClass)) {
             System.exit(-1);
         }
 
@@ -49,4 +51,17 @@ public class SymbolVariable {
         SymbolVariable that = (SymbolVariable) o;
         return Objects.equals(name, that.name);
     }
+
+    public SymbolType getType() {
+        return type;
+    }
+
+    public Object getActualType() {
+        return actualType;
+    }
+
+    public String getName() {
+        return name;
+    }
+
 }

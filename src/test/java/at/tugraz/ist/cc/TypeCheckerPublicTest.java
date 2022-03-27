@@ -100,9 +100,17 @@ public class TypeCheckerPublicTest {
         // check compatibility ADDOP
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_pass + "pass18.jova", debug);
-        ErrorHandler.INSTANCE.printTypeErrors();
         assertEquals(0, result);
     }
+
+    @Test
+    public void testPass13() {
+        // check compatibility ADDOP
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "pass19.jova", debug);
+        assertEquals(0, result);
+    }
+
 
     @Test
     public void testAccFail01() {
