@@ -18,6 +18,9 @@ public class TypeChecker {
         ParseTree parseTree = parser.program();
 
         if (ErrorHandler.INSTANCE.getNumParseErrors() != 0) {
+            if (debug)
+                ErrorHandler.INSTANCE.printErrorsAndWarnings();
+
             return ErrorHandler.INSTANCE.getNumParseErrors();
         }
 

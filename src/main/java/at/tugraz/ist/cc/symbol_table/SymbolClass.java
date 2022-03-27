@@ -5,6 +5,7 @@ import at.tugraz.ist.cc.TypeCheckerJovaVisitorImpl;
 import at.tugraz.ist.cc.error.ErrorHandler;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static at.tugraz.ist.cc.symbol_table.SymbolType.CLASS;
 import static at.tugraz.ist.cc.symbol_table.SymbolType.PRIMITIVE;
@@ -23,7 +24,9 @@ public class SymbolClass {
     private Collection<String> currentIds;
     private SymbolMethod currentMethod;
     private SymbolConstructor currentConstructor;
+    private SymbolVariable currentMemberAccess;
     private List<SymbolVariable> currentParams;
+    private List<SymbolVariable> currentArgList;
 
     public SymbolClass(String name) {
         className = name;
@@ -32,6 +35,10 @@ public class SymbolClass {
         currentParams = new ArrayList<>();
         currentIds = new ArrayList<>();
         constructors = new ArrayList<>();
+        currentMemberAccess = null;
+
+        // needs to be 0 to signal that no method-invocation is currently checked
+        currentArgList = null;
     }
 
     public void  buildCurrentMembers(SymbolModifier modifier, JovaParser.Member_declContext ctx){
@@ -252,6 +259,116 @@ public class SymbolClass {
     public String getClassName() {
         return className;
     }
+
+    public SymbolVariable getCurrentMemberAccess() {
+        return currentMemberAccess;
+    }
+
+    public void setCurrentMemberAccess(SymbolVariable currentMemberAccess) {
+        this.currentMemberAccess = currentMemberAccess;
+    }
+
+    public SymbolClass getCurrentClassAccess() {
+        if (getCurrentMemberAccess() != null) {
+            return (SymbolClass) getCurrentMemberAccess().getActualType();
+        }
+        return this;
+    }
+
+    public Collection<SymbolMethod> getMatchingMethods(String method) {
+        return methods.stream().filter(element -> element.getName().equals(method)).collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    public void addPrimitiveArgument(SymbolPrimitiveType type) {
+        currentArgList.add(new SymbolVariable(PRIMITIVE, type, ""));
+    }
+
+    public boolean checkIfVariableExists(String arg) {
+        SymbolVariable var = getCurrentScopeVariable(arg);
+
+        if (var == null) {
+            return false;
+        }
+
+        if (currentlyGatheringArguments()) {
+            currentArgList.add(var);
+        }
+        return true;
+    }
+
+    public SymbolVariable getCurrentScopeVariable(String name) {
+        SymbolVariable var = null;
+
+        try {
+            var = getMember(name);
+        } catch (IndexOutOfBoundsException ex) {
+
+        }
+
+        if (var == null) {
+            var = getLocalVariable(name);
+        }
+
+        return var;
+    }
+
+    private SymbolVariable getMember(String name) {
+        return member.stream().filter(element -> element.getValue().name.equals(name))
+                .collect(Collectors.toCollection(ArrayList::new)).get(0).getValue();
+    }
+
+    private SymbolVariable getLocalVariable(String name) {
+        return currentMethod.getMethodVariable(name);
+    }
+
+
+    public boolean checkValidArgList(SymbolMethod method) {
+        int size = method.getParams().size();
+
+        if (size != currentArgList.size()) {
+            return false;
+        }
+
+        if (size == 0) {
+            return true;
+        }
+
+        for (int i = 0; i < size; i++) {
+            if (method.getParams().get(i).type == currentArgList.get(i).type
+                    && method.getParams().get(i).actualType == currentArgList.get(i).actualType)
+                return true;
+
+        }
+
+        return false;
+    }
+
+    public void resetArgList() {
+        currentArgList = null;
+    }
+
+    public void setArgList() {
+        currentArgList = new ArrayList<>();
+    }
+
+    public boolean currentlyGatheringArguments() {
+        return (currentArgList != null);
+    }
+
+    public String getArgListTypes()
+    {
+        StringBuilder types = new StringBuilder();
+
+        for (SymbolVariable var : currentArgList) {
+            types.append(var.actualType.toString().toLowerCase());
+            types.append(" ");
+        }
+
+        types.delete(types.length() -1, types.length());
+
+        return types.toString();
+    }
+
 
     @Override
     public boolean equals(Object o) {

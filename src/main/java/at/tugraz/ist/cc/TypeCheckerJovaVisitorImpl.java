@@ -235,10 +235,123 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitMember_access(JovaParser.Member_accessContext ctx) {
+        System.out.println("visitMember_access");
+        // TODO: support method_invocation + member_access? (hier gemeint mit Class als return-type?
+
+        if (ctx.DOTOP() == null) {
+            // TODO: is this possible?
+            System.out.println("no dot found at memberaccess???");
+            System.exit(34);
+        }
+
+        SymbolVariable var = currentClass.getCurrentMemberAccess();
+
+        if (var.getType() == SymbolType.PRIMITIVE) {
+            // TODO: put error in member-access
+            String id = (ctx.ID() != null) ? ctx.ID().toString() : "";
+            ErrorHandler.INSTANCE.addDoesNotHaveFieldError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                    var.getType().toString().toLowerCase(), id);
+            return -1;
+        }
+
+        SymbolClass class_accessed = (SymbolClass) var.getActualType();
+
+        if (ctx.ID() != null) {
+            if (!class_accessed.checkIfVariableExists(ctx.ID().toString())) {
+                ErrorHandler.INSTANCE.addDoesNotHaveFieldError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                        class_accessed.getClassName(), ctx.ID().toString());
+                return -1;
+            }
+
+            return 0;
+        }
+
+        if (ctx.method_invocation() != null) {
+            // TODO implement multiple method-invocs
+            if (class_accessed.getMatchingMethods(ctx.method_invocation().ID().toString()).size() > 0) {
+                return visitChildren(ctx);
+            }
+            else {
+                ErrorHandler.INSTANCE.addDoesNotHaveFieldError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                        class_accessed.getClassName(), ctx.method_invocation().ID().toString());
+                return -1;
+            }
+        }
+
         return visitChildren(ctx);
     }
 
     @Override public Integer visitMethod_invocation(JovaParser.Method_invocationContext ctx) {
+        System.out.println("visitMethod_invocation");
+
+        SymbolClass class_accessed = currentClass.getCurrentClassAccess();
+
+        Collection<SymbolMethod> methods = class_accessed.getMatchingMethods(ctx.ID().toString());
+        class_accessed.setArgList();
+        if (ctx.arg_list() != null) {
+            visit(ctx.arg_list());
+        }
+
+        for (SymbolMethod method : methods) {
+            if (class_accessed.checkValidArgList(method)) {
+                class_accessed.resetArgList();
+                return 0;
+            }
+        }
+
+        String params = "";
+        if (ctx.arg_list() != null) {
+            params = class_accessed.getArgListTypes();
+        }
+
+
+        if (currentClass.getCurrentMemberAccess() != null) {
+            ErrorHandler.INSTANCE.addCannotInvokeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                    class_accessed.getClassName(), ctx.ID().toString(), params);
+        }
+        else {
+            ErrorHandler.INSTANCE.addUndefMethodError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.ID().toString(), params);
+        }
+
+        currentClass.resetArgList();
+        return 0;
+    }
+
+    @Override public Integer visitId_expr2(JovaParser.Id_exprContext ctx) {
+        System.out.println("visitId_expr");
+        SymbolClass class_accessed = currentClass.getCurrentClassAccess();
+
+        if (class_accessed.currentlyGatheringArguments()) {
+            if (ctx.ID() != null) {
+                if (!currentClass.checkIfVariableExists(ctx.ID().toString())) {
+                    // TODO: add which error?
+                    ErrorHandler.INSTANCE.addUndefIdError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.ID().toString());
+                    return -1;
+                }
+
+                return 0;
+            }
+        }
+
+        if (ctx.member_access() != null) {
+            SymbolVariable var_accessed = null;
+            if (ctx.KEY_THIS() != null) {
+                var_accessed = new SymbolVariable(SymbolType.CLASS, currentClass, "");
+            } else if (ctx.ID() != null) {
+                var_accessed = currentClass.getCurrentScopeVariable(ctx.ID().toString());
+                if (var_accessed == null) {
+                    ErrorHandler.INSTANCE.addUndefIdError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.ID().toString());
+                    return -1;
+                }
+            }
+
+            SymbolVariable backup = currentClass.getCurrentMemberAccess();
+            currentClass.setCurrentMemberAccess(var_accessed);
+            int ret = visitChildren(ctx);
+            currentClass.setCurrentMemberAccess(backup);
+            return ret;
+        }
+
         return visitChildren(ctx);
     }
 
@@ -276,6 +389,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     }
 
     @Override public Integer visitArg_list(JovaParser.Arg_listContext ctx) {
+        System.out.println("visitArg_list");
         return visitChildren(ctx);
     }
 
@@ -332,6 +446,32 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     public Integer visitParan_expr(JovaParser.Paran_exprContext ctx) {
         Integer returnValue = visit(ctx.expr());
         return returnValue;
+    }
+
+    @Override
+    public Integer visitLiteral2(JovaParser.LiteralContext ctx) {
+        SymbolClass class_accessed = currentClass.getCurrentClassAccess();
+
+        if (class_accessed.currentlyGatheringArguments()) {
+            SymbolPrimitiveType type = null; //SymbolPrimitiveType.NIX;
+            if (ctx.BOOL_LIT() != null) {
+                type = SymbolPrimitiveType.BOOL;
+            } else if (ctx.INT_LIT() != null) {
+                type = SymbolPrimitiveType.INT;
+            } else if (ctx.STRING_LIT() != null) {
+                type = SymbolPrimitiveType.STRING;
+            }
+
+            if (type != null) {
+                class_accessed.addPrimitiveArgument(type);
+            }
+            else {
+                System.out.println("visitLiteral: invalid type");
+                System.exit(25);
+            }
+        }
+
+        return visitChildren(ctx);
     }
 
     @Override
