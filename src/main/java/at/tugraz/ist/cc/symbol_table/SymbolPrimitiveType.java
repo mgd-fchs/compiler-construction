@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum SymbolPrimitiveType {
-    BOOL(1), STRING(2), INT(3);
+    BOOL(1), STRING(2), INT(3), NIX(4);
 
     private int value;
     private static Map intmap = new HashMap<>();

@@ -52,6 +52,8 @@ public final class CompatibilityCheckUtils {
 
     public static Integer checkTernaryOperatorCompatibility(Integer whenType, Integer thenType, Integer elseType, JovaParser.ExprContext ctx){
         // TODO: Check error messages for ternary operator
+        // TODO: Ensure then/else resolve to correct type
+        // TODO: Add some test cases (incl. nix-type!)
         // check condition
         if (whenType != TYPE_BOOL && whenType != TYPE_INT) {
             ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), SymbolPrimitiveType.valueOf(whenType).toString().toLowerCase(), SymbolPrimitiveType.valueOf(whenType).toString().toLowerCase(), "?");

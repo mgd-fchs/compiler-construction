@@ -336,13 +336,13 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         // return the type of the literal
 
         if (ctx.BOOL_LIT() != null){
-            return CompatibilityCheckUtils.TYPE_BOOL;
+            return SymbolPrimitiveType.BOOL.getValue();
         } else if (ctx.STRING_LIT() != null){
-            return CompatibilityCheckUtils.TYPE_STR;
+            return SymbolPrimitiveType.STRING.getValue();
         } else if (ctx.INT_LIT() != null){
-            return CompatibilityCheckUtils.TYPE_INT;
+            return SymbolPrimitiveType.INT.getValue();
         } else if (ctx.KEY_NIX() != null){
-            return CompatibilityCheckUtils.TYPE_NIX;
+            return SymbolPrimitiveType.NIX.getValue();
         } else {
             ErrorHandler.INSTANCE.addUnknownTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), String.valueOf(ctx.stop.getText()));
             return TYPE_ERROR;

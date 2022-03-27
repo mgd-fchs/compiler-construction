@@ -108,6 +108,7 @@ public class TypeCheckerPublicTest {
         // check compatibility ADDOP
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_pass + "pass19.jova", debug);
+        ErrorHandler.INSTANCE.printTypeWarnings();
         assertEquals(0, result);
     }
 
@@ -220,13 +221,29 @@ public class TypeCheckerPublicTest {
         int result = typeChecker.checkTypes(path_fail+ "incompatible_condition/fail04.jova", debug);
         assertTrue(result > 0);
     }
+
+    @Test
+    public void testCondFail05() {
+        // incompatible while condition 2
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "incompatible_condition/fail10.jova", debug);
+        assertTrue(result > 0);
+    }
+
+    @Test
+    public void testCondFail06() {
+        // incompatible while condition 2
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "incompatible_condition/fail11.jova", debug);
+        assertTrue(result > 0);
+    }
     
-  /*  @Test
+    @Test
     public void testRetFail01() {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail+ "incompatible_return/fail01.jova", debug);
         assertTrue(result > 0);
-    }*/
+    }
 
     @Test
     public void testRetFail02() {
