@@ -52,16 +52,4 @@ public class SymbolVariable {
         return Objects.equals(name, that.name);
     }
 
-    public SymbolType getType() {
-        return type;
-    }
-
-    public Object getActualType() {
-        return actualType;
-    }
-
-    public String getName() {
-        return name;
-    }
-
 }

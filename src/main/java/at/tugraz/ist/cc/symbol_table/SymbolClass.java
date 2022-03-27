@@ -246,7 +246,7 @@ public class SymbolClass {
     }
 
     public SymbolVariable getMemberById(String id){
-        Optional<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> found = member.stream().filter(element -> element.getValue().getName().equals(id)).findFirst();
+        Optional<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> found = members.stream().filter(element -> element.getValue().getName().equals(id)).findFirst();
         return found.get().getValue();
     }
     public String getClassName() {

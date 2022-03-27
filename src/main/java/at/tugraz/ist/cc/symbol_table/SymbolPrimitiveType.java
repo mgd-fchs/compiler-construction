@@ -10,7 +10,7 @@ public enum SymbolPrimitiveType {
     private static Map intmap = new HashMap<>();
 
 
-    private SymbolPrimitiveType(int value) {
+    SymbolPrimitiveType(int value) {
         this.value = value;
 
     }
@@ -29,4 +29,8 @@ public enum SymbolPrimitiveType {
         return value;
     }
 
+    @Override
+    public String toString() {
+        return super.toString().toLowerCase();
+    }
 }
