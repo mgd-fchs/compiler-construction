@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     public static final int OK = 0;
 
-    public static final int TYPE_CLASS = 31;
-    public static final int TYPE_PRIMITIVE = 32;
+    public static final int TYPE_CLASS = SymbolType.CLASS.getValue();
+    public static final int TYPE_PRIMITIVE = SymbolType.PRIMITIVE.getValue();
     public static final int TYPE_ERROR = -30;
 
     public static final int ERROR_DOUBLE_DEFINITION_CLASS = -50;
@@ -260,6 +260,9 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             if (varType instanceof SymbolPrimitiveType){
                 currentVar = null;
                 return ((SymbolPrimitiveType) varType).getValue();
+            } else if (currentVar.getType() instanceof SymbolType) {
+                currentVar = null;
+                return TYPE_CLASS;
             }
         } else {
             // variable cannot be assigned without being defined first
