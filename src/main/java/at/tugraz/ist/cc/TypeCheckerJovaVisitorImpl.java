@@ -317,9 +317,10 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         return 0;
     }
 
-    @Override public Integer visitId_expr2(JovaParser.Id_exprContext ctx) {
-        System.out.println("visitId_expr");
+    @Override public Integer visitId_expr(JovaParser.Id_exprContext ctx) {
+        System.out.println("Visiting ID expression!");
         SymbolClass class_accessed = currentClass.getCurrentClassAccess();
+
 
         if (class_accessed.currentlyGatheringArguments()) {
             if (ctx.ID() != null) {
@@ -351,12 +352,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             currentClass.setCurrentMemberAccess(backup);
             return ret;
         }
-
-        return visitChildren(ctx);
-    }
-
-    @Override public Integer visitId_expr(JovaParser.Id_exprContext ctx) {
-        System.out.println("Visiting ID expression!");
 
         if(ctx.ID() != null) {
             // case: is function-level variable
@@ -449,7 +444,9 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     }
 
     @Override
-    public Integer visitLiteral2(JovaParser.LiteralContext ctx) {
+    public Integer visitLiteral(JovaParser.LiteralContext ctx) {
+        // return the type of the literal
+
         SymbolClass class_accessed = currentClass.getCurrentClassAccess();
 
         if (class_accessed.currentlyGatheringArguments()) {
@@ -469,14 +466,9 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                 System.out.println("visitLiteral: invalid type");
                 System.exit(25);
             }
+
+            return OK;
         }
-
-        return visitChildren(ctx);
-    }
-
-    @Override
-    public Integer visitLiteral(JovaParser.LiteralContext ctx) {
-        // return the type of the literal
 
         if (ctx.BOOL_LIT() != null){
             return SymbolPrimitiveType.BOOL.getValue();

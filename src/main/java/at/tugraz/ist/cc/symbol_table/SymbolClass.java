@@ -313,7 +313,7 @@ public class SymbolClass {
     }
 
     private SymbolVariable getMember(String name) {
-        return member.stream().filter(element -> element.getValue().name.equals(name))
+        return members.stream().filter(element -> element.getValue().getName().equals(name))
                 .collect(Collectors.toCollection(ArrayList::new)).get(0).getValue();
     }
 
@@ -334,8 +334,8 @@ public class SymbolClass {
         }
 
         for (int i = 0; i < size; i++) {
-            if (method.getParams().get(i).type == currentArgList.get(i).type
-                    && method.getParams().get(i).actualType == currentArgList.get(i).actualType)
+            if (method.getParams().get(i).getType() == currentArgList.get(i).getType()
+                    && method.getParams().get(i).getActualType() == currentArgList.get(i).getActualType()) // TODO check if == works
                 return true;
 
         }
@@ -360,7 +360,7 @@ public class SymbolClass {
         StringBuilder types = new StringBuilder();
 
         for (SymbolVariable var : currentArgList) {
-            types.append(var.actualType.toString().toLowerCase());
+            types.append(var.getActualType().toString().toLowerCase());
             types.append(" ");
         }
 
