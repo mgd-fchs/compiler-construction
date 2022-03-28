@@ -59,7 +59,13 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     @Override
     public Integer visitClass_decl(JovaParser.Class_declContext ctx){
         System.out.println("visitClass_decl");
-        return visitChildren(ctx);
+        int returnError = visitClass_head(ctx.class_head());
+
+        if (returnError != OK) {
+            return returnError;
+        }
+
+        return visitClass_body(ctx.class_body());
     }
 
     @Override
@@ -99,7 +105,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         }
 
         currentClass = newClass;
-        return visitChildren(ctx);
+        return OK;
     }
 
     @Override public Integer visitClass_body(JovaParser.Class_bodyContext ctx) {

@@ -257,6 +257,13 @@ public class TypeCheckerPublicTest {
         assertEquals(result, 1);
     }
 
+    @Test
+    public void testDoubleDeclFail14() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "double_decl/fail14.jova", debug);
+        assertEquals(result, 1);
+    }
+
 
     @Test
     public void testCondFail01() {
@@ -418,6 +425,13 @@ public class TypeCheckerPublicTest {
         // additional method in main
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail+ "main_structure/fail06.jova", debug);
+        assertEquals(result, 1);
+    }
+
+    @Test
+    public void testMainFail07() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "main_structure/fail07.jova", debug);
         assertEquals(result, 1);
     }
    
