@@ -141,6 +141,14 @@ public class TypeCheckerPublicTest {
         assertEquals(0, result);
     }
 
+    @Test
+    public void testPass20() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "pass20.jova", debug);
+        ErrorHandler.INSTANCE.printTypeWarnings();
+        assertEquals(0, result);
+    }
+
 
     @Test
     public void testAccFail01() {
@@ -220,6 +228,14 @@ public class TypeCheckerPublicTest {
         int result = typeChecker.checkTypes(path_fail+ "double_decl/fail09.jova", debug);
         assertTrue(result > 0);
     }
+
+    @Test
+    public void testDoubleDeclFail10() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "double_decl/fail10.jova", debug);
+        assertEquals(result, 5);
+    }
+
 
     @Test
     public void testCondFail01() {
@@ -459,6 +475,13 @@ public class TypeCheckerPublicTest {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail+ "unknown_type/fail06.jova", debug);
         assertEquals(2, result);
+    }
+
+    @Test
+    public void testCtorFail01() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "constructor/fail01.jova", debug);
+        assertEquals(1, result);
     }
 
 }

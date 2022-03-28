@@ -83,11 +83,22 @@ public abstract class SimpleCallable {
         if (params.size() != that.params.size()) return false;
 
         for (int i = 0; i < params.size(); ++i) {
-            if (params.get(i).getType() != that.params.get(i).getType()) {
+            SymbolVariable thisParam = params.get(i);
+            SymbolVariable thatParam= that.params.get(i);
+
+            if (    !(thisParam.getType() == SymbolType.PRIMITIVE &&
+                    thatParam.getType() == SymbolType.PRIMITIVE &&
+                    ((SymbolPrimitiveType) thisParam.getActualType()).equals(((SymbolPrimitiveType)thatParam.getActualType())))
+                    &&
+                    !(thisParam.getType() == SymbolType.CLASS &&
+                    thatParam.getType() == SymbolType.CLASS &&
+                    ((SymbolClass) thisParam.getActualType()).getClassName().
+                            equals(((SymbolClass) thatParam.getActualType()).getClassName()))){
                 return false;
             }
         }
 
+        // only reachable if all params where equal
         return true;
     }
 }

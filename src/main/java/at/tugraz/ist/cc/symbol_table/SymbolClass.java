@@ -7,7 +7,6 @@ import at.tugraz.ist.cc.error.ErrorHandler;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static at.tugraz.ist.cc.symbol_table.SymbolType.CLASS;
 import static at.tugraz.ist.cc.symbol_table.SymbolType.PRIMITIVE;
 
 public class SymbolClass {
@@ -89,7 +88,7 @@ public class SymbolClass {
         currentSymbolType = null;
     }
 
-    public int addMethod(SymbolModifier modifier, String name,JovaParser.Method_headContext ctx){
+    public int addMethod(SymbolModifier modifier, String name, JovaParser.Method_headContext ctx){
         if (    currentSymbolType == null ||
                 currentSymbolType == PRIMITIVE && currentSymbolPrimitiveType == null) {
             // should be non reachable!!!!
@@ -102,11 +101,11 @@ public class SymbolClass {
         switch (currentSymbolType){
             case CLASS:
                 Optional<SymbolClass> foundClass = SymbolTable.getInstance().getClassByName(currentClassName, ctx);
-                symbolMethod = new SymbolMethod(modifier, name, new SymbolVariable(SymbolType.CLASS, foundClass.get(), null), currentParams);
+                symbolMethod = new SymbolMethod(modifier, name, new SymbolVariable(SymbolType.CLASS, foundClass.get(), "returnValue"), currentParams);
                 break;
 
             case PRIMITIVE:
-                symbolMethod = new SymbolMethod(modifier, name, new SymbolVariable(SymbolType.PRIMITIVE, currentSymbolPrimitiveType, null) , currentParams);
+                symbolMethod = new SymbolMethod(modifier, name, new SymbolVariable(SymbolType.PRIMITIVE, currentSymbolPrimitiveType, "returnValue") , currentParams);
                 break;
 
             default:
@@ -119,8 +118,8 @@ public class SymbolClass {
 
         // TODO it might be the case that the output order of the errors is not right.
         if ( className.equals(SymbolClass.MAIN_CLASS_NAME) &&
-                    (symbolMethod.getAccessSymbol() != SymbolModifier.PUBLIC ||
-                    !(symbolMethod.getReturnValue().getActualType() instanceof SymbolPrimitiveType) ||
+                (symbolMethod.getAccessSymbol() != SymbolModifier.PUBLIC ||
+                        !(symbolMethod.getReturnValue().getActualType() instanceof SymbolPrimitiveType) ||
                     symbolMethod.getReturnValue().getActualType() != SymbolPrimitiveType.INT)){
             ErrorHandler.INSTANCE.addMainMemberError(ctx.start.getLine(), ctx.start.getCharPositionInLine());
             return TypeCheckerJovaVisitorImpl.ERROR_MAIN_WITH_WRONG_METHOD;
@@ -130,9 +129,8 @@ public class SymbolClass {
             errorOccurred = TypeCheckerJovaVisitorImpl.ERROR_DOUBLE_DECLARATION_VARIABLE;
         }
 
-        if (methods.contains(symbolMethod)) {
-            ErrorHandler.INSTANCE.addMethodDoubleDefError(
-                    ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+        if (SymbolMethod.IO_METHODS.contains(symbolMethod) || methods.contains(symbolMethod)) {
+            ErrorHandler.INSTANCE.addMethodDoubleDefError( ctx.start.getLine(), ctx.start.getCharPositionInLine(),
                     symbolMethod.getName(), className, symbolMethod.getParamTypesAsString());
             errorOccurred = TypeCheckerJovaVisitorImpl.ERROR_DOUBLE_DECLARATION_METHOD;
         }
@@ -195,10 +193,6 @@ public class SymbolClass {
             }
 
             if (symbolVariable != null) {
-                if (currentSymbolType == CLASS && currentClassName.equals(SymbolClass.MAIN_CLASS_NAME)) {
-                    ErrorHandler.INSTANCE.addMainInstatiationError(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-                    continue;
-                }
                 currentMethod.addVariable(symbolVariable);
             }
         }
