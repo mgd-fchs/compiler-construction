@@ -304,10 +304,11 @@ public class SymbolClass {
         SymbolVariable var = null;
 
         try {
-            var = getMemberIfExists(name);
-        } catch (IndexOutOfBoundsException ex) {
-
-        }
+            AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable> member_entry = getMemberIfExists(name);
+            if (member_entry != null) {
+                var = member_entry.getValue();
+            }
+        } catch (IndexOutOfBoundsException ex) { }
 
         if (var == null) {
             var = getLocalVariable(name);
@@ -316,11 +317,11 @@ public class SymbolClass {
         return var;
     }
 
-    public SymbolVariable getMemberIfExists(String name) {
-        SymbolVariable var = null;
+    public AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable> getMemberIfExists(String name) {
+        AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable> var = null;
         try {
              var = members.stream().filter(element -> element.getValue().getName().equals(name))
-                    .collect(Collectors.toCollection(ArrayList::new)).get(0).getValue();
+                    .collect(Collectors.toCollection(ArrayList::new)).get(0);
         } catch (Exception ex) {}
 
         return var;

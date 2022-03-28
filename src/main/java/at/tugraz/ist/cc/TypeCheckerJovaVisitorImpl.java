@@ -256,12 +256,18 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
         SymbolClass class_accessed = (SymbolClass) var.getActualType();
         if (ctx.ID() != null) {
-            SymbolVariable member = class_accessed.getMemberIfExists(ctx.ID().toString());
+            AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable> member_entry = class_accessed.getMemberIfExists(ctx.ID().toString());
 
+            SymbolVariable member = member_entry.getValue();
             if (member == null) {
                 ErrorHandler.INSTANCE.addDoesNotHaveFieldError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
                         class_accessed.getClassName(), ctx.ID().toString());
                 return -1;
+            }
+
+            if (member_entry.getKey().equals(SymbolModifier.PRIVATE)) {
+                ErrorHandler.INSTANCE.addMemberAccessError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                        ctx.ID().toString(), class_accessed.getClassName());
             }
 
             if (currentClass.currentlyGatheringArguments()) {
