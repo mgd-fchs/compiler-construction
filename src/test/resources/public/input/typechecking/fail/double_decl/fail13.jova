@@ -1,0 +1,16 @@
+class Test{
+  Test (int y){
+  }
+
+  Test (int y){
+  }
+
+  Test (string y){
+  }
+
+  Test (int x, string y){
+  }
+
+  Test (string y, int x){
+  }
+}

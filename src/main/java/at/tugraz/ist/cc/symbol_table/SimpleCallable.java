@@ -103,7 +103,7 @@ public abstract class SimpleCallable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SymbolMethod that = (SymbolMethod) o;
+        SimpleCallable that = (SimpleCallable) o;
 
         if (!Objects.equals(name, that.name)) return false;
         if (params.size() != that.params.size()) return false;
