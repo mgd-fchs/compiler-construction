@@ -1,0 +1,10 @@
+class Main {
+
+  public int main() {
+    int a;
+
+    NotExistingClass a, b, c;
+
+    return 0;
+  }
+}

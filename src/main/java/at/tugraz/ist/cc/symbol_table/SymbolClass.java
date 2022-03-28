@@ -20,6 +20,7 @@ public class SymbolClass {
     // TODO: maybe move the current things to the TypeCheckerJovaVisitorImpl or to a new singleton class?
     private SymbolType currentSymbolType;
     private SymbolPrimitiveType currentSymbolPrimitiveType;
+    // TODO refactor to SymbolClass object
     private String currentClassName;
     private Collection<String> currentIds;
     private SymbolMethod currentMethod;
@@ -101,18 +102,13 @@ public class SymbolClass {
         switch (currentSymbolType){
             case CLASS:
                 Optional<SymbolClass> foundClass = SymbolTable.getInstance().getClassByName(currentClassName, ctx);
-
-                if (foundClass.isPresent()){
-                    symbolMethod = new SymbolMethod(modifier, name, new SymbolVariable(SymbolType.CLASS, foundClass.get(), null), currentParams);
-                } else {
-                    // TODO: I think we have to continue parsing the params for right logging => so the return would be false?
-                    errorOccurred = TypeCheckerJovaVisitorImpl.ERROR_ID_UNDEF;
-                }
-
+                symbolMethod = new SymbolMethod(modifier, name, new SymbolVariable(SymbolType.CLASS, foundClass.get(), null), currentParams);
                 break;
+
             case PRIMITIVE:
                 symbolMethod = new SymbolMethod(modifier, name, new SymbolVariable(SymbolType.PRIMITIVE, currentSymbolPrimitiveType, null) , currentParams);
                 break;
+
             default:
                 System.exit(666);
         }
@@ -147,6 +143,22 @@ public class SymbolClass {
         }
 
         return errorOccurred;
+    }
+
+    public SymbolVariable buildParam (String variableName, JovaParser.Param_listContext ctx){
+        switch (currentSymbolType){
+            case CLASS:
+                Optional<SymbolClass> foundClass = SymbolTable.getInstance().getClassByName(currentClassName, ctx);
+                return new SymbolVariable(SymbolType.CLASS, foundClass.get(), variableName);
+
+            case PRIMITIVE:
+                SymbolPrimitiveType symbolPrimitiveType = currentSymbolPrimitiveType;
+                return new SymbolVariable(SymbolType.PRIMITIVE, symbolPrimitiveType, variableName);
+
+            default:
+                System.exit(666);
+                return null;
+        }
     }
 
     public int saveLocalVariables(JovaParser.DeclarationContext ctx)
@@ -367,6 +379,18 @@ public class SymbolClass {
         types.delete(types.length() -1, types.length());
 
         return types.toString();
+    }
+
+    public SymbolType getCurrentSymbolType() {
+        return currentSymbolType;
+    }
+
+    public SymbolPrimitiveType getCurrentSymbolPrimitiveType() {
+        return currentSymbolPrimitiveType;
+    }
+
+    public String getCurrentClassName() {
+        return currentClassName;
     }
 
 

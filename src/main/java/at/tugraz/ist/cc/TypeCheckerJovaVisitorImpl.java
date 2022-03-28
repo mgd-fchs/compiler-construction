@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 
 public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     public static final int OK = 0;
+    public static final int ERROR_GENERAL = -1;
+
 
     public static final int TYPE_CLASS = SymbolType.CLASS.getValue();
     public static final int TYPE_PRIMITIVE = SymbolType.PRIMITIVE.getValue();
@@ -23,8 +25,10 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     public static final int ERROR_MAIN_WITH_WRONG_METHOD = -62;
 
     public static final int ERROR_UNKOWN_TYPE = -70;
+    public static final int ERROR_MAIN_TYPE = -70;
 
     public static final int ERROR_ID_UNDEF = -80;
+
 
     private SymbolClass currentClass;
     private SymbolVariable currentVar;
@@ -60,17 +64,25 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitType(JovaParser.TypeContext ctx) {
-        System.out.println("visitType");
         if (ctx.CLASS_TYPE() != null){
+            if (symbolTable.getClassByName(ctx.CLASS_TYPE().toString(), ctx).isEmpty()){
+                return ERROR_UNKOWN_TYPE;
+            }
+
+            if (ctx.CLASS_TYPE().toString().equals(SymbolClass.MAIN_CLASS_NAME)) {
+                ErrorHandler.INSTANCE.addMainInstatiationError(ctx.start.getLine(), ctx.start.getCharPositionInLine());
+                return ERROR_MAIN_INSTANTIATION;
+            }
+
             currentClass.setCurrentClassName(ctx.CLASS_TYPE().toString());
             currentClass.setCurrentSymbolType(SymbolType.CLASS);
 
-            return TYPE_CLASS;
+            return OK;
         } else if(ctx.PRIMITIVE_TYPE() != null) {
             currentClass.setCurrentSymbolPrimitiveType(SymbolPrimitiveType.valueOf(ctx.PRIMITIVE_TYPE().toString().toUpperCase()));
             currentClass.setCurrentSymbolType(SymbolType.PRIMITIVE);
 
-            return TYPE_PRIMITIVE;
+            return OK;
         } else {
             return TYPE_ERROR;
         }
@@ -96,12 +108,17 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitCtor(JovaParser.CtorContext ctx) {
+        System.out.println("CTOR");
         if (currentClass.getClassName().equals(SymbolClass.MAIN_CLASS_NAME)) {
             ErrorHandler.INSTANCE.addMainMemberError(ctx.start.getLine(), ctx.start.getCharPositionInLine());
             return ERROR_MAIN_WITH_MEMBER;
         }
 
-        visitParams(ctx.params());
+        int typeErrorParams = visitParams(ctx.params());
+        if (typeErrorParams != OK) {
+            return ERROR_GENERAL;
+        }
+
         currentClass.buildConstructor(ctx.CLASS_TYPE().toString(), ctx);
         return visitCtor_body(ctx.ctor_body());
     }
@@ -118,7 +135,12 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             return ERROR_MAIN_WITH_MEMBER;
         }
 
-        visitChildren(ctx);
+        int typeError = visitType(ctx.type());
+        if (typeError != OK){
+            return typeError;
+        }
+
+        visitId_list(ctx.id_list());
 
         currentClass.buildCurrentMembers(SymbolModifier.valueOf(ctx.AMOD().toString().toUpperCase()), ctx);
         return OK;
@@ -146,21 +168,29 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitMethod_head(JovaParser.Method_headContext ctx) {
-        visitType(ctx.type());
-        int result = visitParams(ctx.params());
-        if (result != OK) {
-            return result;
+        boolean typeErrorOccurred = false;
+        int typeErrorReturn = visitType(ctx.type());
+
+        // saving current values which will be overriden when calling
+        String currentClassSaving = this.currentClass.getCurrentClassName();
+        SymbolPrimitiveType currentPrimitiveSaving = currentClass.getCurrentSymbolPrimitiveType();
+        SymbolType currentTypeSaving = currentClass.getCurrentSymbolType();
+
+        int typeErrorParams = visitParams(ctx.params());
+        if (typeErrorReturn != OK || typeErrorParams != OK) {
+            return ERROR_GENERAL;
         }
+
+        // restoring if no error happened
+        // TODO: saving/restoring is a ugly solution
+        currentClass.setCurrentSymbolPrimitiveType(currentPrimitiveSaving);
+        currentClass.setCurrentClassName(currentClassSaving);
+        currentClass.setCurrentSymbolType(currentTypeSaving);
 
         int error = currentClass.addMethod(
                 SymbolModifier.valueOf(ctx.AMOD().toString().toUpperCase()), ctx.ID().toString(), ctx);
 
-        if (error != 0) {
-            // skip further checking of the method if it is a error
-            return error;
-        }
-
-        return OK;
+        return error;
     }
 
     @Override
@@ -170,6 +200,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitParam_list(JovaParser.Param_listContext ctx) {
+        boolean typeErrorOccurred = false;
         List<TerminalNode> ids = ctx.ID();
         List<JovaParser.TypeContext> types = ctx.type();
         List<SymbolVariable> params = new ArrayList<>();
@@ -179,26 +210,23 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             return ERROR_MAIN_WITH_WRONG_METHOD;
         }
 
-        for (int id = 0; id < ids.size(); ++id){
+        for (int id = 0; id < ids.size(); ++id) {
+            SymbolVariable variable;
             String variableName = ids.get(id).toString();
-            SymbolVariable variable = null;
-            if(types.get(id).PRIMITIVE_TYPE() != null) {
-                SymbolPrimitiveType symbolPrimitiveType = SymbolPrimitiveType.valueOf(types.get(id).PRIMITIVE_TYPE().toString().toUpperCase());
-                variable = new SymbolVariable(SymbolType.PRIMITIVE, symbolPrimitiveType, variableName);
-            } else if(types.get(id).CLASS_TYPE() != null){
-                // TODO check if class exits
-                String className = types.get(id).CLASS_TYPE().toString();
-                Optional<SymbolClass> foundClass = symbolTable.getClassByName(className, ctx);
 
-                if (foundClass.isPresent()){
-                    variable = new SymbolVariable(SymbolType.CLASS, foundClass.get(), variableName);
-                } else {
-                    return ERROR_UNKOWN_TYPE;
-                }
+            int error = visitType(types.get(id));
+            if (error != OK) {
+                typeErrorOccurred = true;
+                continue;
             } else {
-                System.out.println(-8);
+                variable = currentClass.buildParam(variableName, ctx);
             }
+
             params.add(variable);
+        }
+
+        if (typeErrorOccurred) {
+            return ERROR_GENERAL;
         }
 
         currentClass.setCurrentParams(params);
@@ -226,8 +254,15 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     @Override
     public Integer visitDeclaration(JovaParser.DeclarationContext ctx) {
         // TODO: implement shadowing -> check if this is bonus task
-        Integer returnValue = visit(ctx.id_list());
-        Integer result = visit(ctx.type());
+        int error = visitType(ctx.type());
+        if (error != OK) {
+            return error;
+        }
+
+        error = visitId_list(ctx.id_list());
+        if (error != OK) {
+            return error;
+        }
 
         return currentClass.saveLocalVariables(ctx);
     }

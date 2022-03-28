@@ -1,0 +1,21 @@
+class Main {
+
+}
+
+class Test{
+    private Main a;
+
+    private Main func() {
+        return 1;
+    }
+
+    private int func(int a, Main b) {
+       return 1;
+    }
+
+    private int func(int a) {
+       Main b;
+       return 1;
+    }
+
+}

@@ -1,0 +1,12 @@
+class Test {
+
+  public int a() {
+    int a;
+
+    return 0;
+  }
+
+   public Onknown func1(int param){
+     return 1;
+   }
+}
