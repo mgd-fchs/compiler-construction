@@ -359,6 +359,14 @@ public class TypeCheckerPublicTest {
         int result = typeChecker.checkTypes(path_fail+ "main_structure/fail03.jova", debug);
         assertTrue(result > 0);
     }
+
+    @Test
+    public void testMainFail04() {
+        // additional method in main
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "main_structure/fail04.jova", debug);
+        assertTrue(result > 0);
+    }
    
     @Test
     public void testUndeclFail01() {

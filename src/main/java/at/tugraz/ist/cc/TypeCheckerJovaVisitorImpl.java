@@ -146,7 +146,11 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitMethod_head(JovaParser.Method_headContext ctx) {
-        visitChildren(ctx);
+        visitType(ctx.type());
+        int result = visitParams(ctx.params());
+        if (result != OK) {
+            return result;
+        }
 
         int error = currentClass.addMethod(
                 SymbolModifier.valueOf(ctx.AMOD().toString().toUpperCase()), ctx.ID().toString(), ctx);
@@ -161,7 +165,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitParams(JovaParser.ParamsContext ctx) {
-        return visitChildren(ctx);
+        return visitParam_list(ctx.param_list());
     }
 
     @Override
@@ -169,6 +173,11 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         List<TerminalNode> ids = ctx.ID();
         List<JovaParser.TypeContext> types = ctx.type();
         List<SymbolVariable> params = new ArrayList<>();
+
+        if (currentClass.getClassName().equals(SymbolClass.MAIN_CLASS_NAME) && ids.size() != 0) {
+            ErrorHandler.INSTANCE.addMainMemberError(ctx.start.getLine(), ctx.start.getCharPositionInLine());
+            return ERROR_MAIN_WITH_WRONG_METHOD;
+        }
 
         for (int id = 0; id < ids.size(); ++id){
             String variableName = ids.get(id).toString();
