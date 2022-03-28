@@ -372,14 +372,14 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         }
 
         if(ctx.ID() != null) {
-            // case: is function-level variable
-            if (currentClass.getCurrentMethod() != null) {
-                currentVar = currentClass.getCurrentMethod().getLocalVariableById(ctx.ID().getText());
-            }
-            // case: is class-level variable
+            currentVar = currentClass.getCurrentScopeVariable(ctx.ID().getText());
             if (currentVar == null) {
-                currentVar = currentClass.getMemberById(ctx.ID().getText());
+                // variable cannot be assigned without being defined first
+                ErrorHandler.INSTANCE.addUndefIdError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), String.valueOf(ctx.ID().getText()));
+                currentVar = null;
+                return TYPE_ERROR;
             }
+
             // check variable type and reset current variable
             Object varType = currentVar.getActualType();
 
@@ -390,12 +390,18 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                 currentVar = null;
                 return TYPE_CLASS;
             }
-        } else {
+
             // variable cannot be assigned without being defined first
             ErrorHandler.INSTANCE.addUndefIdError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), String.valueOf(ctx.ID().getText()));
             currentVar = null;
             return TYPE_ERROR;
         }
+//        else {
+//            // variable cannot be assigned without being defined first
+//            ErrorHandler.INSTANCE.addUndefIdError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), String.valueOf(ctx.ID().getText()));
+//            currentVar = null;
+//            return TYPE_ERROR;
+//        }
 
         currentVar = null;
         return visitChildren(ctx);
