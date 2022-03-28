@@ -41,33 +41,4 @@ public class SymbolMethod extends SimpleCallable{
     public SymbolVariable getReturnValue() {
         return returnValue;
     }
-    public Object getLocalVariableType(String id){
-        Optional<SymbolVariable> found = localVariables.stream().filter(element -> element.getName().equals(id)).findFirst();
-        return found.get().getActualType();
-    }
-
-    public SymbolVariable getMethodVariable(String name) {
-        for (SymbolVariable v : params) {
-            if (v.getName().equals(name)) {
-                return v;
-            }
-        }
-
-        for (SymbolVariable v : localVariables) {
-            if (v.getName().equals(name)) {
-                return v;
-            }
-        }
-
-        return null;
-    }
-
-    public SymbolVariable getLocalVariableById(String id){
-        Optional<SymbolVariable> found = localVariables.stream().filter(element -> element.getName().equals(id)).findFirst();
-        if(found.isEmpty()){
-            return null;
-        }
-        return found.get();
-    }
-
 }

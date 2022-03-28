@@ -3,10 +3,7 @@ package at.tugraz.ist.cc.symbol_table;
 import at.tugraz.ist.cc.JovaParser;
 import at.tugraz.ist.cc.error.ErrorHandler;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public abstract class SimpleCallable {
     protected final String name;
@@ -64,6 +61,35 @@ public abstract class SimpleCallable {
 
     public String getName() {
         return name;
+    }
+
+    public Object getLocalVariableType(String id){
+        Optional<SymbolVariable> found = localVariables.stream().filter(element -> element.getName().equals(id)).findFirst();
+        return found.get().getActualType();
+    }
+
+    public SymbolVariable getMethodVariable(String name) {
+        for (SymbolVariable v : params) {
+            if (v.getName().equals(name)) {
+                return v;
+            }
+        }
+
+        for (SymbolVariable v : localVariables) {
+            if (v.getName().equals(name)) {
+                return v;
+            }
+        }
+
+        return null;
+    }
+
+    public SymbolVariable getLocalVariableById(String id){
+        Optional<SymbolVariable> found = localVariables.stream().filter(element -> element.getName().equals(id)).findFirst();
+        if(found.isEmpty()){
+            return null;
+        }
+        return found.get();
     }
 
     /**

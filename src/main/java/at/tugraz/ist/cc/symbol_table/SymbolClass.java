@@ -22,8 +22,7 @@ public class SymbolClass {
     // TODO refactor to SymbolClass object
     private String currentClassName;
     private Collection<String> currentIds;
-    private SymbolMethod currentMethod;
-    private SymbolConstructor currentConstructor;
+    private SimpleCallable currentCallable;
     private SymbolVariable currentMemberAccess;
     private List<SymbolVariable> currentParams;
     private List<SymbolVariable> currentArgList;
@@ -137,7 +136,7 @@ public class SymbolClass {
 
         if (errorOccurred == 0) {
             methods.add(symbolMethod);
-            currentMethod = symbolMethod;
+            currentCallable = symbolMethod;
         }
 
         return errorOccurred;
@@ -183,17 +182,17 @@ public class SymbolClass {
                     System.exit(666);
             }
 
-            if( currentMethod.getParams().stream().anyMatch(element -> element.getName().equals(id)) ||
-                currentMethod.getLocalVariables().stream().anyMatch(element -> element.getName().equals(id))) {
+            if( currentCallable.getParams().stream().anyMatch(element -> element.getName().equals(id)) ||
+                currentCallable.getLocalVariables().stream().anyMatch(element -> element.getName().equals(id))) {
                 ErrorHandler.INSTANCE.addVarDoubleDefError(
                         ctx.start.getLine(), ctx.start.getCharPositionInLine(),
-                        id, typeName, currentMethod.getName(),
-                        currentMethod.getParamTypesAsString());
+                        id, typeName, currentCallable.getName(),
+                        currentCallable.getParamTypesAsString());
                 continue;
             }
 
             if (symbolVariable != null) {
-                currentMethod.addVariable(symbolVariable);
+                currentCallable.addVariable(symbolVariable);
             }
         }
 
@@ -225,7 +224,7 @@ public class SymbolClass {
 
         if (errorOccurred == 0) {
             constructors.add(symbolConstructor);
-            currentConstructor = symbolConstructor;
+            currentCallable = symbolConstructor;
         }
 
         currentParams = new ArrayList<>();
@@ -324,7 +323,7 @@ public class SymbolClass {
     }
 
     private SymbolVariable getLocalVariable(String name) {
-        return currentMethod.getMethodVariable(name);
+        return currentCallable.getMethodVariable(name);
     }
 
 
@@ -396,6 +395,6 @@ public class SymbolClass {
         return Objects.equals(className, that.className);
     }
 
-    public SymbolMethod getCurrentMethod() {return currentMethod;}
+    public SimpleCallable getCurrentCallable() {return currentCallable;}
 
 }

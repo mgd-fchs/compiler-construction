@@ -399,8 +399,8 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 */
         if(ctx.ID() != null) {
             // case: is function-level variable
-            if (currentClass.getCurrentMethod() != null) {
-                currentVar = currentClass.getCurrentMethod().getLocalVariableById(ctx.ID().getText());
+            if (currentClass.getCurrentCallable() != null) {
+                currentVar = currentClass.getCurrentCallable().getLocalVariableById(ctx.ID().getText());
             }
             // case: is class-level variable
             if (currentVar == null) {
