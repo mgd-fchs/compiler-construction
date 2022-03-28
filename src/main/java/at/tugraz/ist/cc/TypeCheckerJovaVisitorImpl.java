@@ -277,15 +277,24 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         }
 
         if (ctx.method_invocation() != null) {
-            // TODO implement multiple method-invocs
-            if (class_accessed.getMatchingMethods(ctx.method_invocation().ID().toString()).size() > 0) {
-                return visitChildren(ctx);
-            }
-            else {
-                ErrorHandler.INSTANCE.addDoesNotHaveFieldError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
-                        class_accessed.getClassName(), ctx.method_invocation().ID().toString());
-                return -1;
-            }
+            return visitMethod_invocation(ctx.method_invocation());
+//            // TODO implement multiple method-invocs
+//            Collection<SymbolMethod> matching_methods = class_accessed.getMatchingMethods(ctx.method_invocation().ID().toString());
+//            Collection<SymbolMethod> public_methods = matching_methods.stream().filter(element -> element.getAccessSymbol().equals(SymbolModifier.PUBLIC)).collect(Collectors.toCollection(ArrayList::new));
+//
+//            if (public_methods.size() > 0) {
+//                return visitMethod_invocation(ctx.method_invocation());
+//            }
+//            else if (matching_methods.size() > 0) {
+//                ErrorHandler.INSTANCE.addMethodAccessError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+//                        ctx.method_invocation().ID().toString(), class_accessed.getClassName());
+//                return -1;
+//            }
+//            else {
+//                ErrorHandler.INSTANCE.addCannotInvokeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+//                        class_accessed.getClassName(), ctx.method_invocation().ID().toString());
+//                return -1;
+//            }
         }
 
         // TODO: does this make sense?
@@ -301,7 +310,10 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         List<SymbolVariable> args_backup = currentClass.getCurrentArgList();
         currentClass.setArgList(new ArrayList<>());
         if (ctx.arg_list() != null) {
-            if (visitArg_list(ctx.arg_list()) != OK) {
+//            visitArg_list(ctx.arg_list());
+            int tmp = visitArg_list(ctx.arg_list());
+            if (tmp != OK) {
+//            if (visitArg_list(ctx.arg_list()) != OK) {
                 currentClass.setArgList(args_backup);
                 return -1;
             }
@@ -309,8 +321,15 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
         for (SymbolMethod method : methods) {
             if (class_accessed.checkValidArgList(method, currentClass.getCurrentArgList())) {
+                int ret = 0;
+                if (currentClass.getCurrentMemberAccess() != null && method.getAccessSymbol().equals(SymbolModifier.PRIVATE)) {
+                    ErrorHandler.INSTANCE.addMethodAccessError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                            method.getName(), class_accessed.getClassName(), method.getParamTypesAsString());
+                    ret = -1;
+                }
+
                 currentClass.setArgList(args_backup);
-                return 0;
+                return ret;
             }
         }
 
@@ -320,6 +339,19 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         }
 
         if (currentClass.getCurrentMemberAccess() != null) {
+//            Collection<SymbolMethod> matching_methods = class_accessed.getMatchingMethods(ctx.method_invocation().ID().toString());
+//            Collection<SymbolMethod> public_methods = matching_methods.stream().filter(element -> element.getAccessSymbol().equals(SymbolModifier.PUBLIC)).collect(Collectors.toCollection(ArrayList::new));
+//
+//            else if (matching_methods.size() > 0) {
+//                ErrorHandler.INSTANCE.addMethodAccessError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+//                        ctx.method_invocation().ID().toString(), class_accessed.getClassName());
+//                return -1;
+//            }
+//            else {
+//                ErrorHandler.INSTANCE.addCannotInvokeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+//                        class_accessed.getClassName(), ctx.method_invocation().ID().toString());
+//                return -1;
+//            }
             ErrorHandler.INSTANCE.addCannotInvokeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
                     class_accessed.getClassName(), ctx.ID().toString(), params);
         }
@@ -342,7 +374,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                     return -1;
                 }
 
-                if (ctx.member_access() == null) {
+                if (ctx.member_access() == null || ctx.member_access().size() == 0) {
                     currentClass.addArgument(var);
                     return 0;
                 }
@@ -368,7 +400,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             int ret = 0;
             for (JovaParser.Member_accessContext expr : ctx.member_access()) {
                 ret = visitMember_access(expr);
-                if (ret != OK) {
+                if (ret < 0) {
                     return ret;
                 }
             }
@@ -419,7 +451,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         int ret = 0;
         for (JovaParser.ExprContext expr : ctx.expr()) {
             ret = visitExpr(expr);
-            if (ret != OK) {
+            if (ret < 0) {
                 return ret;
             }
         }

@@ -374,7 +374,12 @@ public class SymbolClass {
         StringBuilder types = new StringBuilder();
 
         for (SymbolVariable var : currentArgList) {
-            types.append(var.getActualType().toString().toLowerCase());
+            if (var.getActualType() instanceof SymbolClass) {
+                types.append(((SymbolClass) var.getActualType()).getClassName());
+            }
+            else {
+                types.append(var.getActualType().toString().toLowerCase());
+            }
             types.append(" ");
         }
 
