@@ -165,7 +165,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitParams(JovaParser.ParamsContext ctx) {
-        return visitParam_list(ctx.param_list());
+        return (ctx.param_list() != null) ? visitParam_list(ctx.param_list()) : OK;
     }
 
     @Override
