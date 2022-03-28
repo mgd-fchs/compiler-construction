@@ -342,8 +342,8 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                 }
             }
         }
-//          TODO: SIMON
-        if (ctx.member_access() != null) {
+
+        if (ctx.member_access() != null && ctx.member_access().size() != 0) {
             SymbolVariable var_accessed = null;
             if (ctx.KEY_THIS() != null) {
                 var_accessed = new SymbolVariable(SymbolType.CLASS, currentClass, "");
