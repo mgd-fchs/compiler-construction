@@ -168,7 +168,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitMethod_head(JovaParser.Method_headContext ctx) {
-        boolean typeErrorOccurred = false;
         int typeErrorReturn = visitType(ctx.type());
 
         // saving current values which will be overriden when calling
