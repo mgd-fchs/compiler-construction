@@ -74,7 +74,7 @@ public class SymbolClass {
 
             if(members.stream().anyMatch(element -> element.getValue().getName().equals(id))) {
                 ErrorHandler.INSTANCE.addMemberDoubleDefError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
-                        id, typeName, modifier.toString());
+                        id, typeName, className);
             } else {
                 if (member != null){
                     members.add(new AbstractMap.SimpleEntry<>(modifier, member));
