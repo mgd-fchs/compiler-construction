@@ -2,12 +2,16 @@ class ASDF{
     public int y;
 }
 
+class ASDF2{}
+
 class Evaluation{
     public int x;
     public ASDF a;
+    public ASDF2 a2;
 
     public int func1(){
-    return 1;
+        a2.var = 0;
+        return a2.var;
     }
 
    public string func2(int a, int b, string asdf){
@@ -21,10 +25,12 @@ class Evaluation{
 class Testing {
     private Evaluation e;
     private ASDF a;
+    private ASDF2 a2;
 
     public int func2() {
         int x;
-        return e.func2(e.x, a.y, "fff");
+        //return e.func1(e.x);
+        return e.func2(0, a2.y, "fff");
         //return e.func2(2);
     }
 }

@@ -296,11 +296,15 @@ public class SymbolClass {
         return true;
     }
 
+    public void addArgument(SymbolVariable var) {
+        currentArgList.add(var);
+    }
+
     public SymbolVariable getCurrentScopeVariable(String name) {
         SymbolVariable var = null;
 
         try {
-            var = getMember(name);
+            var = getMemberIfExists(name);
         } catch (IndexOutOfBoundsException ex) {
 
         }
@@ -312,9 +316,14 @@ public class SymbolClass {
         return var;
     }
 
-    private SymbolVariable getMember(String name) {
-        return members.stream().filter(element -> element.getValue().getName().equals(name))
-                .collect(Collectors.toCollection(ArrayList::new)).get(0).getValue();
+    public SymbolVariable getMemberIfExists(String name) {
+        SymbolVariable var = null;
+        try {
+             var = members.stream().filter(element -> element.getValue().getName().equals(name))
+                    .collect(Collectors.toCollection(ArrayList::new)).get(0).getValue();
+        } catch (Exception ex) {}
+
+        return var;
     }
 
     private SymbolVariable getLocalVariable(String name) {
@@ -322,10 +331,10 @@ public class SymbolClass {
     }
 
 
-    public boolean checkValidArgList(SymbolMethod method) {
+    public boolean checkValidArgList(SymbolMethod method, List<SymbolVariable> argList) {
         int size = method.getParams().size();
 
-        if (size != currentArgList.size()) {
+        if (size != argList.size()) {
             return false;
         }
 
@@ -334,21 +343,25 @@ public class SymbolClass {
         }
 
         for (int i = 0; i < size; i++) {
-            if (method.getParams().get(i).getType() == currentArgList.get(i).getType()
-                    && method.getParams().get(i).getActualType() == currentArgList.get(i).getActualType()) // TODO check if == works
-                return true;
-
+            if (!(method.getParams().get(i).getType() == argList.get(i).getType()
+                    && method.getParams().get(i).getActualType() == argList.get(i).getActualType())) {// TODO check if == works
+                return false;
+            }
         }
 
-        return false;
+        return true;
     }
 
     public void resetArgList() {
         currentArgList = null;
     }
 
-    public void setArgList() {
-        currentArgList = new ArrayList<>();
+    public void setArgList(List<SymbolVariable> list) {
+        currentArgList = list;
+    }
+
+    public List<SymbolVariable> getCurrentArgList() {
+        return currentArgList;
     }
 
     public boolean currentlyGatheringArguments() {
