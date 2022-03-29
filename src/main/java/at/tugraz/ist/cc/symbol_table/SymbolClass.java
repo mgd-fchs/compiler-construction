@@ -23,6 +23,7 @@ public class SymbolClass {
     private String currentClassName;
     private Collection<String> currentIds;
     private SymbolMethod currentMethod;
+    private SymbolMethod currentAccessedMethod;
     private SymbolConstructor currentConstructor;
     private SymbolVariable currentMemberAccess;
     private List<SymbolVariable> currentParams;
@@ -36,6 +37,7 @@ public class SymbolClass {
         currentIds = new ArrayList<>();
         constructors = new ArrayList<>();
         currentMemberAccess = null;
+        currentAccessedMethod = null;
 
         // needs to be 0 to signal that no method-invocation is currently checked
         currentArgList = null;
@@ -386,6 +388,13 @@ public class SymbolClass {
         return types.toArray(new String[0]);
     }
 
+    public SymbolMethod getCurrentAccessedMethod() {
+        return currentAccessedMethod;
+    }
+
+    public void setCurrentAccessedMethod(SymbolMethod currentAccessedMethod) {
+        this.currentAccessedMethod = currentAccessedMethod;
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -241,7 +241,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         if (ctx.DOTOP() == null) {
             // TODO: is this possible?
             System.out.println("no dot found at memberaccess???");
-//            System.exit(34);
             return -34;
         }
 
@@ -312,6 +311,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                     ret = -1;
                 }
 
+                currentClass.setCurrentAccessedMethod(method);
                 currentClass.setArgList(args_backup);
                 return ret;
             }
@@ -349,6 +349,16 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                     currentClass.addArgument(var);
                     return 0;
                 }
+            }
+
+            if (ctx.method_invocation() != null) {
+                SymbolMethod backup = currentClass.getCurrentAccessedMethod();
+                if (visitMethod_invocation(ctx.method_invocation()) != OK) {
+                    return -1;
+                }
+                SymbolVariable var = new SymbolVariable(currentClass.getCurrentAccessedMethod().getReturnValue().getType(), currentClass.getCurrentAccessedMethod().getReturnValue().getActualType(), "");
+                currentClass.addArgument(var);
+                currentClass.setCurrentAccessedMethod(backup);
             }
         }
 
