@@ -265,7 +265,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             }
             SymbolVariable member = member_entry.getValue();
 
-            if (member_entry.getKey().equals(SymbolModifier.PRIVATE) && !currentClass.getCurrentMemberAccess().getActualType().toString().equals(currentClass.getClassName())) {
+            if (member_entry.getKey().equals(SymbolModifier.PRIVATE) && !(((SymbolClass) currentClass.getCurrentMemberAccess().getActualType()).getClassName()).equals(currentClass.getClassName())) {
                 ErrorHandler.INSTANCE.addMemberAccessError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
                         ctx.ID().toString(), class_accessed.getClassName());
                 return -1;
