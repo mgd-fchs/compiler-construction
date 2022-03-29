@@ -279,23 +279,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
         if (ctx.method_invocation() != null) {
             return visitMethod_invocation(ctx.method_invocation());
-//            // TODO implement multiple method-invocs
-//            Collection<SymbolMethod> matching_methods = class_accessed.getMatchingMethods(ctx.method_invocation().ID().toString());
-//            Collection<SymbolMethod> public_methods = matching_methods.stream().filter(element -> element.getAccessSymbol().equals(SymbolModifier.PUBLIC)).collect(Collectors.toCollection(ArrayList::new));
-//
-//            if (public_methods.size() > 0) {
-//                return visitMethod_invocation(ctx.method_invocation());
-//            }
-//            else if (matching_methods.size() > 0) {
-//                ErrorHandler.INSTANCE.addMethodAccessError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
-//                        ctx.method_invocation().ID().toString(), class_accessed.getClassName());
-//                return -1;
-//            }
-//            else {
-//                ErrorHandler.INSTANCE.addCannotInvokeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
-//                        class_accessed.getClassName(), ctx.method_invocation().ID().toString());
-//                return -1;
-//            }
         }
 
         // TODO: does this make sense?
@@ -323,7 +306,9 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         for (SymbolMethod method : methods) {
             if (class_accessed.checkValidArgList(method, currentClass.getCurrentArgList())) {
                 int ret = 0;
-                if (currentClass.getCurrentMemberAccess() != null && method.getAccessSymbol().equals(SymbolModifier.PRIVATE)) {
+
+                if (currentClass.getCurrentMemberAccess() != null && method.getAccessSymbol().equals(SymbolModifier.PRIVATE)
+                        && !(((SymbolClass) currentClass.getCurrentMemberAccess().getActualType()).getClassName()).equals(currentClass.getClassName())) {
                     ErrorHandler.INSTANCE.addMethodAccessError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
                             method.getName(), class_accessed.getClassName(), method.getParamTypesAsString());
                     ret = -1;
@@ -340,19 +325,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         }
 
         if (currentClass.getCurrentMemberAccess() != null) {
-//            Collection<SymbolMethod> matching_methods = class_accessed.getMatchingMethods(ctx.method_invocation().ID().toString());
-//            Collection<SymbolMethod> public_methods = matching_methods.stream().filter(element -> element.getAccessSymbol().equals(SymbolModifier.PUBLIC)).collect(Collectors.toCollection(ArrayList::new));
-//
-//            else if (matching_methods.size() > 0) {
-//                ErrorHandler.INSTANCE.addMethodAccessError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
-//                        ctx.method_invocation().ID().toString(), class_accessed.getClassName());
-//                return -1;
-//            }
-//            else {
-//                ErrorHandler.INSTANCE.addCannotInvokeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
-//                        class_accessed.getClassName(), ctx.method_invocation().ID().toString());
-//                return -1;
-//            }
             ErrorHandler.INSTANCE.addCannotInvokeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
                     class_accessed.getClassName(), ctx.ID().toString(), params);
         }

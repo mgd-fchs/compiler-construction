@@ -395,4 +395,30 @@ public class TypeCheckerPublicTest {
         assertTrue(result > 0);
     }
 
+
+
+//    @Test
+//    public void testPass_Simon01() {
+//        // check nested assignments, previously 'pass_own_simple.jova'
+//        ErrorHandler.INSTANCE.reset();
+//        int result = typeChecker.checkTypes(path_pass + "pass09.jova", debug);
+//        assertEquals(0, result);
+//    }
+
+    @Test
+    public void testPass_Simon02() {
+        // check nested assignments, previously 'pass_own_simple.jova'
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "pass10.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPass_Simon03() {
+        // check nested assignments, previously 'pass_own_simple.jova'
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "pass11.jova", debug);
+        assertEquals(0, result);
+    }
+
 }

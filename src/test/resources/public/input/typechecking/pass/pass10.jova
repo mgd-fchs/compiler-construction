@@ -1,5 +1,5 @@
 class ASDF{
-    private int y;
+    public int y;
 }
 
 class ASDF2{}
