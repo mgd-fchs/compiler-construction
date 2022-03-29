@@ -141,6 +141,14 @@ public class TypeCheckerPublicTest {
         assertEquals(0, result);
     }
 
+    @Test
+    public void testPass20() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "pass20.jova", debug);
+        ErrorHandler.INSTANCE.printTypeWarnings();
+        assertEquals(0, result);
+    }
+
 
     @Test
     public void testAccFail01() {
@@ -162,7 +170,7 @@ public class TypeCheckerPublicTest {
         int result = typeChecker.checkTypes(path_fail+ "access/fail03.jova", debug);
         assertTrue(result == 6);
     }
-    
+
     @Test
     public void testDoubleDeclFail01() {
         ErrorHandler.INSTANCE.reset();
@@ -227,6 +235,80 @@ public class TypeCheckerPublicTest {
         int result = typeChecker.checkTypes(path_fail+ "double_decl/fail09.jova", debug);
         assertTrue(result > 0);
     }
+
+    @Test
+    public void testDoubleDeclFail10() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "double_decl/fail10.jova", debug);
+        assertEquals(result, 5);
+    }
+
+    @Test
+    public void testDoubleDeclFail11() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "double_decl/fail11.jova", debug);
+        assertEquals(result, 1);
+    }
+
+    @Test
+    public void testDoubleDeclFail12() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "double_decl/fail12.jova", debug);
+        assertEquals(result, 2);
+    }
+
+    @Test
+    public void testDoubleDeclFail13() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "double_decl/fail13.jova", debug);
+        assertEquals(result, 1);
+    }
+
+    @Test
+    public void testDoubleDeclFail14() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "double_decl/fail14.jova", debug);
+        assertEquals(result, 1);
+    }
+
+    @Test
+    public void testDoubleDeclFail15() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "double_decl/fail15.jova", debug);
+        assertEquals(7, result);
+    }
+
+    @Test
+    public void testDoubleDeclFail16() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "double_decl/fail16.jova", debug);
+        final int expectedErrorInClassTest0 = 7;
+        final int expectedErrorInClassTest1 = 7;
+        final int expectedErrorInClassTest2 = 0;
+        assertEquals(expectedErrorInClassTest0 + expectedErrorInClassTest1 + expectedErrorInClassTest2, result);
+    }
+
+    @Test
+    public void testDoubleDeclFail17() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "double_decl/fail17.jova", debug);
+        assertEquals(3, result);
+    }
+
+    @Test
+    public void testDoubleDeclFail18() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "double_decl/fail18.jova", debug);
+        assertEquals(3, result);
+    }
+
+    @Test
+    public void testDoubleDeclFail19() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "double_decl/fail19.jova", debug);
+        assertEquals(14, result);
+    }
+
 
     @Test
     public void testCondFail01() {
@@ -366,7 +448,38 @@ public class TypeCheckerPublicTest {
         int result = typeChecker.checkTypes(path_fail+ "main_structure/fail03.jova", debug);
         assertTrue(result > 0);
     }
-   
+
+    @Test
+    public void testMainFail04() {
+        // additional method in main
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "main_structure/fail04.jova", debug);
+        assertTrue(result > 0);
+    }
+
+    @Test
+    public void testMainFail05() {
+        // additional method in main
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "main_structure/fail05.jova", debug);
+        assertEquals(result, 4);
+    }
+
+    @Test
+    public void testMainFail06() {
+        // additional method in main
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "main_structure/fail06.jova", debug);
+        assertEquals(result, 1);
+    }
+
+    @Test
+    public void testMainFail07() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "main_structure/fail07.jova", debug);
+        assertEquals(result, 1);
+    }
+
     @Test
     public void testUndeclFail01() {
         ErrorHandler.INSTANCE.reset();
@@ -402,7 +515,54 @@ public class TypeCheckerPublicTest {
         assertTrue(result > 0);
     }
 
+    @Test
+    public void testUnknwonFail01() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "unknown_type/fail01.jova", debug);
+        assertEquals(1, result);
+    }
 
+    @Test
+    public void testUnknwonFail02() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "unknown_type/fail02.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testUnknwonFail03() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "unknown_type/fail03.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testUnknwonFail04() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "unknown_type/fail04.jova", debug);
+        assertEquals(2, result);
+    }
+
+    @Test
+    public void testUnknwonFail05() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "unknown_type/fail05.jova", debug);
+        assertEquals(2, result);
+    }
+
+    @Test
+    public void testUnknwonFail06() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "unknown_type/fail06.jova", debug);
+        assertEquals(2, result);
+    }
+
+    @Test
+    public void testCtorFail01() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "constructor/fail01.jova", debug);
+        assertEquals(1, result);
+    }
 
 //    @Test
 //    public void testPass_Simon01() {

@@ -1,0 +1,9 @@
+class Known {
+
+}
+
+class Test {
+   Test(Unknown a, Unknown2 b) {
+
+   }
+}

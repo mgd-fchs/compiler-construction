@@ -1,0 +1,25 @@
+class Helper {
+
+}
+
+class Test {
+    Test(int x, string y, bool z){
+        Helper a, b, c;                     // no error;
+        Helper x;                           // 1 errors;
+        Helper x, y, z;                     // 3 errors;
+        string d, e, f, a, b, c, g, h, j;   // 3 errors;
+
+    }
+
+    private int func(int x, string y, bool z){
+        Helper a, b, c;                     // no error;
+        Helper x;                           // 1 errors;
+        Helper x, y, z;                     // 3 errors;
+        string d, e, f, a, b, c, g, h, j;   // 3 errors;
+
+        return 0;
+    }
+
+}
+
+

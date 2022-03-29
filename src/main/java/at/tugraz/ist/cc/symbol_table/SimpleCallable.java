@@ -3,10 +3,7 @@ package at.tugraz.ist.cc.symbol_table;
 import at.tugraz.ist.cc.JovaParser;
 import at.tugraz.ist.cc.error.ErrorHandler;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public abstract class SimpleCallable {
     protected final String name;
@@ -26,17 +23,19 @@ public abstract class SimpleCallable {
 
     public int checkParamDoubleDeclaration(JovaParser.Param_listContext ctx) {
         Collection<String> names = new ArrayList<>();
+        boolean doubleDecl = false;
         for (SymbolVariable param : params) {
             String currentName = param.getName();
             if (names.contains(currentName)) {
 
                 ErrorHandler.INSTANCE.addVarDoubleDefError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
-                        currentName, param.getTypeAsString(), this.getName());
-                return -1;
+                        currentName, param.getTypeAsString(), this.getName(), getParamTypesAsString());
+                doubleDecl = true;
+                continue;
             }
             names.add(currentName);
         }
-        return 0;
+        return (doubleDecl) ? -1 : 0;
     }
 
     public String[] getParamTypesAsString() {
@@ -66,6 +65,35 @@ public abstract class SimpleCallable {
         return name;
     }
 
+    public Object getLocalVariableType(String id){
+        Optional<SymbolVariable> found = localVariables.stream().filter(element -> element.getName().equals(id)).findFirst();
+        return found.get().getActualType();
+    }
+
+    public SymbolVariable getMethodVariable(String name) {
+        for (SymbolVariable v : params) {
+            if (v.getName().equals(name)) {
+                return v;
+            }
+        }
+
+        for (SymbolVariable v : localVariables) {
+            if (v.getName().equals(name)) {
+                return v;
+            }
+        }
+
+        return null;
+    }
+
+    public SymbolVariable getLocalVariableById(String id){
+        Optional<SymbolVariable> found = localVariables.stream().filter(element -> element.getName().equals(id)).findFirst();
+        if(found.isEmpty()){
+            return null;
+        }
+        return found.get();
+    }
+
     /**
      * returns true if the objects are the same or if the names of the methods and also
      * the parameter order and types are the same. the return value of the method is not
@@ -77,17 +105,28 @@ public abstract class SimpleCallable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SymbolMethod that = (SymbolMethod) o;
+        SimpleCallable that = (SimpleCallable) o;
 
         if (!Objects.equals(name, that.name)) return false;
         if (params.size() != that.params.size()) return false;
 
         for (int i = 0; i < params.size(); ++i) {
-            if (params.get(i).getType() != that.params.get(i).getType()) {
+            SymbolVariable thisParam = params.get(i);
+            SymbolVariable thatParam= that.params.get(i);
+
+            if (    !(thisParam.getType() == SymbolType.PRIMITIVE &&
+                    thatParam.getType() == SymbolType.PRIMITIVE &&
+                    ((SymbolPrimitiveType) thisParam.getActualType()).equals(((SymbolPrimitiveType)thatParam.getActualType())))
+                    &&
+                    !(thisParam.getType() == SymbolType.CLASS &&
+                    thatParam.getType() == SymbolType.CLASS &&
+                    ((SymbolClass) thisParam.getActualType()).getClassName().
+                            equals(((SymbolClass) thatParam.getActualType()).getClassName()))){
                 return false;
             }
         }
 
+        // only reachable if all params where equal
         return true;
     }
 }

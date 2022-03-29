@@ -41,7 +41,7 @@ public class SymbolTable {
         }
 
         classes.add(symbolClass);
-        return 0;
+        return TypeCheckerJovaVisitorImpl.OK;
     }
 
     public Optional<SymbolClass> getClassByName(String name, ParserRuleContext ctx) {

@@ -7,7 +7,6 @@ import at.tugraz.ist.cc.error.ErrorHandler;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static at.tugraz.ist.cc.symbol_table.SymbolType.CLASS;
 import static at.tugraz.ist.cc.symbol_table.SymbolType.PRIMITIVE;
 
 public class SymbolClass {
@@ -20,11 +19,11 @@ public class SymbolClass {
     // TODO: maybe move the current things to the TypeCheckerJovaVisitorImpl or to a new singleton class?
     private SymbolType currentSymbolType;
     private SymbolPrimitiveType currentSymbolPrimitiveType;
+    // TODO refactor to SymbolClass object
     private String currentClassName;
     private Collection<String> currentIds;
-    private SymbolMethod currentMethod;
+    private SimpleCallable currentCallable;
     private SymbolMethod currentAccessedMethod;
-    private SymbolConstructor currentConstructor;
     private SymbolVariable currentMemberAccess;
     private List<SymbolVariable> currentParams;
     private List<SymbolVariable> currentArgList;
@@ -77,7 +76,7 @@ public class SymbolClass {
 
             if(members.stream().anyMatch(element -> element.getValue().getName().equals(id))) {
                 ErrorHandler.INSTANCE.addMemberDoubleDefError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
-                        id, typeName, modifier.toString());
+                        id, typeName, className);
             } else {
                 if (member != null){
                     members.add(new AbstractMap.SimpleEntry<>(modifier, member));
@@ -90,7 +89,7 @@ public class SymbolClass {
         currentSymbolType = null;
     }
 
-    public int addMethod(SymbolModifier modifier, String name,JovaParser.Method_headContext ctx){
+    public int addMethod(SymbolModifier modifier, String name, JovaParser.Method_headContext ctx){
         if (    currentSymbolType == null ||
                 currentSymbolType == PRIMITIVE && currentSymbolPrimitiveType == null) {
             // should be non reachable!!!!
@@ -103,18 +102,13 @@ public class SymbolClass {
         switch (currentSymbolType){
             case CLASS:
                 Optional<SymbolClass> foundClass = SymbolTable.getInstance().getClassByName(currentClassName, ctx);
-
-                if (foundClass.isPresent()){
-                    symbolMethod = new SymbolMethod(modifier, name, new SymbolVariable(SymbolType.CLASS, foundClass.get(), null), currentParams);
-                } else {
-                    // TODO: I think we have to continue parsing the params for right logging => so the return would be false?
-                    errorOccurred = TypeCheckerJovaVisitorImpl.ERROR_ID_UNDEF;
-                }
-
+                symbolMethod = new SymbolMethod(modifier, name, new SymbolVariable(SymbolType.CLASS, foundClass.get(), "returnValue"), currentParams);
                 break;
+
             case PRIMITIVE:
-                symbolMethod = new SymbolMethod(modifier, name, new SymbolVariable(SymbolType.PRIMITIVE, currentSymbolPrimitiveType, null) , currentParams);
+                symbolMethod = new SymbolMethod(modifier, name, new SymbolVariable(SymbolType.PRIMITIVE, currentSymbolPrimitiveType, "returnValue") , currentParams);
                 break;
+
             default:
                 System.exit(666);
         }
@@ -125,8 +119,8 @@ public class SymbolClass {
 
         // TODO it might be the case that the output order of the errors is not right.
         if ( className.equals(SymbolClass.MAIN_CLASS_NAME) &&
-                    (symbolMethod.getAccessSymbol() != SymbolModifier.PUBLIC ||
-                    !(symbolMethod.getReturnValue().getActualType() instanceof SymbolPrimitiveType) ||
+                (symbolMethod.getAccessSymbol() != SymbolModifier.PUBLIC ||
+                        !(symbolMethod.getReturnValue().getActualType() instanceof SymbolPrimitiveType) ||
                     symbolMethod.getReturnValue().getActualType() != SymbolPrimitiveType.INT)){
             ErrorHandler.INSTANCE.addMainMemberError(ctx.start.getLine(), ctx.start.getCharPositionInLine());
             return TypeCheckerJovaVisitorImpl.ERROR_MAIN_WITH_WRONG_METHOD;
@@ -136,19 +130,34 @@ public class SymbolClass {
             errorOccurred = TypeCheckerJovaVisitorImpl.ERROR_DOUBLE_DECLARATION_VARIABLE;
         }
 
-        if (methods.contains(symbolMethod)) {
-            ErrorHandler.INSTANCE.addMethodDoubleDefError(
-                    ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+        if (SymbolMethod.IO_METHODS.contains(symbolMethod) || methods.contains(symbolMethod)) {
+            ErrorHandler.INSTANCE.addMethodDoubleDefError( ctx.start.getLine(), ctx.start.getCharPositionInLine(),
                     symbolMethod.getName(), className, symbolMethod.getParamTypesAsString());
             errorOccurred = TypeCheckerJovaVisitorImpl.ERROR_DOUBLE_DECLARATION_METHOD;
         }
 
         if (errorOccurred == 0) {
             methods.add(symbolMethod);
-            currentMethod = symbolMethod;
+            currentCallable = symbolMethod;
         }
 
         return errorOccurred;
+    }
+
+    public SymbolVariable buildParam (String variableName, JovaParser.Param_listContext ctx){
+        switch (currentSymbolType){
+            case CLASS:
+                Optional<SymbolClass> foundClass = SymbolTable.getInstance().getClassByName(currentClassName, ctx);
+                return new SymbolVariable(SymbolType.CLASS, foundClass.get(), variableName);
+
+            case PRIMITIVE:
+                SymbolPrimitiveType symbolPrimitiveType = currentSymbolPrimitiveType;
+                return new SymbolVariable(SymbolType.PRIMITIVE, symbolPrimitiveType, variableName);
+
+            default:
+                System.exit(666);
+                return null;
+        }
     }
 
     public int saveLocalVariables(JovaParser.DeclarationContext ctx)
@@ -175,21 +184,17 @@ public class SymbolClass {
                     System.exit(666);
             }
 
-            if( currentMethod.getParams().stream().anyMatch(element -> element.getName().equals(id)) ||
-                currentMethod.getLocalVariables().stream().anyMatch(element -> element.getName().equals(id))) {
+            if( currentCallable.getParams().stream().anyMatch(element -> element.getName().equals(id)) ||
+                currentCallable.getLocalVariables().stream().anyMatch(element -> element.getName().equals(id))) {
                 ErrorHandler.INSTANCE.addVarDoubleDefError(
                         ctx.start.getLine(), ctx.start.getCharPositionInLine(),
-                        id, typeName, currentMethod.getName(),
-                        currentMethod.getParamTypesAsString());
+                        id, typeName, currentCallable.getName(),
+                        currentCallable.getParamTypesAsString());
                 continue;
             }
 
             if (symbolVariable != null) {
-                if (currentSymbolType == CLASS && currentClassName.equals(SymbolClass.MAIN_CLASS_NAME)) {
-                    ErrorHandler.INSTANCE.addMainInstatiationError(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-                    continue;
-                }
-                currentMethod.addVariable(symbolVariable);
+                currentCallable.addVariable(symbolVariable);
             }
         }
 
@@ -200,11 +205,6 @@ public class SymbolClass {
     }
 
     public int buildConstructor(String className, JovaParser.CtorContext ctx) {
-        if (!this.className.equals(className)) {
-            ; // TODO which error?
-        }
-
-
         SymbolConstructor symbolConstructor = new SymbolConstructor(className, currentParams);
 
         int errorOccurred = 0;
@@ -221,7 +221,7 @@ public class SymbolClass {
 
         if (errorOccurred == 0) {
             constructors.add(symbolConstructor);
-            currentConstructor = symbolConstructor;
+            currentCallable = symbolConstructor;
         }
 
         currentParams = new ArrayList<>();
@@ -330,7 +330,7 @@ public class SymbolClass {
     }
 
     private SymbolVariable getLocalVariable(String name) {
-        return currentMethod.getMethodVariable(name);
+        return currentCallable.getMethodVariable(name);
     }
 
 
@@ -396,6 +396,19 @@ public class SymbolClass {
         this.currentAccessedMethod = currentAccessedMethod;
     }
 
+    public SymbolType getCurrentSymbolType() {
+        return currentSymbolType;
+    }
+
+    public SymbolPrimitiveType getCurrentSymbolPrimitiveType() {
+        return currentSymbolPrimitiveType;
+    }
+
+    public String getCurrentClassName() {
+        return currentClassName;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -404,6 +417,6 @@ public class SymbolClass {
         return Objects.equals(className, that.className);
     }
 
-    public SymbolMethod getCurrentMethod() {return currentMethod;}
+    public SimpleCallable getCurrentCallable() {return currentCallable;}
 
 }
