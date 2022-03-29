@@ -29,7 +29,7 @@ public abstract class SimpleCallable {
             if (names.contains(currentName)) {
 
                 ErrorHandler.INSTANCE.addVarDoubleDefError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
-                        currentName, param.getTypeAsString(), this.getName());
+                        currentName, param.getTypeAsString(), this.getName(), getParamTypesAsString());
                 doubleDecl = true;
                 continue;
             }
