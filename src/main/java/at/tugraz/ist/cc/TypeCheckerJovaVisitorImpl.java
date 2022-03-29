@@ -44,7 +44,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     public Integer visitProgram(JovaParser.ProgramContext ctx){
         // TODO: GENERAL remove all outputs like this, before submission
         try {
-            System.out.println("visitProgram");
             visitChildren(ctx);
         } catch (Exception e) {
             throw e;
@@ -58,7 +57,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitClass_decl(JovaParser.Class_declContext ctx){
-        System.out.println("visitClass_decl");
         int returnError = visitClass_head(ctx.class_head());
 
         if (returnError != OK) {
@@ -114,7 +112,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitCtor(JovaParser.CtorContext ctx) {
-        System.out.println("CTOR");
         if (currentClass.getClassName().equals(SymbolClass.MAIN_CLASS_NAME)) {
             ErrorHandler.INSTANCE.addMainMemberError(ctx.start.getLine(), ctx.start.getCharPositionInLine());
             return ERROR_MAIN_WITH_MEMBER;
@@ -284,12 +281,10 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitMember_access(JovaParser.Member_accessContext ctx) {
-        System.out.println("visitMember_access");
         // TODO: support method_invocation + member_access? (hier gemeint mit Class als return-type?
 
         if (ctx.DOTOP() == null) {
             // TODO: is this possible?
-            System.out.println("no dot found at memberaccess???");
             System.exit(34);
         }
 
@@ -331,7 +326,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     }
 
     @Override public Integer visitMethod_invocation(JovaParser.Method_invocationContext ctx) {
-        System.out.println("visitMethod_invocation");
 
         SymbolClass class_accessed = currentClass.getCurrentClassAccess();
 
@@ -367,7 +361,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     }
 
     @Override public Integer visitId_expr(JovaParser.Id_exprContext ctx) {
-        System.out.println("Visiting ID expression!");
         SymbolClass class_accessed = currentClass.getCurrentClassAccess();
 
 
@@ -434,12 +427,10 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     }
 
     @Override public Integer visitArg_list(JovaParser.Arg_listContext ctx) {
-        System.out.println("visitArg_list");
         return visitChildren(ctx);
     }
 
     @Override public Integer visitExpr(JovaParser.ExprContext ctx) {
-        System.out.println("Visit expression!");
 
         if (ctx.op != null) {
             // case: operation, check operand types
@@ -513,7 +504,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                 class_accessed.addPrimitiveArgument(type);
             }
             else {
-                System.out.println("visitLiteral: invalid type");
                 System.exit(25);
             }
 
