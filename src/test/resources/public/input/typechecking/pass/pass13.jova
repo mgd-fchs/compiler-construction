@@ -1,0 +1,11 @@
+class Testing {
+  private int x;
+
+  public int test2(int x) {
+     return 0;
+  }
+
+  public int test() {
+        return test2(test2(0));
+    }
+}

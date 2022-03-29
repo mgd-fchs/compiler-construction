@@ -155,6 +155,13 @@ public class TypeCheckerPublicTest {
         int result = typeChecker.checkTypes(path_fail+ "access/fail02.jova", debug);
         assertTrue(result > 0);
     }
+
+    @Test
+    public void testAccFail03() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "access/fail03.jova", debug);
+        assertTrue(result == 6);
+    }
     
     @Test
     public void testDoubleDeclFail01() {
@@ -418,6 +425,14 @@ public class TypeCheckerPublicTest {
         // check nested assignments, previously 'pass_own_simple.jova'
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_pass + "pass11.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPass_Simon04() {
+        // check nested assignments, previously 'pass_own_simple.jova'
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "pass12.jova", debug);
         assertEquals(0, result);
     }
 

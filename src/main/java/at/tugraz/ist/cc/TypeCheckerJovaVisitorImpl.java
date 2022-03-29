@@ -294,10 +294,8 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         List<SymbolVariable> args_backup = currentClass.getCurrentArgList();
         currentClass.setArgList(new ArrayList<>());
         if (ctx.arg_list() != null) {
-//            visitArg_list(ctx.arg_list());
             int tmp = visitArg_list(ctx.arg_list());
             if (tmp != OK) {
-//            if (visitArg_list(ctx.arg_list()) != OK) {
                 currentClass.setArgList(args_backup);
                 return -1;
             }
@@ -319,7 +317,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             }
         }
 
-        String params = "";
+        String[] params = new String[0];
         if (ctx.arg_list() != null) {
             params = currentClass.getArgListTypes();
         }

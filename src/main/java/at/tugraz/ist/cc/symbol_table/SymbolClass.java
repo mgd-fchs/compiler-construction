@@ -369,23 +369,21 @@ public class SymbolClass {
         return (currentArgList != null);
     }
 
-    public String getArgListTypes()
+    public String[] getArgListTypes()
     {
-        StringBuilder types = new StringBuilder();
-
+        List<String> types = new ArrayList<>();
         for (SymbolVariable var : currentArgList) {
+            String s = "";
             if (var.getActualType() instanceof SymbolClass) {
-                types.append(((SymbolClass) var.getActualType()).getClassName());
+                s = ((SymbolClass) var.getActualType()).getClassName();
             }
             else {
-                types.append(var.getActualType().toString().toLowerCase());
+                s = var.getActualType().toString().toLowerCase();
             }
-            types.append(" ");
+            types.add(s);
         }
 
-        types.delete(types.length() -1, types.length());
-
-        return types.toString();
+        return types.toArray(new String[0]);
     }
 
 
