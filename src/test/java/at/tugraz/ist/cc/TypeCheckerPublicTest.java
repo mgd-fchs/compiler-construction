@@ -288,6 +288,13 @@ public class TypeCheckerPublicTest {
         assertEquals(3, result);
     }
 
+    @Test
+    public void testDoubleDeclFail18() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "double_decl/fail18.jova", debug);
+        assertEquals(3, result);
+    }
+
 
     @Test
     public void testCondFail01() {
