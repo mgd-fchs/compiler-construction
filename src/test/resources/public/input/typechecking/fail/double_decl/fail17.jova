@@ -1,0 +1,14 @@
+class Helper{
+
+}
+
+/* class with seven double decl */
+class Test0{
+    private int func(int x, string y, bool z){
+        return 0;
+    }
+
+    private int func(int x, string y, bool z, Helper x, Helper y, Helper z){
+        return 0;
+    }
+}

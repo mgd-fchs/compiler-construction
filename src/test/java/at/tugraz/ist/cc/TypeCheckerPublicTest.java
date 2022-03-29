@@ -268,7 +268,24 @@ public class TypeCheckerPublicTest {
     public void testDoubleDeclFail15() {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail+ "double_decl/fail15.jova", debug);
-        assertEquals(result, 7);
+        assertEquals(7, result);
+    }
+
+    @Test
+    public void testDoubleDeclFail16() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "double_decl/fail16.jova", debug);
+        final int expectedErrorInClassTest0 = 7;
+        final int expectedErrorInClassTest1 = 7;
+        final int expectedErrorInClassTest2 = 0;
+        assertEquals(expectedErrorInClassTest0 + expectedErrorInClassTest1 + expectedErrorInClassTest2, result);
+    }
+
+    @Test
+    public void testDoubleDeclFail17() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "double_decl/fail17.jova", debug);
+        assertEquals(3, result);
     }
 
 
@@ -525,7 +542,4 @@ public class TypeCheckerPublicTest {
         int result = typeChecker.checkTypes(path_fail+ "constructor/fail01.jova", debug);
         assertEquals(1, result);
     }
-
-
-
 }

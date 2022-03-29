@@ -1,0 +1,93 @@
+class Helper{
+
+}
+
+
+/* class with seven double decl */
+class Test0{
+    private int func(){
+        return 0;
+    }
+
+    private bool func(){
+        return 0;
+    }
+
+    private string func(){
+        return 0;
+    }
+
+    private Helper func(){
+        return 0;
+    }
+
+    public int func(){
+        return 0;
+    }
+
+    public bool func(){
+        return 0;
+    }
+
+    public string func(){
+        return 0;
+    }
+
+    public Helper func(){
+        return 0;
+    }
+}
+
+/* class with seven double decl */
+class Test1{
+    private int func(){
+        return 0;
+    }
+
+    private int func(int a, string b, bool c){
+        return 0;
+    }
+
+    private bool func(int a, string b, bool c){
+        return 0;
+    }
+
+    private string func(int a, string b, bool c){
+        return 0;
+    }
+
+    private Helper func(int a, string b, bool c){
+        return 0;
+    }
+
+    public int func(int a, string b, bool c){
+        return 0;
+    }
+
+    public bool func(int a, string b, bool c){
+        return 0;
+    }
+
+    public string func(int a, string b, bool c){
+        return 0;
+    }
+
+    public Helper func(int a, string b, bool c){
+        return 0;
+    }
+}
+
+/* no error inhere */
+class Test2{
+    private int func(){
+        return 0;
+    }
+
+    private int func(int a, string b, bool c){
+        return 0;
+    }
+
+    private bool func(bool a, string b, int c){
+        return 0;
+    }
+}

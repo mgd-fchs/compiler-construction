@@ -23,17 +23,19 @@ public abstract class SimpleCallable {
 
     public int checkParamDoubleDeclaration(JovaParser.Param_listContext ctx) {
         Collection<String> names = new ArrayList<>();
+        boolean doubleDecl = false;
         for (SymbolVariable param : params) {
             String currentName = param.getName();
             if (names.contains(currentName)) {
 
                 ErrorHandler.INSTANCE.addVarDoubleDefError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
                         currentName, param.getTypeAsString(), this.getName());
-                return -1;
+                doubleDecl = true;
+                continue;
             }
             names.add(currentName);
         }
-        return 0;
+        return (doubleDecl) ? -1 : 0;
     }
 
     public String[] getParamTypesAsString() {
