@@ -278,6 +278,11 @@ public class SymbolClass {
     }
 
     public Collection<SymbolMethod> getMatchingMethods(String method) {
+        Collection<SymbolMethod> tmp = SymbolMethod.IO_METHODS.stream().filter(element -> element.getName().equals(method)).collect(Collectors.toCollection(ArrayList::new));
+        if (tmp.size() > 0) {
+            return tmp;
+        }
+
         return methods.stream().filter(element -> element.getName().equals(method)).collect(Collectors.toCollection(ArrayList::new));
     }
 

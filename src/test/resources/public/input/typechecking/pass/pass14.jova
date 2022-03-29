@@ -1,0 +1,14 @@
+class Evaluation{
+    public string getMsg()
+  {
+    return "adfs";
+  }
+}
+
+class Main {
+
+  public int main() {
+    Evaluation eval;
+    return print(readInt());
+  }
+}

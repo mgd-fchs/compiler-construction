@@ -329,7 +329,16 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         }
 
         if (ctx.method_invocation() != null) {
-            return visitMethod_invocation(ctx.method_invocation());
+            SymbolMethod backup = currentClass.getCurrentAccessedMethod();
+            if (visitMethod_invocation(ctx.method_invocation()) != OK) {
+                return -1;
+            }
+            SymbolVariable ret_var = new SymbolVariable(currentClass.getCurrentAccessedMethod().getReturnValue().getType(), currentClass.getCurrentAccessedMethod().getReturnValue().getActualType(), "");
+            if (currentClass.currentlyGatheringArguments()) {
+                currentClass.addArgument(ret_var);
+            }
+            currentClass.setCurrentAccessedMethod(backup);
+            return OK;
         }
 
         // TODO: does this make sense?
