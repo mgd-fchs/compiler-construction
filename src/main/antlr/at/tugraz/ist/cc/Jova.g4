@@ -94,7 +94,7 @@ compound_stmt : '{' stmt* '}';
 
 declaration : type id_list ';';
 
-ret_stmt : KEY_RETURN expr ';';
+ret_stmt : KEY_RETURN retval=expr ';';
 
 assign_stmt : id_expr ASSIGN (expr | object_alloc);
 

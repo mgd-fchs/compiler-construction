@@ -278,7 +278,36 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitRet_stmt(JovaParser.Ret_stmtContext ctx) {
-        return visitChildren(ctx);
+
+        Integer actualReturnValue = visit(ctx.expr());
+        // TODO: implement for callable (or should it be? -> do main and/or constructor return values?)
+        String actualReturnString;
+
+        if (SymbolPrimitiveType.valueOf(actualReturnValue) != null){
+            actualReturnString = SymbolPrimitiveType.valueOf(actualReturnValue).toString();
+        } else if (currentClass.getCurrentScopeVariable(ctx.retval.start.getText()) != null){
+            actualReturnString = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getTypeAsString();
+        } else {
+            ErrorHandler.INSTANCE.addUndefIdError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.retval.start.getText());
+            return TYPE_ERROR;
+        }
+
+        if (currentClass.getCurrentAccessedMethod() != null){
+            Integer expectedValue = currentClass.getCurrentAccessedMethod().getReturnValue().getType().getValue();
+
+            if (expectedValue != actualReturnValue){
+                // get expected return type as str
+                String expectedTypeStr = currentClass.getCurrentAccessedMethod().getReturnValue().getActualType().toString().toLowerCase();
+                ErrorHandler.INSTANCE.addIncompatibleReturnTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualReturnString);
+                return TYPE_ERROR;
+            }
+            else {
+                return OK;
+            }
+        } else {
+            ErrorHandler.INSTANCE.addIncompatibleReturnTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualReturnString);
+            return TYPE_ERROR;
+        }
     }
 
     @Override
