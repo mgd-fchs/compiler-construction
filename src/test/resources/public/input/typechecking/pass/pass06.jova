@@ -6,5 +6,6 @@ class Main{
 	public int main(){
 		Object o1;
 		o1 = nix;
+		return 0;
 	}
 }

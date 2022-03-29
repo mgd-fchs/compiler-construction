@@ -564,13 +564,13 @@ public class TypeCheckerPublicTest {
         assertEquals(1, result);
     }
 
-//    @Test
-//    public void testPass_Simon01() {
-//        // check nested assignments, previously 'pass_own_simple.jova'
-//        ErrorHandler.INSTANCE.reset();
-//        int result = typeChecker.checkTypes(path_pass + "pass09.jova", debug);
-//        assertEquals(0, result);
-//    }
+    @Test
+    public void testPass_Simon01() {
+        // check nested assignments, previously 'pass_own_simple.jova'
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "pass09.jova", debug);
+        assertEquals(0, result);
+    }
 
     @Test
     public void testPass_Simon02() {
