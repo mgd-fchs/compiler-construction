@@ -519,5 +519,13 @@ public class TypeCheckerPublicTest {
         assertEquals(2, result);
     }
 
+    @Test
+    public void testCtorFail01() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "constructor/fail01.jova", debug);
+        assertEquals(1, result);
+    }
+
+
 
 }

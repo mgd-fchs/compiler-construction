@@ -203,11 +203,6 @@ public class SymbolClass {
     }
 
     public int buildConstructor(String className, JovaParser.CtorContext ctx) {
-        if (!this.className.equals(className)) {
-            ; // TODO which error?
-        }
-
-
         SymbolConstructor symbolConstructor = new SymbolConstructor(className, currentParams);
 
         int errorOccurred = 0;

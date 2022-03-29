@@ -117,8 +117,15 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             return ERROR_MAIN_WITH_MEMBER;
         }
 
+        String classType = ctx.CLASS_TYPE().toString();
+        int wrongClassName = OK;
+        if (!currentClass.getClassName().equals(classType)) {
+            ErrorHandler.INSTANCE.addUndefIdError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), classType);
+            wrongClassName = ERROR_GENERAL;
+        }
+
         int typeErrorParams = visitParams(ctx.params());
-        if (typeErrorParams != OK) {
+        if (typeErrorParams != OK || wrongClassName != OK) {
             return ERROR_GENERAL;
         }
 
