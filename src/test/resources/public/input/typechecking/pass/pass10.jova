@@ -9,9 +9,8 @@ class Evaluation{
     public ASDF a;
     public ASDF2 a2;
 
-    public int func1(){
-        a2.var = 0;
-        return a2.var;
+    public int func1(int b){
+        return 0;
     }
 
    public string func2(int a, int b, string asdf){
@@ -27,10 +26,11 @@ class Testing {
     private ASDF a;
     private ASDF2 a2;
 
-    public int func2() {
-        int x;
-        //return e.func1(e.x);
-        return e.func2(0, a2.y, "fff");
+    private int x;
+
+    public int func2(int x) {
+        return e.func1(this.x);
+        //return e.func2(0, a2.y, "fff");
         //return e.func2(2);
     }
 }
