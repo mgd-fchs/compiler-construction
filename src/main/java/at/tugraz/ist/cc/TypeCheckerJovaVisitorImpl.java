@@ -337,52 +337,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     }
 
     @Override public Integer visitMethod_invocation(JovaParser.Method_invocationContext ctx) {
-
-        SymbolClass class_accessed = currentClass.getCurrentClassAccess();
-        Collection<SymbolMethod> methods = class_accessed.getMatchingMethods(ctx.ID().toString());
-
-        List<SymbolVariable> args_backup = currentClass.getCurrentArgList();
-        currentClass.setArgList(new ArrayList<>());
-        if (ctx.arg_list() != null) {
-            int tmp = visitArg_list(ctx.arg_list());
-            if (tmp != OK) {
-                currentClass.setArgList(args_backup);
-                return -1;
-            }
-        }
-
-        for (SymbolMethod method : methods) {
-            if (class_accessed.checkValidArgList(method, currentClass.getCurrentArgList())) {
-                int ret = 0;
-
-                if (currentClass.getCurrentMemberAccess() != null && method.getAccessSymbol().equals(SymbolModifier.PRIVATE)
-                        && !(((SymbolClass) currentClass.getCurrentMemberAccess().getActualType()).getClassName()).equals(currentClass.getClassName())) {
-                    ErrorHandler.INSTANCE.addMethodAccessError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
-                            method.getName(), class_accessed.getClassName(), method.getParamTypesAsString());
-                    ret = -1;
-                }
-
-                currentClass.setCurrentAccessedMethod(method);
-                currentClass.setArgList(args_backup);
-                return ret;
-            }
-        }
-
-        String[] params = new String[0];
-        if (ctx.arg_list() != null) {
-            params = currentClass.getArgListTypes();
-        }
-
-        if (currentClass.getCurrentMemberAccess() != null) {
-            ErrorHandler.INSTANCE.addCannotInvokeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
-                    class_accessed.getClassName(), ctx.ID().toString(), params);
-        }
-        else {
-            ErrorHandler.INSTANCE.addUndefMethodError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.ID().toString(), params);
-        }
-
-        currentClass.setArgList(args_backup);
-        return -1;
+        return currentClass.invocation(this, ctx);
     }
 
     @Override public Integer visitId_expr(JovaParser.Id_exprContext ctx) {

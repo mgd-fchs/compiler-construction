@@ -419,4 +419,51 @@ public class SymbolClass {
 
     public SimpleCallable getCurrentCallable() {return currentCallable;}
 
+    public int invocation(TypeCheckerJovaVisitorImpl type, JovaParser.Method_invocationContext ctx) {
+        SymbolClass class_accessed = getCurrentClassAccess();
+        Collection<SymbolMethod> methods = class_accessed.getMatchingMethods(ctx.ID().toString());
+
+        List<SymbolVariable> args_backup = getCurrentArgList();
+        setArgList(new ArrayList<>());
+        if (ctx.arg_list() != null) {
+            int tmp = type.visitArg_list(ctx.arg_list());
+            if (tmp != type.OK) {
+                setArgList(args_backup);
+                return -1;
+            }
+        }
+
+        for (SymbolMethod method : methods) {
+            if (class_accessed.checkValidArgList(method, getCurrentArgList())) {
+                int ret = 0;
+
+                if (getCurrentMemberAccess() != null && method.getAccessSymbol().equals(SymbolModifier.PRIVATE)
+                        && !(((SymbolClass) getCurrentMemberAccess().getActualType()).getClassName()).equals(getClassName())) {
+                    ErrorHandler.INSTANCE.addMethodAccessError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                            method.getName(), class_accessed.getClassName(), method.getParamTypesAsString());
+                    ret = -1;
+                }
+
+                setCurrentAccessedMethod(method);
+                setArgList(args_backup);
+                return ret;
+            }
+        }
+
+        String[] params = new String[0];
+        if (ctx.arg_list() != null) {
+            params = getArgListTypes();
+        }
+
+        if (getCurrentMemberAccess() != null) {
+            ErrorHandler.INSTANCE.addCannotInvokeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                    class_accessed.getClassName(), ctx.ID().toString(), params);
+        }
+        else {
+            ErrorHandler.INSTANCE.addUndefMethodError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.ID().toString(), params);
+        }
+
+        setArgList(args_backup);
+        return -1;
+    }
 }
