@@ -29,6 +29,9 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     public static final int ERROR_ID_UNDEF = -80;
 
+    public static final int ERROR_UNKNOWN_CTOR = -90;
+
+
 
     private SymbolClass currentClass;
     private SymbolVariable currentVar;
@@ -287,18 +290,20 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitAssign_stmt(JovaParser.Assign_stmtContext ctx) {
-        return visitChildren(ctx);
+        int errorIdExpr = visitId_expr(ctx.id_expr());
+
+        if (ctx.expr() != null) {
+            int errorExpr = visitExpr(ctx.expr());
+        } else if (ctx.object_alloc() != null) {
+            int errorObjc = visitObject_alloc(ctx.object_alloc());
+        }
+
+        return errorIdExpr;
     }
 
     @Override
     public Integer visitMember_access(JovaParser.Member_accessContext ctx) {
         // TODO: support method_invocation + member_access? (hier gemeint mit Class als return-type?
-
-        if (ctx.DOTOP() == null) {
-            // TODO: is this possible?
-            System.out.println("no dot found at memberaccess???");
-            return -34;
-        }
 
         SymbolVariable var = currentClass.getCurrentMemberAccess();
 
@@ -311,16 +316,18 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
         SymbolClass class_accessed = (SymbolClass) var.getActualType();
         if (ctx.ID() != null) {
-            AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable> member_entry = class_accessed.getMemberIfExists(ctx.ID().toString());
+            Optional<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> member_entry =
+                    class_accessed.getMemberIfExists(ctx.ID().toString());
 
-            if (member_entry == null) {
+            if (member_entry.isEmpty()) {
                 ErrorHandler.INSTANCE.addDoesNotHaveFieldError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
                         class_accessed.getClassName(), ctx.ID().toString());
                 return -1;
             }
-            SymbolVariable member = member_entry.getValue();
 
-            if (member_entry.getKey().equals(SymbolModifier.PRIVATE) && !(((SymbolClass) currentClass.getCurrentMemberAccess().getActualType()).getClassName()).equals(currentClass.getClassName())) {
+            SymbolVariable member = member_entry.get().getValue();
+
+            if (member_entry.get().getKey().equals(SymbolModifier.PRIVATE) && !(((SymbolClass) currentClass.getCurrentMemberAccess().getActualType()).getClassName()).equals(currentClass.getClassName())) {
                 ErrorHandler.INSTANCE.addMemberAccessError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
                         ctx.ID().toString(), class_accessed.getClassName());
                 return -1;
@@ -350,7 +357,51 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     }
 
     @Override public Integer visitMethod_invocation(JovaParser.Method_invocationContext ctx) {
-        return currentClass.invocation(this, ctx);
+        SymbolClass class_accessed = currentClass.getCurrentClassAccess();
+        Collection<SymbolMethod> methods = class_accessed.getMatchingMethods(ctx.ID().toString());
+
+        List<SymbolVariable> args_backup = currentClass.getCurrentArgList();
+        currentClass.setArgList(new ArrayList<>());
+        if (ctx.arg_list() != null) {
+            int tmp = visitArg_list(ctx.arg_list());
+            if (tmp != OK) {
+                currentClass.setArgList(args_backup);
+                return -1;
+            }
+        }
+
+        for (SymbolMethod method : methods) {
+            if (method.checkValidArgList(currentClass.getCurrentArgList())) {
+                int ret = 0;
+
+                if (currentClass.getCurrentMemberAccess() != null && method.getAccessSymbol().equals(SymbolModifier.PRIVATE)
+                        && !(((SymbolClass) currentClass.getCurrentMemberAccess().getActualType()).getClassName()).equals(currentClass.getClassName())) {
+                    ErrorHandler.INSTANCE.addMethodAccessError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                            method.getName(), class_accessed.getClassName(), method.getParamTypesAsString());
+                    ret = -1;
+                }
+
+                currentClass.setCurrentAccessedMethod(method);
+                currentClass.setArgList(args_backup);
+                return ret;
+            }
+        }
+
+        String[] params = new String[0];
+        if (ctx.arg_list() != null) {
+            params = currentClass.getCurrentArgList().stream().map(SymbolVariable::getTypeAsString).toArray(String[]::new);
+        }
+
+        if (currentClass.getCurrentMemberAccess() != null) {
+            ErrorHandler.INSTANCE.addCannotInvokeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                    class_accessed.getClassName(), ctx.ID().toString(), params);
+        }
+        else {
+            ErrorHandler.INSTANCE.addUndefMethodError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.ID().toString(), params);
+        }
+
+        currentClass.setArgList(args_backup);
+        return -1;
     }
 
     @Override public Integer visitId_expr(JovaParser.Id_exprContext ctx) {
@@ -495,7 +546,44 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitObject_alloc(JovaParser.Object_allocContext ctx) {
-        return visitChildren(ctx);
+        String className = ctx.CLASS_TYPE().toString();
+
+        // TODO this puts an undefined id error if class is not found => might be the the wrong error at this situation
+        Optional<SymbolClass> correspondingClass = symbolTable.getClassByName(className, ctx);
+        SymbolClass classObjectAlloc;
+
+        if (correspondingClass.isEmpty()) {
+            return ERROR_ID_UNDEF;
+        } else {
+            classObjectAlloc = correspondingClass.get();
+            currentClass.setCurrentObjectAlloc(classObjectAlloc);
+        }
+
+        List<SymbolVariable> fetchedArgs;
+        if (ctx.ctor_args() != null) {
+            currentClass.setArgList(new ArrayList<>());
+            visitCtor_args(ctx.ctor_args());
+            fetchedArgs = currentClass.getCurrentArgList();
+            currentClass.resetArgList();
+        } else {
+            // default constructor
+            return OK;
+        }
+
+
+        Collection<SymbolConstructor> availableCtors = classObjectAlloc.getConstructors();
+
+        for (SymbolConstructor ctor : availableCtors) {
+            if (ctor.checkValidArgList(fetchedArgs)) {
+                return OK;
+            }
+        }
+
+        String[] params = fetchedArgs.stream().map(SymbolVariable::getTypeAsString).toArray(String[]::new);
+        ErrorHandler.INSTANCE.addUndefMethodError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                correspondingClass.get().getClassName(), params);
+
+        return ERROR_UNKNOWN_CTOR;
     }
 
     @Override

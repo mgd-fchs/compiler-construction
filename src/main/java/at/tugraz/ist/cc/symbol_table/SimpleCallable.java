@@ -53,6 +53,20 @@ public abstract class SimpleCallable {
         }).toArray(String[]::new);
     }
 
+    public boolean checkValidArgList(List<SymbolVariable> argList) {
+        if (params.size() != argList.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < params.size(); i++) {
+            if (!params.get(i).equalTypeAndActualType(argList.get(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public List<SymbolVariable> getParams() {
         return params;
     }
@@ -114,14 +128,7 @@ public abstract class SimpleCallable {
             SymbolVariable thisParam = params.get(i);
             SymbolVariable thatParam= that.params.get(i);
 
-            if (    !(thisParam.getType() == SymbolType.PRIMITIVE &&
-                    thatParam.getType() == SymbolType.PRIMITIVE &&
-                    ((SymbolPrimitiveType) thisParam.getActualType()).equals(((SymbolPrimitiveType)thatParam.getActualType())))
-                    &&
-                    !(thisParam.getType() == SymbolType.CLASS &&
-                    thatParam.getType() == SymbolType.CLASS &&
-                    ((SymbolClass) thisParam.getActualType()).getClassName().
-                            equals(((SymbolClass) thatParam.getActualType()).getClassName()))){
+            if (!thisParam.equalTypeAndActualType(thatParam)){
                 return false;
             }
         }
