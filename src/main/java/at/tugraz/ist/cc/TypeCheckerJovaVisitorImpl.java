@@ -320,6 +320,8 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             if (currentClass.currentlyGatheringArguments()) {
                 currentClass.addArgument(member);
             }
+
+            currentClass.setCurrentMemberAccess(member);
             return OK;
         }
 
@@ -333,6 +335,11 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                 currentClass.addArgument(ret_var);
             }
             currentClass.setCurrentAccessedMethod(backup);
+
+
+            currentClass.setCurrentMemberAccess(ret_var);
+
+
             return OK;
         }
 

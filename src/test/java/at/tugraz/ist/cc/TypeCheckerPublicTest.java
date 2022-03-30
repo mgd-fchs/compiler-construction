@@ -146,7 +146,7 @@ public class TypeCheckerPublicTest {
     public void testAccFail04() {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail+ "access/fail04.jova", debug);
-        assertTrue(result == 2);
+        assertTrue(result == 1);
     }
 
     @Test

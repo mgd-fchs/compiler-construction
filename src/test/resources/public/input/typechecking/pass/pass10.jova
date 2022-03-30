@@ -16,7 +16,7 @@ class Evaluation{
    public string func2(int a, int b, string asdf){
       int x, zz;
 
-      return a.y;
+      return this.a.y;
    }
 
 }

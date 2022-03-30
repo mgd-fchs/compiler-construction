@@ -1,5 +1,17 @@
+class Test3{
+    public int tt;
+}
+
+class Test2{
+private Test3 t3;
+    public Test3 tmp() {
+       return t3;
+    }
+}
+
 class Test{
-private int x;
+public int x;
+public Test2 t2;
 
   public int testing() {
     return 0;
@@ -13,7 +25,8 @@ class Main2 {
   public int main22() {
     int test;
 
-    //this.test.x = this.test.testing();
+    this.test.x = this.test.testing();
+    this.test.x = this.test.t2.tmp().tt;
 
     return this.test.x;
   }
