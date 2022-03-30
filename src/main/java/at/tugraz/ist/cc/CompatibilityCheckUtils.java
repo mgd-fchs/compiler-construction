@@ -21,7 +21,6 @@ public final class CompatibilityCheckUtils {
     public static Integer checkOperatorCompatibility(Integer lhs_type, Integer rhs_type, JovaParser.ExprContext ctx, SymbolClass currentClass){
 
         //TODO: check equal or unequal for class and nix types
-
         // if operator is handed a method invocation
         if (SymbolType.valueOf(lhs_type) == null && SymbolPrimitiveType.valueOf(lhs_type) == null){
             String leftID = ctx.left.start.getText();
@@ -34,8 +33,8 @@ public final class CompatibilityCheckUtils {
         }
 
         // arithmetic and relational operations
-        String lhs_typestr = getTypeStr(lhs_type);
-        String rhs_typestr = getTypeStr(rhs_type);
+        String lhs_typestr = getTypeStr(lhs_type, ctx.left.start.getText(), currentClass);
+        String rhs_typestr = getTypeStr(rhs_type, ctx.right.start.getText(), currentClass);
 
         if (ctx.ADDOP() != null || ctx.MULOP() != null || ctx.RELOP() != null){
             if (lhs_type == TYPE_INT && rhs_type == TYPE_INT) {
@@ -67,15 +66,20 @@ public final class CompatibilityCheckUtils {
         }
     }
 
-    private static String getTypeStr(Integer type_int) {
-        if (type_int == TYPE_CLASS){
-            // TODO: Do we need to return the actual class type here?
-            return "Ctype";
+    private static String getTypeStr(Integer typeInt, String id, SymbolClass currentClass) {
+        String typeStr;
+
+        if (typeInt == TYPE_CLASS){
+            if (currentClass.getCurrentCallable() != null) {
+                typeStr = currentClass.getCurrentCallable().getLocalVariableById(id).getTypeAsString();
+            } else {
+                typeStr = currentClass.getCurrentScopeVariable(id).getTypeAsString();
+            }
         }
         else {
-            String type_str = SymbolPrimitiveType.valueOf(type_int).toString().toLowerCase();
-            return type_str;
+            typeStr = SymbolPrimitiveType.valueOf(typeInt).toString().toLowerCase();
         }
+        return typeStr;
     }
 
     public static Integer checkTernaryOperatorCompatibility(Integer whenType, Integer thenType, Integer elseType, JovaParser.ExprContext ctx, SymbolClass currentClass){
