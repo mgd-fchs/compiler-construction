@@ -1,10 +1,10 @@
 package at.tugraz.ist.cc;
 
 import at.tugraz.ist.cc.error.ErrorHandler;
+import at.tugraz.ist.cc.symbol_table.SymbolClass;
 import at.tugraz.ist.cc.symbol_table.SymbolPrimitiveType;
 import at.tugraz.ist.cc.symbol_table.SymbolType;
-
-import java.util.Locale;
+import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
 public final class CompatibilityCheckUtils {
 
@@ -95,5 +95,61 @@ public final class CompatibilityCheckUtils {
             return SymbolPrimitiveType.BOOL.getValue();
 
         }
+    }
+
+    public static Integer checkReturnValue(Integer actualReturnValue, SymbolClass currentClass, JovaParser.Ret_stmtContext ctx){
+        String actualReturnString;
+        SymbolType actualSymbolType = null;
+
+        // actual return value
+        if (SymbolPrimitiveType.valueOf(actualReturnValue) != null) {
+            actualReturnString = SymbolPrimitiveType.valueOf(actualReturnValue).toString();
+        } else if (currentClass.getCurrentScopeVariable(ctx.retval.start.getText()) != null) {
+            actualReturnString = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getTypeAsString();
+            actualSymbolType = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getType();
+        } else {
+            ErrorHandler.INSTANCE.addUndefIdError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.retval.start.getText());
+            return TYPE_ERROR;
+        }
+
+        // expected return value
+        if (currentClass.getCurrentAccessedMethod().getReturnValue().getActualType() instanceof SymbolPrimitiveType) {
+            Integer expectedValue = ((SymbolPrimitiveType) currentClass.getCurrentAccessedMethod().getReturnValue().getActualType()).getValue();
+
+            if (expectedValue == actualReturnValue) {
+                return actualReturnValue;
+            } else {
+                return checkReturnValueCoercion(actualReturnValue, expectedValue, ctx, actualReturnString);
+            }
+        } else {
+            SymbolType expectedSymbolType = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getType();
+            if (actualSymbolType != null && expectedSymbolType != actualSymbolType){
+                return checkReturnValueCoercion(actualReturnValue, expectedSymbolType.getValue(), ctx, actualReturnString);
+            } else {
+                return actualReturnValue;
+            }
+
+        }
+    }
+
+    private static Integer checkReturnValueCoercion(Integer actualValue, Integer expectedValue, JovaParser.Ret_stmtContext ctx, String actualReturnString){
+        SymbolPrimitiveType actualType = SymbolPrimitiveType.valueOf(actualValue);
+        SymbolPrimitiveType expectedType = SymbolPrimitiveType.valueOf(expectedValue);
+        Integer returnValue;
+
+        if (actualType == SymbolPrimitiveType.BOOL || actualType == SymbolPrimitiveType.INT){
+            if (expectedType == SymbolPrimitiveType.BOOL || expectedType == SymbolPrimitiveType.INT){
+                ErrorHandler.INSTANCE.addReturnTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualType.toString(), expectedType.toString());
+                returnValue = expectedValue;
+            } else {
+                ErrorHandler.INSTANCE.addIncompatibleReturnTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualReturnString);
+                returnValue = TYPE_ERROR;
+            }
+        } else {
+            ErrorHandler.INSTANCE.addIncompatibleReturnTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualReturnString);
+            returnValue = TYPE_ERROR;
+        }
+
+        return returnValue;
     }
 }

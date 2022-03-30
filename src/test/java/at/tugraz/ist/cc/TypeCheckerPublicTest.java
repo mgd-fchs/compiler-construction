@@ -380,6 +380,14 @@ public class TypeCheckerPublicTest {
     }
 
     @Test
+    public void testRetFail04() {
+        // check coerced assignment of nix
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "incompatible_return/fail04.jova", debug);
+        assertTrue(result > 0);
+    }
+
+    @Test
     public void testOpFail01() {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail+ "incorrect_operand/fail01.jova", debug);
