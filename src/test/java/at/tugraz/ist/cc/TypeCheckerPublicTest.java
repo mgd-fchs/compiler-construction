@@ -149,6 +149,14 @@ public class TypeCheckerPublicTest {
         assertEquals(0, result);
     }
 
+    @Test
+    public void testPass21() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "pass21.jova", debug);
+        ErrorHandler.INSTANCE.printTypeWarnings();
+        assertEquals(0, result);
+    }
+
 
     @Test
     public void testAccFail01() {

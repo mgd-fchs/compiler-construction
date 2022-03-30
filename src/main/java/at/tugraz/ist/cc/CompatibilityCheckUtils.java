@@ -17,7 +17,6 @@ public final class CompatibilityCheckUtils {
 
     private CompatibilityCheckUtils(){
     }
-    // TODO @all Discuss if this should be part of the symbol table
 
     public static Integer checkOperatorCompatibility(Integer lhs_type, Integer rhs_type, JovaParser.ExprContext ctx){
 
@@ -108,7 +107,6 @@ public final class CompatibilityCheckUtils {
             actualReturnString = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getTypeAsString();
             actualSymbolType = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getType();
         } else {
-            ErrorHandler.INSTANCE.addUndefIdError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.retval.start.getText());
             return TYPE_ERROR;
         }
 
