@@ -98,12 +98,13 @@ public final class CompatibilityCheckUtils {
         }
     }
 
-    public static Integer checkConditionCompatibility(Integer condition_type, JovaParser.ExprContext ctx){
+    public static Integer checkConditionCompatibility(Integer condition_type, JovaParser.ExprContext ctx, SymbolClass currentClass){
+        String typeString = getTypeStr(condition_type, ctx.start.getText(), currentClass);
         if (condition_type != TYPE_BOOL && condition_type != TYPE_INT) {
-            ErrorHandler.INSTANCE.addIncompatibleCondTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), SymbolPrimitiveType.valueOf(condition_type).toString().toLowerCase());
+            ErrorHandler.INSTANCE.addIncompatibleCondTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), typeString);
             return TYPE_ERROR;
         } else if (condition_type == TYPE_INT){
-            ErrorHandler.INSTANCE.addConditionTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), SymbolPrimitiveType.valueOf(condition_type).toString().toLowerCase(), "bool");
+            ErrorHandler.INSTANCE.addConditionTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), typeString, "bool");
             return SymbolPrimitiveType.BOOL.getValue();
         } else {
             return SymbolPrimitiveType.BOOL.getValue();

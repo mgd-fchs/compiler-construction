@@ -557,7 +557,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     @Override
     public Integer visitIf_stmt(JovaParser.If_stmtContext ctx) {
         Integer conditionType = visit(ctx.expr());
-        if (CompatibilityCheckUtils.checkConditionCompatibility(conditionType, ctx.expr()) == TYPE_ERROR){
+        if (CompatibilityCheckUtils.checkConditionCompatibility(conditionType, ctx.expr(), currentClass) == TYPE_ERROR){
             return TYPE_ERROR;
         }
 
@@ -567,7 +567,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     @Override
     public Integer visitWhile_stmt(JovaParser.While_stmtContext ctx) {
         Integer conditionType = visit(ctx.expr());
-        if (CompatibilityCheckUtils.checkConditionCompatibility(conditionType, ctx.expr()) == TYPE_ERROR){
+        if (CompatibilityCheckUtils.checkConditionCompatibility(conditionType, ctx.expr(), currentClass) == TYPE_ERROR){
             return TYPE_ERROR;
         }
         return visitChildren(ctx);
