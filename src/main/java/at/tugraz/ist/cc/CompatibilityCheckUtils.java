@@ -18,18 +18,37 @@ public final class CompatibilityCheckUtils {
     private CompatibilityCheckUtils(){
     }
 
-    public static Integer checkOperatorCompatibility(Integer lhs_type, Integer rhs_type, JovaParser.ExprContext ctx){
-
-        String lhs_typestr = getTypeStr(lhs_type);
-        String rhs_typestr = getTypeStr(rhs_type);
+    public static Integer checkOperatorCompatibility(Integer lhs_type, Integer rhs_type, JovaParser.ExprContext ctx, SymbolClass currentClass){
 
         //TODO: check equal or unequal for class and nix types
 
+        // if operator is handed a method invocation
+        SymbolVariable methodRetVal;
+        if (SymbolType.valueOf(lhs_type) == null && SymbolPrimitiveType.valueOf(lhs_type) == null){
+            String leftID = ctx.left.start.getText();
+            methodRetVal = currentClass.getMethodReturnValueById(leftID);
+            if (methodRetVal.getActualType() instanceof SymbolPrimitiveType){
+                lhs_type = ((SymbolPrimitiveType) methodRetVal.getActualType()).getValue();
+            }
+        }
+
+        if (SymbolType.valueOf(rhs_type) == null && SymbolPrimitiveType.valueOf(rhs_type) == null){
+            String rightID = ctx.left.start.getText();
+            methodRetVal = currentClass.getMethodReturnValueById(rightID);
+            if (methodRetVal.getActualType() instanceof SymbolPrimitiveType){
+                rhs_type = ((SymbolPrimitiveType) methodRetVal.getActualType()).getValue();
+            }
+        }
+
+        
         // arithmetic and relational operations
+        String lhs_typestr = getTypeStr(lhs_type);
+        String rhs_typestr = getTypeStr(rhs_type);
+
         if (ctx.ADDOP() != null || ctx.MULOP() != null || ctx.RELOP() != null){
             if (lhs_type == TYPE_INT && rhs_type == TYPE_INT) {
                 return SymbolPrimitiveType.INT.getValue();
-            } else if ((lhs_type == TYPE_BOOL || lhs_type == TYPE_INT) && (rhs_type == TYPE_BOOL || rhs_type == TYPE_INT)){
+            } else if ((lhs_type == TYPE_BOOL || lhs_type == TYPE_INT) && (rhs_type == TYPE_BOOL || rhs_type == TYPE_INT)) {
                 ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.op.getText(), lhs_typestr, rhs_typestr, "int", "int");
                 return SymbolPrimitiveType.INT.getValue();
             } else {
@@ -56,19 +75,12 @@ public final class CompatibilityCheckUtils {
     }
 
     private static String getTypeStr(Integer type_int) {
-        if (type_int == TYPE_CLASS){
-            // TODO: Do we need to return the actual class type here?
-            return "Ctype";
-        }
-        else {
-            String type_str = SymbolPrimitiveType.valueOf(type_int).toString().toLowerCase();
-            return type_str;
-        }
+        String type_str = SymbolPrimitiveType.valueOf(type_int).toString().toLowerCase();
+        return type_str;
     }
 
-    public static Integer checkTernaryOperatorCompatibility(Integer whenType, Integer thenType, Integer elseType, JovaParser.ExprContext ctx){
+    public static Integer checkTernaryOperatorCompatibility(Integer whenType, Integer thenType, Integer elseType, JovaParser.ExprContext ctx, SymbolClass currentClass){
         // TODO: Check error messages for ternary operator
-        // TODO: Ensure then/else resolve to correct type
         // TODO: Add some test cases (incl. nix-type!)
         // check condition
         if (whenType != TYPE_BOOL && whenType != TYPE_INT) {
@@ -92,7 +104,6 @@ public final class CompatibilityCheckUtils {
             return SymbolPrimitiveType.BOOL.getValue();
         } else {
             return SymbolPrimitiveType.BOOL.getValue();
-
         }
     }
 
