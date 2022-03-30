@@ -1,10 +1,10 @@
 package at.tugraz.ist.cc;
 
 import at.tugraz.ist.cc.error.ErrorHandler;
+import at.tugraz.ist.cc.symbol_table.SymbolClass;
 import at.tugraz.ist.cc.symbol_table.SymbolPrimitiveType;
 import at.tugraz.ist.cc.symbol_table.SymbolType;
-
-import java.util.Locale;
+import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
 public final class CompatibilityCheckUtils {
 
@@ -13,24 +13,33 @@ public final class CompatibilityCheckUtils {
     public static final int TYPE_BOOL = SymbolPrimitiveType.BOOL.getValue();
     public static final int TYPE_CLASS = SymbolType.CLASS.getValue();
     private static final int TYPE_ERROR = -30;
-    public static final int TYPE_NIX = 44;
+    public static final int TYPE_NIX = SymbolPrimitiveType.NIX.getValue();;
 
     private CompatibilityCheckUtils(){
     }
-    // TODO @all Discuss if this should be part of the symbol table
 
-    public static Integer checkOperatorCompatibility(Integer lhs_type, Integer rhs_type, JovaParser.ExprContext ctx){
-
-        String lhs_typestr = getTypeStr(lhs_type);
-        String rhs_typestr = getTypeStr(rhs_type);
+    public static Integer checkOperatorCompatibility(Integer lhs_type, Integer rhs_type, JovaParser.ExprContext ctx, SymbolClass currentClass){
 
         //TODO: check equal or unequal for class and nix types
+        // if operator is handed a method invocation
+        if (SymbolType.valueOf(lhs_type) == null && SymbolPrimitiveType.valueOf(lhs_type) == null){
+            String leftID = ctx.left.start.getText();
+            lhs_type = getMethodReturnPrimitiveType(currentClass, leftID);
+        }
+
+        if (SymbolType.valueOf(rhs_type) == null && SymbolPrimitiveType.valueOf(rhs_type) == null){
+            String rightID = ctx.right.start.getText();
+            rhs_type = getMethodReturnPrimitiveType(currentClass, rightID);
+        }
 
         // arithmetic and relational operations
+        String lhs_typestr = getTypeStr(lhs_type, ctx.left.start.getText(), currentClass);
+        String rhs_typestr = getTypeStr(rhs_type, ctx.right.start.getText(), currentClass);
+
         if (ctx.ADDOP() != null || ctx.MULOP() != null || ctx.RELOP() != null){
             if (lhs_type == TYPE_INT && rhs_type == TYPE_INT) {
                 return SymbolPrimitiveType.INT.getValue();
-            } else if ((lhs_type == TYPE_BOOL || lhs_type == TYPE_INT) && (rhs_type == TYPE_BOOL || rhs_type == TYPE_INT)){
+            } else if ((lhs_type == TYPE_BOOL || lhs_type == TYPE_INT) && (rhs_type == TYPE_BOOL || rhs_type == TYPE_INT)) {
                 ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.op.getText(), lhs_typestr, rhs_typestr, "int", "int");
                 return SymbolPrimitiveType.INT.getValue();
             } else {
@@ -40,7 +49,7 @@ public final class CompatibilityCheckUtils {
         }
 
         // logical operations
-        if (ctx.AND() != null || ctx.OR() != null){
+        else if (ctx.AND() != null || ctx.OR() != null){
             if (lhs_type == TYPE_BOOL && rhs_type == TYPE_BOOL){
                 return SymbolPrimitiveType.BOOL.getValue();
             } else if ((lhs_type == TYPE_BOOL || lhs_type == TYPE_INT) && (rhs_type == TYPE_BOOL || rhs_type == TYPE_INT)){
@@ -51,25 +60,30 @@ public final class CompatibilityCheckUtils {
                 return TYPE_ERROR;
             }
         }
+
         else {
             return TYPE_ERROR;
         }
     }
 
-    private static String getTypeStr(Integer type_int) {
-        if (type_int == TYPE_CLASS){
-            // TODO: Do we need to return the actual class type here?
-            return "Ctype";
+    private static String getTypeStr(Integer typeInt, String id, SymbolClass currentClass) {
+        String typeStr;
+
+        if (typeInt == TYPE_CLASS){
+            if (currentClass.getCurrentCallable() != null) {
+                typeStr = currentClass.getCurrentCallable().getLocalVariableById(id).getTypeAsString();
+            } else {
+                typeStr = currentClass.getCurrentScopeVariable(id).getTypeAsString();
+            }
         }
         else {
-            String type_str = SymbolPrimitiveType.valueOf(type_int).toString().toLowerCase();
-            return type_str;
+            typeStr = SymbolPrimitiveType.valueOf(typeInt).toString().toLowerCase();
         }
+        return typeStr;
     }
 
-    public static Integer checkTernaryOperatorCompatibility(Integer whenType, Integer thenType, Integer elseType, JovaParser.ExprContext ctx){
+    public static Integer checkTernaryOperatorCompatibility(Integer whenType, Integer thenType, Integer elseType, JovaParser.ExprContext ctx, SymbolClass currentClass){
         // TODO: Check error messages for ternary operator
-        // TODO: Ensure then/else resolve to correct type
         // TODO: Add some test cases (incl. nix-type!)
         // check condition
         if (whenType != TYPE_BOOL && whenType != TYPE_INT) {
@@ -84,16 +98,95 @@ public final class CompatibilityCheckUtils {
         }
     }
 
-    public static Integer checkConditionCompatibility(Integer condition_type, JovaParser.ExprContext ctx){
+    public static Integer checkConditionCompatibility(Integer condition_type, JovaParser.ExprContext ctx, SymbolClass currentClass){
+        String typeString = getTypeStr(condition_type, ctx.start.getText(), currentClass);
         if (condition_type != TYPE_BOOL && condition_type != TYPE_INT) {
-            ErrorHandler.INSTANCE.addIncompatibleCondTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), SymbolPrimitiveType.valueOf(condition_type).toString().toLowerCase());
+            ErrorHandler.INSTANCE.addIncompatibleCondTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), typeString);
             return TYPE_ERROR;
         } else if (condition_type == TYPE_INT){
-            ErrorHandler.INSTANCE.addConditionTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), SymbolPrimitiveType.valueOf(condition_type).toString().toLowerCase(), "bool");
+            ErrorHandler.INSTANCE.addConditionTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), typeString, "bool");
             return SymbolPrimitiveType.BOOL.getValue();
         } else {
             return SymbolPrimitiveType.BOOL.getValue();
+        }
+    }
 
+    public static Integer checkReturnValue(Integer actualReturnValue, SymbolClass currentClass, JovaParser.Ret_stmtContext ctx){
+        String actualReturnString;
+        SymbolType actualSymbolType = null;
+
+        // actual return value
+        if (SymbolPrimitiveType.valueOf(actualReturnValue) != null) {
+            if (actualReturnValue == TYPE_NIX){
+                return actualReturnValue;
+            }
+            actualReturnString = SymbolPrimitiveType.valueOf(actualReturnValue).toString();
+        } else if (currentClass.getCurrentScopeVariable(ctx.retval.start.getText()) != null) {
+            actualReturnString = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getTypeAsString();
+            actualSymbolType = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getType();
+        } else {
+            return TYPE_ERROR;
+        }
+
+        // expected return value
+        if (currentClass.getCurrentAccessedMethod().getReturnValue().getActualType() instanceof SymbolPrimitiveType) {
+            Integer expectedValue = ((SymbolPrimitiveType) currentClass.getCurrentAccessedMethod().getReturnValue().getActualType()).getValue();
+
+            if (expectedValue == actualReturnValue) {
+                return actualReturnValue;
+            } else {
+                return checkReturnValueCoercion(actualReturnValue, expectedValue, ctx, actualReturnString);
+            }
+        } else {
+            SymbolType expectedSymbolType = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getType();
+            if (actualSymbolType != null && expectedSymbolType != actualSymbolType){
+                return checkReturnValueCoercion(actualReturnValue, expectedSymbolType.getValue(), ctx, actualReturnString);
+            } else {
+                return actualReturnValue;
+            }
+
+        }
+    }
+
+    private static Integer checkReturnValueCoercion(Integer actualValue, Integer expectedValue, JovaParser.Ret_stmtContext ctx, String actualReturnString){
+        SymbolPrimitiveType actualType = SymbolPrimitiveType.valueOf(actualValue);
+        SymbolPrimitiveType expectedType = SymbolPrimitiveType.valueOf(expectedValue);
+        Integer returnValue;
+
+        if (actualType == SymbolPrimitiveType.BOOL || actualType == SymbolPrimitiveType.INT){
+            if (expectedType == SymbolPrimitiveType.BOOL || expectedType == SymbolPrimitiveType.INT){
+                ErrorHandler.INSTANCE.addReturnTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualType.toString(), expectedType.toString());
+                returnValue = expectedValue;
+            } else {
+                ErrorHandler.INSTANCE.addIncompatibleReturnTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualReturnString);
+                returnValue = TYPE_ERROR;
+            }
+        } else {
+            ErrorHandler.INSTANCE.addIncompatibleReturnTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualReturnString);
+            returnValue = TYPE_ERROR;
+        }
+
+        return returnValue;
+    }
+
+    private static int getMethodReturnPrimitiveType(SymbolClass currentClass, String id){
+        SymbolVariable methodRetVal;
+        Integer primType = null;
+        methodRetVal = currentClass.getMethodReturnValueById(id);
+        if (methodRetVal.getActualType() instanceof SymbolPrimitiveType){
+            primType = ((SymbolPrimitiveType) methodRetVal.getActualType()).getValue();
+        }
+        return primType;
+    }
+
+    private static SymbolVariable getMethodReturnClassType(SymbolClass currentClass, String id){
+        SymbolVariable methodRetVal;
+        methodRetVal = currentClass.getMethodReturnValueById(id);
+        if (methodRetVal != null){
+            return methodRetVal;
+        } else {
+            // TODO: Add error here
+            return null;
         }
     }
 }

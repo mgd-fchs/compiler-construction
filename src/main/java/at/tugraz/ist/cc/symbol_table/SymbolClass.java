@@ -139,6 +139,7 @@ public class SymbolClass {
         if (errorOccurred == 0) {
             methods.add(symbolMethod);
             currentCallable = symbolMethod;
+            currentAccessedMethod = symbolMethod;
         }
 
         return errorOccurred;
@@ -258,6 +259,12 @@ public class SymbolClass {
         Optional<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> found = members.stream().filter(element -> element.getValue().getName().equals(id)).findFirst();
         return found.get().getValue();
     }
+
+    public SymbolVariable getMethodReturnValueById(String id){
+        Optional<SymbolMethod> found = methods.stream().filter(element -> element.getName().equals(id)).findFirst();
+        return found.get().getReturnValue();
+    }
+
     public String getClassName() {
         return className;
     }

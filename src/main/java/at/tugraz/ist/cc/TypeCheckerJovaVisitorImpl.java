@@ -278,8 +278,12 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitRet_stmt(JovaParser.Ret_stmtContext ctx) {
-        return visitChildren(ctx);
+        Integer actualReturnValue = visit(ctx.expr());
+        Integer checkResult = CompatibilityCheckUtils.checkReturnValue(actualReturnValue, currentClass, ctx);
+
+        return checkResult;
     }
+
 
     @Override
     public Integer visitAssign_stmt(JovaParser.Assign_stmtContext ctx) {
@@ -464,14 +468,14 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             }
 
             // check types are compatible
-            return CompatibilityCheckUtils.checkOperatorCompatibility(lhs_type, rhs_type, ctx);
+            return CompatibilityCheckUtils.checkOperatorCompatibility(lhs_type, rhs_type, ctx, currentClass);
 
         } else if(ctx.when != null){
             // case: ternary operator
             Integer whenType = visit(ctx.when);
             Integer thenType = visit(ctx.then);
             Integer elseType = visit(ctx.el);
-            return CompatibilityCheckUtils.checkTernaryOperatorCompatibility(whenType, thenType, elseType, ctx);
+            return CompatibilityCheckUtils.checkTernaryOperatorCompatibility(whenType, thenType, elseType, ctx, currentClass);
 
         } else {
             // case: primary expression
@@ -553,7 +557,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     @Override
     public Integer visitIf_stmt(JovaParser.If_stmtContext ctx) {
         Integer conditionType = visit(ctx.expr());
-        if (CompatibilityCheckUtils.checkConditionCompatibility(conditionType, ctx.expr()) == TYPE_ERROR){
+        if (CompatibilityCheckUtils.checkConditionCompatibility(conditionType, ctx.expr(), currentClass) == TYPE_ERROR){
             return TYPE_ERROR;
         }
 
@@ -563,7 +567,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     @Override
     public Integer visitWhile_stmt(JovaParser.While_stmtContext ctx) {
         Integer conditionType = visit(ctx.expr());
-        if (CompatibilityCheckUtils.checkConditionCompatibility(conditionType, ctx.expr()) == TYPE_ERROR){
+        if (CompatibilityCheckUtils.checkConditionCompatibility(conditionType, ctx.expr(), currentClass) == TYPE_ERROR){
             return TYPE_ERROR;
         }
         return visitChildren(ctx);
