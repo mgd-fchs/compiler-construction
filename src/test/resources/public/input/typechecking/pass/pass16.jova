@@ -1,0 +1,26 @@
+class Test{
+public int x;
+
+  public int testing() {
+    return 0;
+  }
+
+}
+
+class Main2 {
+   private Test test;
+
+   private int testing(int x) {
+        return x;
+   }
+
+  public int main22() {
+    int test;
+
+    this.test.x = this.testing(testing(testing(testing(0))));
+
+
+    return this.test.x;
+  }
+
+}

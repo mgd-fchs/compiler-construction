@@ -22,11 +22,17 @@ public Test2 t2;
 class Main2 {
    private Test test;
 
+   private int testing(int x) {
+        return x;
+   }
+
   public int main22() {
     int test;
 
     this.test.x = this.test.testing();
     this.test.x = this.test.t2.tmp().tt;
+    this.test.x = this.testing(this.test.t2.tmp().tt);
+
 
     return this.test.x;
   }

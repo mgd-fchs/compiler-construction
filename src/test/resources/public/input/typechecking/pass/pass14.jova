@@ -9,6 +9,6 @@ class Main {
 
   public int main() {
     Evaluation eval;
-    return print(readInt());
+    return print(eval.getMsg());
   }
 }

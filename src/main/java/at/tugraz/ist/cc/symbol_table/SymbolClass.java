@@ -25,6 +25,7 @@ public class SymbolClass {
     private SimpleCallable currentCallable;
     private SymbolMethod currentAccessedMethod;
     private SymbolVariable currentMemberAccess;
+    private SymbolVariable currentArgVariable;
     private List<SymbolVariable> currentParams;
     private List<SymbolVariable> currentArgList;
 
@@ -37,6 +38,7 @@ public class SymbolClass {
         constructors = new ArrayList<>();
         currentMemberAccess = null;
         currentAccessedMethod = null;
+        currentArgVariable = null;
 
         // needs to be 0 to signal that no method-invocation is currently checked
         currentArgList = null;
@@ -383,6 +385,13 @@ public class SymbolClass {
         return currentClassName;
     }
 
+    public SymbolVariable getCurrentArgVariable() {
+        return currentArgVariable;
+    }
+
+    public void setCurrentArgVariable(SymbolVariable currentArgVariable) {
+        this.currentArgVariable = currentArgVariable;
+    }
 
     @Override
     public boolean equals(Object o) {

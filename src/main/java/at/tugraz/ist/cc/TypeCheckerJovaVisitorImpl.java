@@ -318,7 +318,8 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             }
 
             if (currentClass.currentlyGatheringArguments()) {
-                currentClass.addArgument(member);
+                //currentClass.addArgument(var);
+                currentClass.setCurrentArgVariable(member);
             }
 
             currentClass.setCurrentMemberAccess(member);
@@ -332,14 +333,11 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             }
             SymbolVariable ret_var = new SymbolVariable(currentClass.getCurrentAccessedMethod().getReturnValue().getType(), currentClass.getCurrentAccessedMethod().getReturnValue().getActualType(), "");
             if (currentClass.currentlyGatheringArguments()) {
-                currentClass.addArgument(ret_var);
+                //currentClass.addArgument(var);
+                currentClass.setCurrentArgVariable(ret_var);
             }
             currentClass.setCurrentAccessedMethod(backup);
-
-
             currentClass.setCurrentMemberAccess(ret_var);
-
-
             return OK;
         }
 
@@ -405,7 +403,8 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                 }
 
                 if (ctx.member_access() == null || ctx.member_access().size() == 0) {
-                    currentClass.addArgument(var);
+                    //currentClass.addArgument(var);
+                    currentClass.setCurrentArgVariable(var);
                     return 0;
                 }
             }
@@ -416,7 +415,8 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                     return -1;
                 }
                 SymbolVariable var = new SymbolVariable(currentClass.getCurrentAccessedMethod().getReturnValue().getType(), currentClass.getCurrentAccessedMethod().getReturnValue().getActualType(), "");
-                currentClass.addArgument(var);
+//                currentClass.addArgument(var);
+                currentClass.setCurrentArgVariable(var);
                 currentClass.setCurrentAccessedMethod(backup);
             }
         }
@@ -446,7 +446,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             }
             currentClass.setCurrentMemberAccess(backup);
             return ret;
-
         }
 
         if(ctx.ID() != null) {
@@ -487,12 +486,21 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override public Integer visitArg_list(JovaParser.Arg_listContext ctx) {
         int ret = 0;
+        SymbolVariable backup = currentClass.getCurrentArgVariable();
+        currentClass.setCurrentArgVariable(null);
         for (JovaParser.ExprContext expr : ctx.expr()) {
             ret = visitExpr(expr);
+
             if (ret < 0) {
+                currentClass.setCurrentArgVariable(backup);
                 return ret;
             }
+
+            if (currentClass.getCurrentArgVariable() != null) {
+                currentClass.addArgument(currentClass.getCurrentArgVariable());
+            }
         }
+        currentClass.setCurrentArgVariable(backup);
         return ret;
 //        return visitChildren(ctx);
     }
