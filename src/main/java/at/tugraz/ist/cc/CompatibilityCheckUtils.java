@@ -50,7 +50,7 @@ public final class CompatibilityCheckUtils {
         }
 
         // logical operations
-        if (ctx.AND() != null || ctx.OR() != null){
+        else if (ctx.AND() != null || ctx.OR() != null){
             if (lhs_type == TYPE_BOOL && rhs_type == TYPE_BOOL){
                 return SymbolPrimitiveType.BOOL.getValue();
             } else if ((lhs_type == TYPE_BOOL || lhs_type == TYPE_INT) && (rhs_type == TYPE_BOOL || rhs_type == TYPE_INT)){
@@ -61,14 +61,21 @@ public final class CompatibilityCheckUtils {
                 return TYPE_ERROR;
             }
         }
+
         else {
             return TYPE_ERROR;
         }
     }
 
     private static String getTypeStr(Integer type_int) {
-        String type_str = SymbolPrimitiveType.valueOf(type_int).toString().toLowerCase();
-        return type_str;
+        if (type_int == TYPE_CLASS){
+            // TODO: Do we need to return the actual class type here?
+            return "Ctype";
+        }
+        else {
+            String type_str = SymbolPrimitiveType.valueOf(type_int).toString().toLowerCase();
+            return type_str;
+        }
     }
 
     public static Integer checkTernaryOperatorCompatibility(Integer whenType, Integer thenType, Integer elseType, JovaParser.ExprContext ctx, SymbolClass currentClass){
