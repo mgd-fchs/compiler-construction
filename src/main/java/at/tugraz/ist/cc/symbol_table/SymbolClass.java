@@ -420,6 +420,7 @@ public class SymbolClass {
     public SimpleCallable getCurrentCallable() {return currentCallable;}
 
     public int invocation(TypeCheckerJovaVisitorImpl type, JovaParser.Method_invocationContext ctx) {
+        // TODO this cant stay here
         SymbolClass class_accessed = getCurrentClassAccess();
         Collection<SymbolMethod> methods = class_accessed.getMatchingMethods(ctx.ID().toString());
 

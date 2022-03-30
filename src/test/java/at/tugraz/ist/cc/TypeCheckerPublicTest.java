@@ -604,4 +604,12 @@ public class TypeCheckerPublicTest {
         assertEquals(0, result);
     }
 
+    @Test
+    public void testCtor01() {
+        // check nested assignments, previously 'pass_own_simple.jova'
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "passCtor01.jova", debug);
+        assertEquals(0, result);
+    }
+
 }

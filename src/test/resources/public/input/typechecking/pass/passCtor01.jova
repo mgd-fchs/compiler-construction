@@ -1,0 +1,11 @@
+class Helper {
+
+}
+
+class Test {
+    public int func() {
+        Helper a;
+        a = new Helper;
+        return 0;
+    }
+}

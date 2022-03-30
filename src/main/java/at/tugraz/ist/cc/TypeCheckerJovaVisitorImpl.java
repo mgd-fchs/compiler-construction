@@ -283,7 +283,15 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitAssign_stmt(JovaParser.Assign_stmtContext ctx) {
-        return visitChildren(ctx);
+        int errorIdExpr = visitId_expr(ctx.id_expr());
+
+        if (ctx.expr() != null) {
+            int errorExpr = visitExpr(ctx.expr());
+        } else if (ctx.object_alloc() != null) {
+            int errorObjc = visitObject_alloc(ctx.object_alloc());
+        }
+
+        return errorIdExpr;
     }
 
     @Override
@@ -482,6 +490,16 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitObject_alloc(JovaParser.Object_allocContext ctx) {
+        String className = ctx.CLASS_TYPE().toString();
+
+        // TODO this puts an undefined id error if class is not found => might be the the wrong error at this situation
+        Optional<SymbolClass> correspondingClass = symbolTable.getClassByName(className, ctx);
+
+        visitCtor_args(ctx.ctor_args());
+
+        if (correspondingClass.isEmpty()) {
+//            ErrorHandler.INSTANCE.addUndefMethodError();
+        }
         return visitChildren(ctx);
     }
 
