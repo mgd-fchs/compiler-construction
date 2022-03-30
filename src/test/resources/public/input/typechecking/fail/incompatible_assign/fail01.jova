@@ -1,0 +1,18 @@
+class Tmp {
+}
+class Cls {
+
+	public int func(int x) {
+		return 42;
+	}
+
+	public int cls(){
+		int a, b, c;
+
+		a= "somestr";
+		b= true;
+		c= func(3);
+		
+		return 0;
+	}	
+}

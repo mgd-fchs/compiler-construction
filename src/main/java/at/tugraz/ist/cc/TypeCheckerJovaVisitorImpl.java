@@ -301,6 +301,11 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             int errorObjc = visitObject_alloc(ctx.object_alloc());
         }
 
+        if (ctx.ass != null){
+            Integer exprReturnValue = visit(ctx.expr());
+            CompatibilityCheckUtils.checkExpressionAssginment(exprReturnValue, ctx.id.start.getText(), currentClass, ctx);
+        }
+        // CompatibilityCheckUtils.checkAssignStatement();
         return errorIdExpr;
     }
 

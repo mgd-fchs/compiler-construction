@@ -96,7 +96,7 @@ declaration : type id_list ';';
 
 ret_stmt : KEY_RETURN retval=expr ';';
 
-assign_stmt : id_expr ASSIGN (expr | object_alloc);
+assign_stmt : id=id_expr ASSIGN (ass=expr | alloc=object_alloc);
 
 member_access : DOTOP (ID | method_invocation);
 

@@ -12,8 +12,9 @@ public final class CompatibilityCheckUtils {
     public static final int TYPE_STR = SymbolPrimitiveType.STRING.getValue();
     public static final int TYPE_BOOL = SymbolPrimitiveType.BOOL.getValue();
     public static final int TYPE_CLASS = SymbolType.CLASS.getValue();
-    private static final int TYPE_ERROR = -30;
     public static final int TYPE_NIX = SymbolPrimitiveType.NIX.getValue();;
+    private static final int TYPE_ERROR = -30;
+    private static final int OK = 0;
 
     private CompatibilityCheckUtils(){
     }
@@ -188,5 +189,31 @@ public final class CompatibilityCheckUtils {
             // TODO: Add error here
             return null;
         }
+    }
+
+    public static int checkExpressionAssginment(Integer exprReturnValue, String assignedID, SymbolClass currentClass, JovaParser.Assign_stmtContext ctx){
+        SymbolVariable assignedVariable = currentClass.getCurrentCallable().getLocalVariableById(assignedID);
+
+        // case: expression returns primitive type
+        if (SymbolPrimitiveType.valueOf(exprReturnValue) != null) {
+            if (assignedVariable.getActualType() instanceof SymbolPrimitiveType){
+                if(((SymbolPrimitiveType) assignedVariable.getActualType()).getValue() == exprReturnValue){
+                    return OK;
+                } else {
+                    // TODO: find out which error should be thrown here
+                    String actualReturnString = getTypeStr(exprReturnValue, assignedID, currentClass);
+                    ErrorHandler.INSTANCE.addIncompatibleReturnTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualReturnString);
+                    return TYPE_ERROR;
+                }
+            }
+            // case: expression is a function call
+        } else if (SymbolType.valueOf(exprReturnValue) == null && SymbolPrimitiveType.valueOf(exprReturnValue) == null){
+            String exprID = ctx.ass.start.getText();
+            exprReturnValue = getMethodReturnPrimitiveType(currentClass, exprID);
+
+        }// case: expression is an id_expression
+
+        // case: expression is an object allocation
+        return OK;
     }
 }

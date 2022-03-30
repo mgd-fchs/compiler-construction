@@ -682,4 +682,12 @@ public class TypeCheckerPublicTest {
         assertEquals((5 - 1) + (9*3 - 1), result);
     }
 
+    @Test
+    public void testAssignFail01() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "incompatible_assign/fail01.jova", debug);
+        assertEquals(2, result);
+    }
+
+
 }
