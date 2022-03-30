@@ -4,7 +4,7 @@ class Test3{
 
 class Test2{
 private Test3 t3;
-    public Test3 tmp() {
+    public Test3 tmp(Test2 tt, int x, string y, bool z) {
        return t3;
     }
 }
@@ -21,17 +21,23 @@ public Test2 t2;
 
 class Main2 {
    private Test test;
+   private Test2 t;
+   public string str;
+   private bool boo;
 
    private int testing(int x) {
-        return x;
+        int t;
+        return this.test.t2.tmp(this.t, t, str, boo).tt;
+
    }
 
   public int main22() {
     int test;
+    int t;
 
     this.test.x = this.test.testing();
-    this.test.x = this.test.t2.tmp().tt;
-    this.test.x = this.testing(this.test.t2.tmp().tt);
+    this.test.x = this.test.t2.tmp(this.t, t, str, boo).tt;
+    this.test.x = this.testing(this.test.t2.tmp(this.t, t, str, boo).tt);
 
 
     return this.test.x;
