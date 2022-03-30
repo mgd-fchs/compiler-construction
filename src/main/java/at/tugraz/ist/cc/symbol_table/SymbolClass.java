@@ -120,9 +120,10 @@ public class SymbolClass {
 
         // TODO it might be the case that the output order of the errors is not right.
         if ( className.equals(SymbolClass.MAIN_CLASS_NAME) &&
-                (symbolMethod.getAccessSymbol() != SymbolModifier.PUBLIC ||
+                        (symbolMethod.getAccessSymbol() != SymbolModifier.PUBLIC ||
+                        !symbolMethod.getName().equals(SymbolMethod.MAIN_METHOD_NAME) ||
                         !(symbolMethod.getReturnValue().getActualType() instanceof SymbolPrimitiveType) ||
-                    symbolMethod.getReturnValue().getActualType() != SymbolPrimitiveType.INT)){
+                        symbolMethod.getReturnValue().getActualType() != SymbolPrimitiveType.INT)){
             ErrorHandler.INSTANCE.addMainMemberError(ctx.start.getLine(), ctx.start.getCharPositionInLine());
             return TypeCheckerJovaVisitorImpl.ERROR_MAIN_WITH_WRONG_METHOD;
         }
@@ -342,6 +343,10 @@ public class SymbolClass {
 
     public Optional<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> getMemberIfExists(String name) {
         return members.stream().filter(element -> element.getValue().getName().equals(name)).findFirst();
+    }
+
+    public Collection<SymbolMethod> getMethods() {
+        return methods;
     }
 
     private SymbolVariable getLocalVariable(String name) {
