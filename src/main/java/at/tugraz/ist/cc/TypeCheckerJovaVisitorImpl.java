@@ -302,9 +302,9 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                 id = ctx.method_invocation().ID().toString();
                 String[] params = new String[0];
 
-                List<SymbolVariable> args_backup = currentClass.getCurrentArgList();
-                currentClass.setArgList(new ArrayList<>());
                 if (ctx.method_invocation().arg_list() != null) {
+                    List<SymbolVariable> args_backup = currentClass.getCurrentArgList();
+                    currentClass.setArgList(new ArrayList<>());
                     int tmp = visitArg_list(ctx.method_invocation().arg_list());
                     if (tmp != OK) {
                         currentClass.setArgList(args_backup);
@@ -312,6 +312,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                     }
 
                     params = currentClass.getCurrentArgList().stream().map(SymbolVariable::getTypeAsString).toArray(String[]::new);
+                    currentClass.setArgList(args_backup);
                 }
 
                 ErrorHandler.INSTANCE.addCannotInvokeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
