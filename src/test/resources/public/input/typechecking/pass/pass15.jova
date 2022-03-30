@@ -1,0 +1,21 @@
+class Test{
+private int x;
+
+  public int testing() {
+    return 0;
+  }
+
+}
+
+class Main2 {
+   private Test test;
+
+  public int main22() {
+    int test;
+
+    //this.test.x = this.test.testing();
+
+    return this.test.x;
+  }
+
+}

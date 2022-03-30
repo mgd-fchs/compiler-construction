@@ -16,35 +16,6 @@ public class TypeCheckerPublicTest {
     TypeChecker typeChecker = new TypeChecker();
     boolean debug = true;
 
-    /*
-    @Test
-    public void testPass10() {
-        // check nested assignments, previously 'pass_own_simple.jova'
-        ErrorHandler.INSTANCE.reset();
-        int result = typeChecker.checkTypes(path_pass + "pass07.jova", debug);
-        assertEquals(0, result);
-    }
-
-    @Test
-    public void testPass11() {
-        // check nested assignments, previously 'pass_own_simple.jova'
-        ErrorHandler.INSTANCE.reset();
-        int result = typeChecker.checkTypes(path_pass + "pass08.jova", debug);
-        assertEquals(0, result);
-    }
-
-    @Test
-    public void testPass12() {
-        // check nested assignments, previously 'pass_own_simple.jova'
-        ErrorHandler.INSTANCE.reset();
-        int result = typeChecker.checkTypes(path_pass + "pass09.jova", debug);
-        assertEquals(0, result);
-    }
-    */
-
-
-
-
     @Test
     public void testPass01() {
         ErrorHandler.INSTANCE.reset();
@@ -169,6 +140,13 @@ public class TypeCheckerPublicTest {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail+ "access/fail03.jova", debug);
         assertTrue(result == 6);
+    }
+
+    @Test
+    public void testAccFail04() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "access/fail04.jova", debug);
+        assertTrue(result == 2);
     }
 
     @Test
@@ -601,6 +579,22 @@ public class TypeCheckerPublicTest {
         // check nested assignments, previously 'pass_own_simple.jova'
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_pass + "pass13.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPass_Simon06() {
+        // check nested assignments, previously 'pass_own_simple.jova'
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "pass14.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPass_Simon07() {
+        // check nested assignments, previously 'pass_own_simple.jova'
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "pass15.jova", debug);
         assertEquals(0, result);
     }
 
