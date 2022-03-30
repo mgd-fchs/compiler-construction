@@ -25,7 +25,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     public static final int ERROR_MAIN_WITH_WRONG_METHOD = -62;
 
     public static final int ERROR_UNKOWN_TYPE = -70;
-    public static final int ERROR_MAIN_TYPE = -70;
 
     public static final int ERROR_ID_UNDEF = -80;
 
@@ -199,10 +198,8 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         currentClass.setCurrentClassName(currentClassSaving);
         currentClass.setCurrentSymbolType(currentTypeSaving);
 
-        int error = currentClass.addMethod(
+        return currentClass.addMethod(
                 SymbolModifier.valueOf(ctx.AMOD().toString().toUpperCase()), ctx.ID().toString(), ctx);
-
-        return error;
     }
 
     @Override
