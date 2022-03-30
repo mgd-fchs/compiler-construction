@@ -282,33 +282,41 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         Integer actualReturnValue = visit(ctx.expr());
         // TODO: implement for callable (or should it be? -> do main and/or constructor return values?)
         String actualReturnString;
+        SymbolType actualSymbolType = null;
 
-        if (SymbolPrimitiveType.valueOf(actualReturnValue) != null){
+        // actual return value
+        if (SymbolPrimitiveType.valueOf(actualReturnValue) != null) {
             actualReturnString = SymbolPrimitiveType.valueOf(actualReturnValue).toString();
-        } else if (currentClass.getCurrentScopeVariable(ctx.retval.start.getText()) != null){
+        } else if (currentClass.getCurrentScopeVariable(ctx.retval.start.getText()) != null) {
             actualReturnString = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getTypeAsString();
+            actualSymbolType = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getType();
         } else {
             ErrorHandler.INSTANCE.addUndefIdError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.retval.start.getText());
             return TYPE_ERROR;
         }
 
-        if (currentClass.getCurrentAccessedMethod() != null){
-            Integer expectedValue = currentClass.getCurrentAccessedMethod().getReturnValue().getType().getValue();
+        // expected return value
+        if (currentClass.getCurrentAccessedMethod().getReturnValue().getActualType() instanceof SymbolPrimitiveType) {
+            Integer expectedValue = ((SymbolPrimitiveType) currentClass.getCurrentAccessedMethod().getReturnValue().getActualType()).getValue();
 
-            if (expectedValue != actualReturnValue){
-                // get expected return type as str
-                String expectedTypeStr = currentClass.getCurrentAccessedMethod().getReturnValue().getActualType().toString().toLowerCase();
+            if (expectedValue == actualReturnValue) {
+                return OK;
+            } else {
                 ErrorHandler.INSTANCE.addIncompatibleReturnTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualReturnString);
                 return TYPE_ERROR;
             }
-            else {
+        } else {
+            SymbolType expectedSymbolType = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getType();
+            if (actualSymbolType != null && expectedSymbolType != actualSymbolType){
+                ErrorHandler.INSTANCE.addIncompatibleReturnTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualReturnString);
+                return  TYPE_ERROR;
+            } else {
                 return OK;
             }
-        } else {
-            ErrorHandler.INSTANCE.addIncompatibleReturnTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualReturnString);
-            return TYPE_ERROR;
+
         }
     }
+
 
     @Override
     public Integer visitAssign_stmt(JovaParser.Assign_stmtContext ctx) {

@@ -139,6 +139,7 @@ public class SymbolClass {
         if (errorOccurred == 0) {
             methods.add(symbolMethod);
             currentCallable = symbolMethod;
+            currentAccessedMethod = symbolMethod;
         }
 
         return errorOccurred;
