@@ -23,6 +23,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     public static final int ERROR_MAIN_INSTANTIATION = -60;
     public static final int ERROR_MAIN_WITH_MEMBER = -61;
     public static final int ERROR_MAIN_WITH_WRONG_METHOD = -62;
+    public static final int ERROR_MAIN_INSTANTIATE = -63;
 
     public static final int ERROR_UNKOWN_TYPE = -70;
 
@@ -544,6 +545,11 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     @Override
     public Integer visitObject_alloc(JovaParser.Object_allocContext ctx) {
         String className = ctx.CLASS_TYPE().toString();
+
+        if (SymbolClass.MAIN_CLASS_NAME.equals(className)) {
+            ErrorHandler.INSTANCE.addMainInstatiationError(ctx.start.getLine(), ctx.start.getCharPositionInLine());
+            return ERROR_MAIN_INSTANTIATE;
+        }
 
         // TODO this puts an undefined id error if class is not found => might be the the wrong error at this situation
         Optional<SymbolClass> correspondingClass = symbolTable.getClassByName(className, ctx);
