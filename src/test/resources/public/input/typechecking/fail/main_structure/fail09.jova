@@ -1,0 +1,39 @@
+class Main {
+
+  Main() {
+
+  }
+
+  Main(int a) {
+
+  }
+
+  public int main(int a) {
+    return 0;
+  }
+
+  private int main() {
+    return 0;
+  }
+
+  public string main() {
+    return 0;
+  }
+
+  public bool main() {
+    return 0;
+  }
+}
+
+class Test{
+    private Main test;
+
+    public int func(Main a) {
+        return 0;
+    }
+
+    public int func1(int a) {
+      Main b;
+      return 0;
+    }
+}

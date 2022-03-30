@@ -490,6 +490,13 @@ public class TypeCheckerPublicTest {
     }
 
     @Test
+    public void testMainFail09() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "main_structure/fail09.jova", debug);
+        assertEquals(9, result);
+    }
+
+    @Test
     public void testUndeclFail01() {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail+ "undeclared_id/fail01.jova", debug);
