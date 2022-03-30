@@ -255,7 +255,10 @@ public class SymbolClass {
     }
 
     public SymbolVariable getMemberById(String id){
-        Optional<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> found = members.stream().filter(element -> element.getValue().getName().equals(id)).findFirst();
+        Optional<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> found = members.stream()
+                .filter(element -> element.getValue().getName().equals(id))
+                .findFirst();
+
         return found.get().getValue();
     }
     public String getClassName() {
@@ -278,7 +281,16 @@ public class SymbolClass {
     }
 
     public Collection<SymbolMethod> getMatchingMethods(String method) {
-        return methods.stream().filter(element -> element.getName().equals(method)).collect(Collectors.toCollection(ArrayList::new));
+        Collection<SymbolMethod> tmp = SymbolMethod.IO_METHODS
+                .stream().filter(element -> element.getName().equals(method))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        if (tmp.size() > 0) {
+            return tmp;
+        }
+
+        return methods.stream().filter(element -> element.getName().equals(method))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public void addPrimitiveArgument(SymbolPrimitiveType type) {
@@ -303,56 +315,25 @@ public class SymbolClass {
     }
 
     public SymbolVariable getCurrentScopeVariable(String name) {
-        SymbolVariable var = null;
+        SymbolVariable var;
 
-        try {
-            AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable> member_entry = getMemberIfExists(name);
-            if (member_entry != null) {
-                var = member_entry.getValue();
-            }
-        } catch (IndexOutOfBoundsException ex) { }
-
-        if (var == null) {
+        // TODO: should not be the local before the member when using without this?
+        Optional<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> member_entry = getMemberIfExists(name);
+        if (member_entry.isPresent()) {
+            var = member_entry.get().getValue();
+        } else {
             var = getLocalVariable(name);
         }
 
         return var;
     }
 
-    public AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable> getMemberIfExists(String name) {
-        AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable> var = null;
-        try {
-             var = members.stream().filter(element -> element.getValue().getName().equals(name))
-                    .collect(Collectors.toCollection(ArrayList::new)).get(0);
-        } catch (Exception ex) {}
-
-        return var;
+    public Optional<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> getMemberIfExists(String name) {
+        return members.stream().filter(element -> element.getValue().getName().equals(name)).findFirst();
     }
 
     private SymbolVariable getLocalVariable(String name) {
         return currentCallable.getMethodVariable(name);
-    }
-
-
-    public boolean checkValidArgList(SymbolMethod method, List<SymbolVariable> argList) {
-        int size = method.getParams().size();
-
-        if (size != argList.size()) {
-            return false;
-        }
-
-        if (size == 0) {
-            return true;
-        }
-
-        for (int i = 0; i < size; i++) {
-            if (!(method.getParams().get(i).getType() == argList.get(i).getType()
-                    && method.getParams().get(i).getActualType() == argList.get(i).getActualType())) {// TODO check if == works
-                return false;
-            }
-        }
-
-        return true;
     }
 
     public void resetArgList() {
@@ -369,23 +350,6 @@ public class SymbolClass {
 
     public boolean currentlyGatheringArguments() {
         return (currentArgList != null);
-    }
-
-    public String[] getArgListTypes()
-    {
-        List<String> types = new ArrayList<>();
-        for (SymbolVariable var : currentArgList) {
-            String s = "";
-            if (var.getActualType() instanceof SymbolClass) {
-                s = ((SymbolClass) var.getActualType()).getClassName();
-            }
-            else {
-                s = var.getActualType().toString().toLowerCase();
-            }
-            types.add(s);
-        }
-
-        return types.toArray(new String[0]);
     }
 
     public SymbolMethod getCurrentAccessedMethod() {
@@ -435,7 +399,7 @@ public class SymbolClass {
         }
 
         for (SymbolMethod method : methods) {
-            if (class_accessed.checkValidArgList(method, getCurrentArgList())) {
+            if (method.checkValidArgList(currentArgList)) {
                 int ret = 0;
 
                 if (getCurrentMemberAccess() != null && method.getAccessSymbol().equals(SymbolModifier.PRIVATE)
@@ -453,7 +417,7 @@ public class SymbolClass {
 
         String[] params = new String[0];
         if (ctx.arg_list() != null) {
-            params = getArgListTypes();
+            params = currentArgList.stream().map(SymbolVariable::getTypeAsString).toArray(String[]::new);
         }
 
         if (getCurrentMemberAccess() != null) {

@@ -43,12 +43,25 @@ public class SymbolVariable {
         return name;
     }
 
+    /**
+     * This only checks if the name is equal
+     * @param o
+     * @return
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SymbolVariable that = (SymbolVariable) o;
         return Objects.equals(name, that.name);
+    }
+
+    public boolean equalTypeAndActualType(SymbolVariable that) {
+        return (type == SymbolType.PRIMITIVE && that.getType() == SymbolType.PRIMITIVE &&
+                ((SymbolPrimitiveType) actualType).equals(that.getActualType()))
+                ||
+                (type == SymbolType.CLASS && that.getType() == SymbolType.CLASS &&
+                ((SymbolClass) actualType).getClassName(). equals(((SymbolClass) that.getActualType()).getClassName()));
     }
 
 }
