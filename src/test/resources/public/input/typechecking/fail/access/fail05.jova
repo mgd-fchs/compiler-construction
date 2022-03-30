@@ -12,16 +12,6 @@ class Main2 {
    private Test x;
 
    private int testing(int x) {
-        return this.x.t(0, true, this.x);
+        return x.t(0, true, this.x);
    }
-
-  public int main22() {
-    int test;
-
-    this.test.x = this.testing(testing(testing(testing(0))));
-
-
-    return this.test.x;
-  }
-
 }

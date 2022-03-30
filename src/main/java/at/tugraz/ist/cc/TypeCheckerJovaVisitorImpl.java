@@ -288,13 +288,35 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitMember_access(JovaParser.Member_accessContext ctx) {
-        // TODO: support method_invocation + member_access? (hier gemeint mit Class als return-type?
         SymbolVariable var = currentClass.getCurrentMemberAccess();
 
         if (var.getType() == SymbolType.PRIMITIVE) {
-            String id = (ctx.ID() != null) ? ctx.ID().toString() : "";
-            ErrorHandler.INSTANCE.addDoesNotHaveFieldError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
-                    var.getActualType().toString().toLowerCase(), id);
+
+            String id = "";
+            if (ctx.ID() != null) {
+                id = ctx.ID().toString();
+                ErrorHandler.INSTANCE.addDoesNotHaveFieldError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                        var.getActualType().toString().toLowerCase(), id);
+            } else if (ctx.method_invocation() != null) {
+                // pls dont judge me for this code
+                id = ctx.method_invocation().ID().toString();
+                String[] params = new String[0];
+
+                List<SymbolVariable> args_backup = currentClass.getCurrentArgList();
+                currentClass.setArgList(new ArrayList<>());
+                if (ctx.method_invocation().arg_list() != null) {
+                    int tmp = visitArg_list(ctx.method_invocation().arg_list());
+                    if (tmp != OK) {
+                        currentClass.setArgList(args_backup);
+                        return -1;
+                    }
+
+                    params = currentClass.getCurrentArgList().stream().map(SymbolVariable::getTypeAsString).toArray(String[]::new);
+                }
+
+                ErrorHandler.INSTANCE.addCannotInvokeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                        var.getActualType().toString().toLowerCase(), id, params);
+            }
             return -1;
         }
 

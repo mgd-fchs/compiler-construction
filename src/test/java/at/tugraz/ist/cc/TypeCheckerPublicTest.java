@@ -150,6 +150,13 @@ public class TypeCheckerPublicTest {
     }
 
     @Test
+    public void testAccFail05() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "access/fail05.jova", debug);
+        assertTrue(result == 1);
+    }
+
+    @Test
     public void testDoubleDeclFail01() {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail+ "double_decl/fail01.jova", debug);
