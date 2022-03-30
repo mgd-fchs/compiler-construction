@@ -28,6 +28,7 @@ public class SymbolClass {
     private SymbolVariable currentArgVariable;
     private List<SymbolVariable> currentParams;
     private List<SymbolVariable> currentArgList;
+    private SymbolClass currentObjectAlloc;
 
     public SymbolClass(String name) {
         className = name;
@@ -121,9 +122,10 @@ public class SymbolClass {
 
         // TODO it might be the case that the output order of the errors is not right.
         if ( className.equals(SymbolClass.MAIN_CLASS_NAME) &&
-                (symbolMethod.getAccessSymbol() != SymbolModifier.PUBLIC ||
+                        (symbolMethod.getAccessSymbol() != SymbolModifier.PUBLIC ||
+                        !symbolMethod.getName().equals(SymbolMethod.MAIN_METHOD_NAME) ||
                         !(symbolMethod.getReturnValue().getActualType() instanceof SymbolPrimitiveType) ||
-                    symbolMethod.getReturnValue().getActualType() != SymbolPrimitiveType.INT)){
+                        symbolMethod.getReturnValue().getActualType() != SymbolPrimitiveType.INT)){
             ErrorHandler.INSTANCE.addMainMemberError(ctx.start.getLine(), ctx.start.getCharPositionInLine());
             return TypeCheckerJovaVisitorImpl.ERROR_MAIN_WITH_WRONG_METHOD;
         }
@@ -141,6 +143,7 @@ public class SymbolClass {
         if (errorOccurred == 0) {
             methods.add(symbolMethod);
             currentCallable = symbolMethod;
+            currentAccessedMethod = symbolMethod;
         }
 
         return errorOccurred;
@@ -263,6 +266,12 @@ public class SymbolClass {
 
         return found.get().getValue();
     }
+
+    public SymbolVariable getMethodReturnValueById(String id){
+        Optional<SymbolMethod> found = methods.stream().filter(element -> element.getName().equals(id)).findFirst();
+        return found.get().getReturnValue();
+    }
+
     public String getClassName() {
         return className;
     }
@@ -296,6 +305,10 @@ public class SymbolClass {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
+    public Collection<SymbolConstructor> getConstructors() {
+        return constructors;
+    }
+
     public void addPrimitiveArgument(SymbolPrimitiveType type) {
         currentArgList.add(new SymbolVariable(PRIMITIVE, type, ""));
     }
@@ -320,16 +333,6 @@ public class SymbolClass {
     public SymbolVariable getCurrentScopeVariable(String name) {
         SymbolVariable var = null;
 
-//        // TODO: should not be the local before the member when using without this?
-//        Optional<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> member_entry = getMemberIfExists(name);
-//        if (member_entry.isPresent()) {
-//            var = member_entry.get().getValue();
-//        } else {
-//            var = getLocalVariable(name);
-//        }
-
-        // TODO: should not be the local before the member when using without this?
-
         var = getLocalVariable(name);
         if (var == null) {
             Optional<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> member_entry = getMemberIfExists(name);
@@ -343,6 +346,10 @@ public class SymbolClass {
 
     public Optional<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> getMemberIfExists(String name) {
         return members.stream().filter(element -> element.getValue().getName().equals(name)).findFirst();
+    }
+
+    public Collection<SymbolMethod> getMethods() {
+        return methods;
     }
 
     private SymbolVariable getLocalVariable(String name) {
@@ -373,6 +380,10 @@ public class SymbolClass {
         this.currentAccessedMethod = currentAccessedMethod;
     }
 
+    public void setCurrentObjectAlloc(SymbolClass currentObjectAlloc) {
+        this.currentObjectAlloc = currentObjectAlloc;
+    }
+
     public SymbolType getCurrentSymbolType() {
         return currentSymbolType;
     }
@@ -393,6 +404,10 @@ public class SymbolClass {
         this.currentArgVariable = currentArgVariable;
     }
 
+    public SymbolClass getCurrentObjectAlloc() {
+        return currentObjectAlloc;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -402,52 +417,4 @@ public class SymbolClass {
     }
 
     public SimpleCallable getCurrentCallable() {return currentCallable;}
-
-    public int invocation(TypeCheckerJovaVisitorImpl type, JovaParser.Method_invocationContext ctx) {
-        SymbolClass class_accessed = getCurrentClassAccess();
-        Collection<SymbolMethod> methods = class_accessed.getMatchingMethods(ctx.ID().toString());
-
-        List<SymbolVariable> args_backup = getCurrentArgList();
-        setArgList(new ArrayList<>());
-        if (ctx.arg_list() != null) {
-            int tmp = type.visitArg_list(ctx.arg_list());
-            if (tmp != type.OK) {
-                setArgList(args_backup);
-                return -1;
-            }
-        }
-
-        for (SymbolMethod method : methods) {
-            if (method.checkValidArgList(currentArgList)) {
-                int ret = 0;
-
-                if (getCurrentMemberAccess() != null && method.getAccessSymbol().equals(SymbolModifier.PRIVATE)
-                        && !(((SymbolClass) getCurrentMemberAccess().getActualType()).getClassName()).equals(getClassName())) {
-                    ErrorHandler.INSTANCE.addMethodAccessError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
-                            method.getName(), class_accessed.getClassName(), method.getParamTypesAsString());
-                    ret = -1;
-                }
-
-                setCurrentAccessedMethod(method);
-                setArgList(args_backup);
-                return ret;
-            }
-        }
-
-        String[] params = new String[0];
-        if (ctx.arg_list() != null) {
-            params = currentArgList.stream().map(SymbolVariable::getTypeAsString).toArray(String[]::new);
-        }
-
-        if (getCurrentMemberAccess() != null) {
-            ErrorHandler.INSTANCE.addCannotInvokeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
-                    class_accessed.getClassName(), ctx.ID().toString(), params);
-        }
-        else {
-            ErrorHandler.INSTANCE.addUndefMethodError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.ID().toString(), params);
-        }
-
-        setArgList(args_backup);
-        return -1;
-    }
 }

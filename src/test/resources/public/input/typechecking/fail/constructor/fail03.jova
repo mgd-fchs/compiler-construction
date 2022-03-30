@@ -1,0 +1,88 @@
+class Helper0 {
+}
+
+class Helper1 {
+    Helper1(int a){
+    }
+}
+
+class Helper2 {
+    Helper2(){
+    }
+
+    Helper2(int a, string b, bool c){
+    }
+
+    Helper2(Helper0 a){
+    }
+
+    Helper2(Helper0 a, Helper1 b){
+    }
+
+    Helper2(int a, string b, bool c, Helper0 d, Helper1 f){
+    }
+}
+
+class Test {
+    public int func() {
+        Helper0 a;
+        Helper1 b;
+        Helper2 c;
+
+        int v;
+        string w;
+        bool x;
+        Helper0 y;
+        Helper1 z;
+
+        // ======================= // 5 - 1 errors
+        b = new Helper2(v);
+        b = new Helper2(w);
+        b = new Helper2(x);
+        b = new Helper2(y); // no error
+        b = new Helper2(z);
+
+
+       // ======================= // 27 - 1 errors:
+        b = new Helper2(v, v, v);
+        b = new Helper2(v, v, w);
+        b = new Helper2(v, v, x);
+
+        b = new Helper2(v, w, v);
+        b = new Helper2(v, w, w);
+        b = new Helper2(v, w, x); // no error
+
+        b = new Helper2(v, x, v);
+        b = new Helper2(v, x, w);
+        b = new Helper2(v, x, x);
+
+        b = new Helper2(w, v, v);
+        b = new Helper2(w, v, w);
+        b = new Helper2(w, v, x);
+
+        b = new Helper2(w, w, v);
+        b = new Helper2(w, w, w);
+        b = new Helper2(w, w, x);
+
+        b = new Helper2(w, x, v);
+        b = new Helper2(w, x, w);
+        b = new Helper2(w, x, x);
+
+        b = new Helper2(x, v, v);
+        b = new Helper2(x, v, w);
+        b = new Helper2(x, v, x);
+
+        b = new Helper2(x, w, v);
+        b = new Helper2(x, w, w);
+        b = new Helper2(x, w, x);
+
+        b = new Helper2(x, x, v);
+        b = new Helper2(x, x, w);
+        b = new Helper2(x, x, x);
+
+
+
+
+        return 0;
+    }
+}

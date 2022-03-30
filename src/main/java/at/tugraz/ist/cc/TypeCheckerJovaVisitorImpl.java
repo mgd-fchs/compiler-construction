@@ -23,11 +23,14 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     public static final int ERROR_MAIN_INSTANTIATION = -60;
     public static final int ERROR_MAIN_WITH_MEMBER = -61;
     public static final int ERROR_MAIN_WITH_WRONG_METHOD = -62;
+    public static final int ERROR_MAIN_INSTANTIATE = -63;
 
     public static final int ERROR_UNKOWN_TYPE = -70;
-    public static final int ERROR_MAIN_TYPE = -70;
 
     public static final int ERROR_ID_UNDEF = -80;
+
+    public static final int ERROR_UNKNOWN_CTOR = -90;
+
 
 
     private SymbolClass currentClass;
@@ -166,6 +169,11 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     }
 
     @Override public Integer visitMethod_decl(JovaParser.Method_declContext ctx) {
+        if (currentClass.getClassName().equals(SymbolClass.MAIN_CLASS_NAME) && currentClass.getMethods().size() > 0) {
+            ErrorHandler.INSTANCE.addMainMemberError(ctx.start.getLine(), ctx.start.getCharPositionInLine());
+            return ERROR_GENERAL;
+        }
+
         int headStatus = visitMethod_head(ctx.method_head());
 
         // if the head is not ok or double definition we stop looking at the method
@@ -196,10 +204,8 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         currentClass.setCurrentClassName(currentClassSaving);
         currentClass.setCurrentSymbolType(currentTypeSaving);
 
-        int error = currentClass.addMethod(
+        return currentClass.addMethod(
                 SymbolModifier.valueOf(ctx.AMOD().toString().toUpperCase()), ctx.ID().toString(), ctx);
-
-        return error;
     }
 
     @Override
@@ -278,12 +284,24 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitRet_stmt(JovaParser.Ret_stmtContext ctx) {
-        return visitChildren(ctx);
+        Integer actualReturnValue = visit(ctx.expr());
+        Integer checkResult = CompatibilityCheckUtils.checkReturnValue(actualReturnValue, currentClass, ctx);
+
+        return checkResult;
     }
+
 
     @Override
     public Integer visitAssign_stmt(JovaParser.Assign_stmtContext ctx) {
-        return visitChildren(ctx);
+        int errorIdExpr = visitId_expr(ctx.id_expr());
+
+        if (ctx.expr() != null) {
+            int errorExpr = visitExpr(ctx.expr());
+        } else if (ctx.object_alloc() != null) {
+            int errorObjc = visitObject_alloc(ctx.object_alloc());
+        }
+
+        return errorIdExpr;
     }
 
     @Override
@@ -541,14 +559,14 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             }
 
             // check types are compatible
-            return CompatibilityCheckUtils.checkOperatorCompatibility(lhs_type, rhs_type, ctx);
+            return CompatibilityCheckUtils.checkOperatorCompatibility(lhs_type, rhs_type, ctx, currentClass);
 
         } else if(ctx.when != null){
             // case: ternary operator
             Integer whenType = visit(ctx.when);
             Integer thenType = visit(ctx.then);
             Integer elseType = visit(ctx.el);
-            return CompatibilityCheckUtils.checkTernaryOperatorCompatibility(whenType, thenType, elseType, ctx);
+            return CompatibilityCheckUtils.checkTernaryOperatorCompatibility(whenType, thenType, elseType, ctx, currentClass);
 
         } else {
             // case: primary expression
@@ -568,7 +586,49 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitObject_alloc(JovaParser.Object_allocContext ctx) {
-        return visitChildren(ctx);
+        String className = ctx.CLASS_TYPE().toString();
+
+        if (SymbolClass.MAIN_CLASS_NAME.equals(className)) {
+            ErrorHandler.INSTANCE.addMainInstatiationError(ctx.start.getLine(), ctx.start.getCharPositionInLine());
+            return ERROR_MAIN_INSTANTIATE;
+        }
+
+        // TODO this puts an undefined id error if class is not found => might be the the wrong error at this situation
+        Optional<SymbolClass> correspondingClass = symbolTable.getClassByName(className, ctx);
+        SymbolClass classObjectAlloc;
+
+        if (correspondingClass.isEmpty()) {
+            return ERROR_ID_UNDEF;
+        } else {
+            classObjectAlloc = correspondingClass.get();
+            currentClass.setCurrentObjectAlloc(classObjectAlloc);
+        }
+
+        List<SymbolVariable> fetchedArgs;
+        if (ctx.ctor_args() != null) {
+            currentClass.setArgList(new ArrayList<>());
+            visitCtor_args(ctx.ctor_args());
+            fetchedArgs = currentClass.getCurrentArgList();
+            currentClass.resetArgList();
+        } else {
+            // default constructor
+            return OK;
+        }
+
+
+        Collection<SymbolConstructor> availableCtors = classObjectAlloc.getConstructors();
+
+        for (SymbolConstructor ctor : availableCtors) {
+            if (ctor.checkValidArgList(fetchedArgs)) {
+                return OK;
+            }
+        }
+
+        String[] params = fetchedArgs.stream().map(SymbolVariable::getTypeAsString).toArray(String[]::new);
+        ErrorHandler.INSTANCE.addUndefMethodError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                correspondingClass.get().getClassName(), params);
+
+        return ERROR_UNKNOWN_CTOR;
     }
 
     @Override
@@ -630,7 +690,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     @Override
     public Integer visitIf_stmt(JovaParser.If_stmtContext ctx) {
         Integer conditionType = visit(ctx.expr());
-        if (CompatibilityCheckUtils.checkConditionCompatibility(conditionType, ctx.expr()) == TYPE_ERROR){
+        if (CompatibilityCheckUtils.checkConditionCompatibility(conditionType, ctx.expr(), currentClass) == TYPE_ERROR){
             return TYPE_ERROR;
         }
 
@@ -640,7 +700,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     @Override
     public Integer visitWhile_stmt(JovaParser.While_stmtContext ctx) {
         Integer conditionType = visit(ctx.expr());
-        if (CompatibilityCheckUtils.checkConditionCompatibility(conditionType, ctx.expr()) == TYPE_ERROR){
+        if (CompatibilityCheckUtils.checkConditionCompatibility(conditionType, ctx.expr(), currentClass) == TYPE_ERROR){
             return TYPE_ERROR;
         }
         return visitChildren(ctx);

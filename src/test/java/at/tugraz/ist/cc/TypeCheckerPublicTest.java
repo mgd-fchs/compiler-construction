@@ -71,14 +71,14 @@ public class TypeCheckerPublicTest {
         assertEquals(0, result);
     }
 
-    @Test
+/*    @Test
     public void testPass09() {
-        // check nested assignments, previously 'pass_own_simple.jova'
+        // TODO: This should not pass IMO, mismatched return statement
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_pass + "pass05.jova", debug);
         assertEquals(0, result);
     }
-
+*/
     @Test
     public void testPass10() {
         // check assignment to 'nix'
@@ -116,6 +116,14 @@ public class TypeCheckerPublicTest {
     public void testPass20() {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_pass + "pass20.jova", debug);
+        ErrorHandler.INSTANCE.printTypeWarnings();
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPass21() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "pass21.jova", debug);
         ErrorHandler.INSTANCE.printTypeWarnings();
         assertEquals(0, result);
     }
@@ -357,6 +365,22 @@ public class TypeCheckerPublicTest {
     }
 
     @Test
+    public void testRetFail03() {
+        // check coerced assignment of nix
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "incompatible_return/fail03.jova", debug);
+        assertTrue(result > 0);
+    }
+
+    @Test
+    public void testRetFail04() {
+        // check coerced assignment of nix
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "incompatible_return/fail04.jova", debug);
+        assertTrue(result > 0);
+    }
+
+    @Test
     public void testOpFail01() {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail+ "incorrect_operand/fail01.jova", debug);
@@ -466,6 +490,20 @@ public class TypeCheckerPublicTest {
     }
 
     @Test
+    public void testMainFail08() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "main_structure/fail08.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testMainFail09() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "main_structure/fail09.jova", debug);
+        assertEquals(9, result);
+    }
+
+    @Test
     public void testUndeclFail01() {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail+ "undeclared_id/fail01.jova", debug);
@@ -542,12 +580,6 @@ public class TypeCheckerPublicTest {
         assertEquals(2, result);
     }
 
-    @Test
-    public void testCtorFail01() {
-        ErrorHandler.INSTANCE.reset();
-        int result = typeChecker.checkTypes(path_fail+ "constructor/fail01.jova", debug);
-        assertEquals(1, result);
-    }
 
     @Test
     public void testPass_Simon01() {
@@ -559,7 +591,6 @@ public class TypeCheckerPublicTest {
 
     @Test
     public void testPass_Simon02() {
-        // check nested assignments, previously 'pass_own_simple.jova'
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_pass + "pass10.jova", debug);
         assertEquals(0, result);
@@ -611,6 +642,36 @@ public class TypeCheckerPublicTest {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_pass + "pass16.jova", debug);
         assertEquals(0, result);
+    }
+
+    @Test
+    public void testCtorPass01() {
+        // check nested assignments, previously 'pass_own_simple.jova'
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "passCtor01.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testCtorFail01() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "constructor/fail01.jova", debug);
+        assertEquals(1, result);
+    }
+
+
+    @Test
+    public void testCtorFail02() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "constructor/fail02.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testCtorFail03() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "constructor/fail03.jova", debug);
+        assertEquals((5 - 1) + (9*3 - 1), result);
     }
 
 }
