@@ -13,7 +13,7 @@ public final class CompatibilityCheckUtils {
     public static final int TYPE_BOOL = SymbolPrimitiveType.BOOL.getValue();
     public static final int TYPE_CLASS = SymbolType.CLASS.getValue();
     private static final int TYPE_ERROR = -30;
-    public static final int TYPE_NIX = 44;
+    public static final int TYPE_NIX = SymbolPrimitiveType.NIX.getValue();;
 
     private CompatibilityCheckUtils(){
     }
@@ -117,6 +117,9 @@ public final class CompatibilityCheckUtils {
 
         // actual return value
         if (SymbolPrimitiveType.valueOf(actualReturnValue) != null) {
+            if (actualReturnValue == TYPE_NIX){
+                return actualReturnValue;
+            }
             actualReturnString = SymbolPrimitiveType.valueOf(actualReturnValue).toString();
         } else if (currentClass.getCurrentScopeVariable(ctx.retval.start.getText()) != null) {
             actualReturnString = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getTypeAsString();
