@@ -285,6 +285,7 @@ public class SymbolClass {
                 .stream().filter(element -> element.getName().equals(method))
                 .collect(Collectors.toCollection(ArrayList::new));
 
+        // TODO support print(int int int)
         if (tmp.size() > 0) {
             return tmp;
         }
@@ -315,14 +316,24 @@ public class SymbolClass {
     }
 
     public SymbolVariable getCurrentScopeVariable(String name) {
-        SymbolVariable var;
+        SymbolVariable var = null;
+
+//        // TODO: should not be the local before the member when using without this?
+//        Optional<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> member_entry = getMemberIfExists(name);
+//        if (member_entry.isPresent()) {
+//            var = member_entry.get().getValue();
+//        } else {
+//            var = getLocalVariable(name);
+//        }
 
         // TODO: should not be the local before the member when using without this?
-        Optional<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> member_entry = getMemberIfExists(name);
-        if (member_entry.isPresent()) {
-            var = member_entry.get().getValue();
-        } else {
-            var = getLocalVariable(name);
+
+        var = getLocalVariable(name);
+        if (var == null) {
+            Optional<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> member_entry = getMemberIfExists(name);
+            if (member_entry.isPresent()) {
+                var = member_entry.get().getValue();
+            }
         }
 
         return var;

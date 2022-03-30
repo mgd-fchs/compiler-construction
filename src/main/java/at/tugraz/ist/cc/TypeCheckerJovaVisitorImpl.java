@@ -289,13 +289,12 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     @Override
     public Integer visitMember_access(JovaParser.Member_accessContext ctx) {
         // TODO: support method_invocation + member_access? (hier gemeint mit Class als return-type?
-
         SymbolVariable var = currentClass.getCurrentMemberAccess();
 
         if (var.getType() == SymbolType.PRIMITIVE) {
             String id = (ctx.ID() != null) ? ctx.ID().toString() : "";
             ErrorHandler.INSTANCE.addDoesNotHaveFieldError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
-                    var.getType().toString().toLowerCase(), id);
+                    var.getActualType().toString().toLowerCase(), id);
             return -1;
         }
 
