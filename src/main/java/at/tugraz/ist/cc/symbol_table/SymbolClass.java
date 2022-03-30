@@ -27,6 +27,7 @@ public class SymbolClass {
     private SymbolVariable currentMemberAccess;
     private List<SymbolVariable> currentParams;
     private List<SymbolVariable> currentArgList;
+    private SymbolClass currentObjectAlloc;
 
     public SymbolClass(String name) {
         className = name;
@@ -293,6 +294,10 @@ public class SymbolClass {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
+    public Collection<SymbolConstructor> getConstructors() {
+        return constructors;
+    }
+
     public void addPrimitiveArgument(SymbolPrimitiveType type) {
         currentArgList.add(new SymbolVariable(PRIMITIVE, type, ""));
     }
@@ -360,6 +365,10 @@ public class SymbolClass {
         this.currentAccessedMethod = currentAccessedMethod;
     }
 
+    public void setCurrentObjectAlloc(SymbolClass currentObjectAlloc) {
+        this.currentObjectAlloc = currentObjectAlloc;
+    }
+
     public SymbolType getCurrentSymbolType() {
         return currentSymbolType;
     }
@@ -370,6 +379,10 @@ public class SymbolClass {
 
     public String getCurrentClassName() {
         return currentClassName;
+    }
+
+    public SymbolClass getCurrentObjectAlloc() {
+        return currentObjectAlloc;
     }
 
 

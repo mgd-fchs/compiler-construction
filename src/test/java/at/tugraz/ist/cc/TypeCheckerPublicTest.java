@@ -535,12 +535,6 @@ public class TypeCheckerPublicTest {
         assertEquals(2, result);
     }
 
-    @Test
-    public void testCtorFail01() {
-        ErrorHandler.INSTANCE.reset();
-        int result = typeChecker.checkTypes(path_fail+ "constructor/fail01.jova", debug);
-        assertEquals(1, result);
-    }
 
     @Test
     public void testPass_Simon01() {
@@ -599,11 +593,33 @@ public class TypeCheckerPublicTest {
     }
 
     @Test
-    public void testCtor01() {
+    public void testCtorPass01() {
         // check nested assignments, previously 'pass_own_simple.jova'
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_pass + "passCtor01.jova", debug);
         assertEquals(0, result);
+    }
+
+    @Test
+    public void testCtorFail01() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "constructor/fail01.jova", debug);
+        assertEquals(1, result);
+    }
+
+
+    @Test
+    public void testCtorFail02() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "constructor/fail02.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testCtorFail03() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "constructor/fail03.jova", debug);
+        assertEquals((5 - 1) + (9*3 - 1), result);
     }
 
 }

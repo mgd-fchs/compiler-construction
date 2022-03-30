@@ -29,6 +29,9 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     public static final int ERROR_ID_UNDEF = -80;
 
+    public static final int ERROR_UNKNOWN_CTOR = -90;
+
+
 
     private SymbolClass currentClass;
     private SymbolVariable currentVar;
@@ -543,13 +546,40 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
         // TODO this puts an undefined id error if class is not found => might be the the wrong error at this situation
         Optional<SymbolClass> correspondingClass = symbolTable.getClassByName(className, ctx);
-
-        visitCtor_args(ctx.ctor_args());
+        SymbolClass classObjectAlloc;
 
         if (correspondingClass.isEmpty()) {
-//            ErrorHandler.INSTANCE.addUndefMethodError();
+            return ERROR_ID_UNDEF;
+        } else {
+            classObjectAlloc = correspondingClass.get();
+            currentClass.setCurrentObjectAlloc(classObjectAlloc);
         }
-        return visitChildren(ctx);
+
+        List<SymbolVariable> fetchedArgs;
+        if (ctx.ctor_args() != null) {
+            currentClass.setArgList(new ArrayList<>());
+            visitCtor_args(ctx.ctor_args());
+            fetchedArgs = currentClass.getCurrentArgList();
+            currentClass.resetArgList();
+        } else {
+            // default constructor
+            return OK;
+        }
+
+
+        Collection<SymbolConstructor> availableCtors = classObjectAlloc.getConstructors();
+
+        for (SymbolConstructor ctor : availableCtors) {
+            if (ctor.checkValidArgList(fetchedArgs)) {
+                return OK;
+            }
+        }
+
+        String[] params = fetchedArgs.stream().map(SymbolVariable::getTypeAsString).toArray(String[]::new);
+        ErrorHandler.INSTANCE.addUndefMethodError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                correspondingClass.get().getClassName(), params);
+
+        return ERROR_UNKNOWN_CTOR;
     }
 
     @Override
