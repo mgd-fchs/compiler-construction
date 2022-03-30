@@ -23,24 +23,16 @@ public final class CompatibilityCheckUtils {
         //TODO: check equal or unequal for class and nix types
 
         // if operator is handed a method invocation
-        SymbolVariable methodRetVal;
         if (SymbolType.valueOf(lhs_type) == null && SymbolPrimitiveType.valueOf(lhs_type) == null){
             String leftID = ctx.left.start.getText();
-            methodRetVal = currentClass.getMethodReturnValueById(leftID);
-            if (methodRetVal.getActualType() instanceof SymbolPrimitiveType){
-                lhs_type = ((SymbolPrimitiveType) methodRetVal.getActualType()).getValue();
-            }
+            lhs_type = getMethodReturnPrimitiveType(currentClass, leftID);
         }
 
         if (SymbolType.valueOf(rhs_type) == null && SymbolPrimitiveType.valueOf(rhs_type) == null){
-            String rightID = ctx.left.start.getText();
-            methodRetVal = currentClass.getMethodReturnValueById(rightID);
-            if (methodRetVal.getActualType() instanceof SymbolPrimitiveType){
-                rhs_type = ((SymbolPrimitiveType) methodRetVal.getActualType()).getValue();
-            }
+            String rightID = ctx.right.start.getText();
+            rhs_type = getMethodReturnPrimitiveType(currentClass, rightID);
         }
 
-        
         // arithmetic and relational operations
         String lhs_typestr = getTypeStr(lhs_type);
         String rhs_typestr = getTypeStr(rhs_type);
@@ -160,5 +152,26 @@ public final class CompatibilityCheckUtils {
         }
 
         return returnValue;
+    }
+
+    private static int getMethodReturnPrimitiveType(SymbolClass currentClass, String id){
+        SymbolVariable methodRetVal;
+        Integer primType = null;
+        methodRetVal = currentClass.getMethodReturnValueById(id);
+        if (methodRetVal.getActualType() instanceof SymbolPrimitiveType){
+            primType = ((SymbolPrimitiveType) methodRetVal.getActualType()).getValue();
+        }
+        return primType;
+    }
+
+    private static SymbolVariable getMethodReturnClassType(SymbolClass currentClass, String id){
+        SymbolVariable methodRetVal;
+        methodRetVal = currentClass.getMethodReturnValueById(id);
+        if (methodRetVal != null){
+            return methodRetVal;
+        } else {
+            // TODO: Add error here
+            return null;
+        }
     }
 }
