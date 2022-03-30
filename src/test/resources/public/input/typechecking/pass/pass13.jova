@@ -1,8 +1,9 @@
 class Testing {
   private int x;
+  private Testing t;
 
   public Testing test3(int x, bool t) {
-       return 0;
+       return this.t;
     }
 
   public int test2(int x, Testing t) {
