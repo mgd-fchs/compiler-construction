@@ -36,6 +36,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     private SymbolClass currentClass;
     private SymbolVariable currentVar;
     private final SymbolTable symbolTable;
+    private boolean isReturnStatement = false;
 
     public TypeCheckerJovaVisitorImpl() {
         symbolTable = SymbolTable.getInstance();
@@ -284,9 +285,11 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitRet_stmt(JovaParser.Ret_stmtContext ctx) {
+        isReturnStatement = true;
         Integer actualReturnValue = visit(ctx.expr());
         Integer checkResult = CompatibilityCheckUtils.checkReturnValue(actualReturnValue, currentClass, ctx);
 
+        isReturnStatement = false;
         return checkResult;
     }
 
@@ -490,6 +493,10 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                     return ret;
                 }
             }
+            if (isReturnStatement){
+                CompatibilityCheckUtils.currentMember = backup;
+            }
+
             currentClass.setCurrentMemberAccess(backup);
             return ret;
         }

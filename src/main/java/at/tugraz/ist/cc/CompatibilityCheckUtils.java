@@ -6,6 +6,9 @@ import at.tugraz.ist.cc.symbol_table.SymbolPrimitiveType;
 import at.tugraz.ist.cc.symbol_table.SymbolType;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class CompatibilityCheckUtils {
 
     public static final int TYPE_INT = SymbolPrimitiveType.INT.getValue();
@@ -15,6 +18,7 @@ public final class CompatibilityCheckUtils {
     public static final int TYPE_NIX = SymbolPrimitiveType.NIX.getValue();;
     private static final int TYPE_ERROR = -30;
     private static final int OK = 0;
+    public static SymbolVariable currentMember = null;
 
     private CompatibilityCheckUtils(){
     }
@@ -112,41 +116,80 @@ public final class CompatibilityCheckUtils {
         }
     }
 
-    public static Integer checkReturnValue(Integer actualReturnValue, SymbolClass currentClass, JovaParser.Ret_stmtContext ctx){
-        String actualReturnString;
+    public static Integer checkReturnValue(Integer actualReturnValue, SymbolClass currentClass, JovaParser.Ret_stmtContext ctx) {
+        String actualReturnString = null;
         SymbolType actualSymbolType = null;
 
         // actual return value
         if (SymbolPrimitiveType.valueOf(actualReturnValue) != null) {
-            if (actualReturnValue == TYPE_NIX){
+            if (actualReturnValue == TYPE_NIX) {
                 return actualReturnValue;
             }
             actualReturnString = SymbolPrimitiveType.valueOf(actualReturnValue).toString();
-        } else if (currentClass.getCurrentScopeVariable(ctx.retval.start.getText()) != null) {
+        } else if (SymbolType.valueOf(actualReturnValue) != null) {
             actualReturnString = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getTypeAsString();
             actualSymbolType = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getType();
+        } else if (currentMember != null) {
+            checkReturnValueMember(currentClass, ctx, currentMember);
+            currentMember = null;
         } else {
             return TYPE_ERROR;
         }
 
+        Object expectedReturnType = getExpectedReturnType(currentClass, ctx);
+        if (expectedReturnType instanceof SymbolVariable){ // use actualSymbolType instead
+            if(expectedReturnType.equals(actualReturnValue)){
+                return OK;
+            } else {
+                return checkReturnValueCoercion(actualReturnValue, ((SymbolType) expectedReturnType).getValue(), ctx, actualReturnString);
+            }
+        } else if (expectedReturnType instanceof Integer){
+            if(expectedReturnType == actualReturnValue){
+                return actualReturnValue;
+            } else {
+                return checkReturnValueCoercion(actualReturnValue, ((Integer) expectedReturnType), ctx, actualReturnString);
+            }
+        } else {
+            return TYPE_ERROR;
+        }
+    }
+
+    private static Object getExpectedReturnType(SymbolClass currentClass, JovaParser.Ret_stmtContext ctx){
+        SymbolType expectedType;
+        Integer expectedValue;
+
         // expected return value
+        if (currentClass.getCurrentAccessedMethod().getReturnValue().getActualType() instanceof SymbolPrimitiveType) {
+            expectedValue = ((SymbolPrimitiveType) currentClass.getCurrentAccessedMethod().getReturnValue().getActualType()).getValue();
+            return expectedValue;
+        } else {
+            expectedType = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getType();
+            return expectedType;
+        }
+    }
+
+    private static Object checkReturnValueMember(SymbolClass currentClass, JovaParser.Ret_stmtContext ctx, SymbolVariable returnedMember){
+       /* get expected type
+
+        Object expectedReturnType = getExpectedReturnType(currentClass, ctx);
+
+        // get actual type
+
         if (currentClass.getCurrentAccessedMethod().getReturnValue().getActualType() instanceof SymbolPrimitiveType) {
             Integer expectedValue = ((SymbolPrimitiveType) currentClass.getCurrentAccessedMethod().getReturnValue().getActualType()).getValue();
 
-            if (expectedValue == actualReturnValue) {
-                return actualReturnValue;
-            } else {
-                return checkReturnValueCoercion(actualReturnValue, expectedValue, ctx, actualReturnString);
-            }
         } else {
             SymbolType expectedSymbolType = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getType();
-            if (actualSymbolType != null && expectedSymbolType != actualSymbolType){
+            if (actualSymbolType != null && expectedSymbolType != actualSymbolType) {
                 return checkReturnValueCoercion(actualReturnValue, expectedSymbolType.getValue(), ctx, actualReturnString);
             } else {
                 return actualReturnValue;
             }
 
         }
+        return expectedValue;
+        */
+        return OK;
     }
 
     private static Integer checkReturnValueCoercion(Integer actualValue, Integer expectedValue, JovaParser.Ret_stmtContext ctx, String actualReturnString){

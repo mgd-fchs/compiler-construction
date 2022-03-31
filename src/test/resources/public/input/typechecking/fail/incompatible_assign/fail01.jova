@@ -1,18 +1,37 @@
 class Tmp {
+  public string f;
 }
 class Cls {
+    public Tmp t;
 
 	public int func(int x) {
 		return 42;
 	}
 
+	public string func(string x) {
+		return "42";
+	}
+
 	public int cls(){
 		int a, b, c;
-
+        Tmp t;
+        t = new Tmp;
 		a= "somestr";
 		b= true;
-		c= func(3);
-		
-		return 0;
-	}	
+		c= func("a");
+		c= func(2);
+		return t.f;
+	}
+
+    public string func1(string x) {
+        return "42";
+    }
+}
+
+class Tmp2 {
+    public Cls c;
+
+    public int tmp2(){
+        return c.t.f;
+    }
 }

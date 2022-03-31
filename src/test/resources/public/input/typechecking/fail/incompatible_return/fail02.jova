@@ -6,7 +6,7 @@ class Main {
 
   public int main() {
 
-    return nix;
+    return "str";
   }
 
 }
