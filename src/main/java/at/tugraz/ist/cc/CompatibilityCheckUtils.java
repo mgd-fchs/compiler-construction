@@ -118,7 +118,7 @@ public final class CompatibilityCheckUtils {
 
     public static Integer checkReturnValue(Integer actualReturnValue, SymbolClass currentClass, JovaParser.Ret_stmtContext ctx) {
         String actualReturnString = null;
-        SymbolType actualSymbolType = null;
+        Object actualSymbolType = null;
 
         // actual return value
         if (SymbolPrimitiveType.valueOf(actualReturnValue) != null) {
@@ -128,7 +128,7 @@ public final class CompatibilityCheckUtils {
             actualReturnString = SymbolPrimitiveType.valueOf(actualReturnValue).toString();
         } else if (SymbolType.valueOf(actualReturnValue) != null) {
             actualReturnString = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getTypeAsString();
-            actualSymbolType = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getType();
+            actualSymbolType = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getActualType();
         } else if (currentMember != null) {
             checkReturnValueMember(currentClass, ctx, currentMember);
             currentMember = null;
@@ -137,8 +137,8 @@ public final class CompatibilityCheckUtils {
         }
 
         Object expectedReturnType = getExpectedReturnType(currentClass, ctx);
-        if (expectedReturnType instanceof SymbolVariable){ // use actualSymbolType instead
-            if(expectedReturnType.equals(actualReturnValue)){
+        if (expectedReturnType instanceof SymbolVariable){
+            if(expectedReturnType.equals(actualSymbolType)){
                 return OK;
             } else {
                 return checkReturnValueCoercion(actualReturnValue, ((SymbolType) expectedReturnType).getValue(), ctx, actualReturnString);
@@ -155,7 +155,7 @@ public final class CompatibilityCheckUtils {
     }
 
     private static Object getExpectedReturnType(SymbolClass currentClass, JovaParser.Ret_stmtContext ctx){
-        SymbolType expectedType;
+        Object expectedType;
         Integer expectedValue;
 
         // expected return value
@@ -163,7 +163,7 @@ public final class CompatibilityCheckUtils {
             expectedValue = ((SymbolPrimitiveType) currentClass.getCurrentAccessedMethod().getReturnValue().getActualType()).getValue();
             return expectedValue;
         } else {
-            expectedType = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getType();
+            expectedType = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getActualType();
             return expectedType;
         }
     }
@@ -236,6 +236,11 @@ public final class CompatibilityCheckUtils {
 
     public static int checkExpressionAssginment(Integer exprReturnValue, String assignedID, SymbolClass currentClass, JovaParser.Assign_stmtContext ctx){
         SymbolVariable assignedVariable = currentClass.getCurrentCallable().getLocalVariableById(assignedID);
+
+        if (assignedVariable == null){
+            ErrorHandler.INSTANCE.addUndefIdError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), assignedID);
+            return TYPE_ERROR;
+        }
 
         // case: expression returns primitive type
         if (SymbolPrimitiveType.valueOf(exprReturnValue) != null) {
