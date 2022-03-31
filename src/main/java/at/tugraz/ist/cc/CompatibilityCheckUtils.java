@@ -230,6 +230,9 @@ public final class CompatibilityCheckUtils {
         SymbolVariable methodRetVal;
         Integer primType = null;
         methodRetVal = currentClass.getMethodReturnValueById(id);
+        if (methodRetVal == null){
+            return TYPE_ERROR;
+        }
         if (methodRetVal.getActualType() instanceof SymbolPrimitiveType){
             primType = ((SymbolPrimitiveType) methodRetVal.getActualType()).getValue();
         }
@@ -248,6 +251,9 @@ public final class CompatibilityCheckUtils {
     }
 
     public static int checkExpressionAssginment(Integer exprReturnValue, String assignedID, SymbolClass currentClass, JovaParser.Assign_stmtContext ctx){
+        // TODO: Error messages show incorrect types
+        // TODO: Add coercion warnings
+
         SymbolVariable assignedVariable = currentClass.getCurrentCallable().getLocalVariableById(assignedID);
 
         if (assignedVariable == null){

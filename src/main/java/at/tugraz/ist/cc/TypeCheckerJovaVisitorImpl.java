@@ -648,6 +648,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         }
 
         String[] params = fetchedArgs.stream().map(SymbolVariable::getTypeAsString).toArray(String[]::new);
+        // TODO: Causes double error (see testUndeclFail03)
         ErrorHandler.INSTANCE.addUndefMethodError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
                 correspondingClass.get().getClassName(), params);
 

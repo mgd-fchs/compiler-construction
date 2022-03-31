@@ -16,22 +16,22 @@ class Cls {
 		int a, b, c;
         Tmp t;
         t = new Tmp;
-		a= "somestr";
-		b= true;
-		c= func("a");
+		a= "somestr"; // fail1
+		b= true;      // warning1
+		c= func("a"); // fail2
 		c= func(2);
-		return t.f;
+		return t.f;   // fail3
 	}
 
     public string func1(string x) {
         return "42";
     }
+
 }
+   class Tmp2 {
+        public Cls c;
 
-class Tmp2 {
-    public Cls c;
-
-    public int tmp2(){
-        return c.t.f;
+        public int tmp2(){
+            return c.t.f; // fail4
+        }
     }
-}

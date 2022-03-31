@@ -269,7 +269,11 @@ public class SymbolClass {
 
     public SymbolVariable getMethodReturnValueById(String id){
         Optional<SymbolMethod> found = methods.stream().filter(element -> element.getName().equals(id)).findFirst();
-        return found.get().getReturnValue();
+        if (found.isEmpty()){
+            return null;
+        } else {
+            return found.get().getReturnValue();
+        }
     }
 
     public String getClassName() {
