@@ -37,6 +37,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     private SymbolVariable currentVar;
     private final SymbolTable symbolTable;
     private boolean isReturnStatement = false;
+    public SymbolVariable currentMember;
 
     public TypeCheckerJovaVisitorImpl() {
         symbolTable = SymbolTable.getInstance();
@@ -370,6 +371,9 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                 //currentClass.addArgument(var);
                 currentClass.setCurrentArgVariable(member);
             }
+            if (isReturnStatement){
+                CompatibilityCheckUtils.currentMember = member;
+            }
 
             currentClass.setCurrentMemberAccess(member);
             return OK;
@@ -386,6 +390,11 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                 currentClass.setCurrentArgVariable(ret_var);
             }
             currentClass.setCurrentAccessedMethod(backup);
+
+            if (isReturnStatement){
+                CompatibilityCheckUtils.currentMember = ret_var;
+            }
+
             currentClass.setCurrentMemberAccess(ret_var);
             return OK;
         }
@@ -483,6 +492,11 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             }
 
             SymbolVariable backup = currentClass.getCurrentMemberAccess();
+
+            if (isReturnStatement){
+                CompatibilityCheckUtils.currentMember = var_accessed;
+            }
+
             currentClass.setCurrentMemberAccess(var_accessed);
 //            int ret = visitChildren(ctx);
 
@@ -492,9 +506,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                 if (ret < 0) {
                     return ret;
                 }
-            }
-            if (isReturnStatement){
-                CompatibilityCheckUtils.currentMember = backup;
             }
 
             currentClass.setCurrentMemberAccess(backup);

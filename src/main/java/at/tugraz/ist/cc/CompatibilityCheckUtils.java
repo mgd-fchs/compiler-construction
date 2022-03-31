@@ -130,8 +130,9 @@ public final class CompatibilityCheckUtils {
             actualReturnString = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getTypeAsString();
             actualSymbolType = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getActualType();
         } else if (currentMember != null) {
-            checkReturnValueMember(currentClass, ctx, currentMember);
+            Integer retVal = checkReturnValueMember(currentClass, ctx, currentMember);
             currentMember = null;
+            return retVal;
         } else {
             return TYPE_ERROR;
         }
@@ -144,10 +145,14 @@ public final class CompatibilityCheckUtils {
                 return checkReturnValueCoercion(actualReturnValue, ((SymbolType) expectedReturnType).getValue(), ctx, actualReturnString);
             }
         } else if (expectedReturnType instanceof Integer){
-            if(expectedReturnType == actualReturnValue){
-                return actualReturnValue;
+            if (SymbolPrimitiveType.valueOf(((Integer) expectedReturnType)) != null){
+                if(expectedReturnType == actualReturnValue){
+                    return actualReturnValue;
+                } else {
+                    return checkReturnValueCoercion(actualReturnValue, ((Integer) expectedReturnType), ctx, actualReturnString);
+                }
             } else {
-                return checkReturnValueCoercion(actualReturnValue, ((Integer) expectedReturnType), ctx, actualReturnString);
+                return TYPE_ERROR;
             }
         } else {
             return TYPE_ERROR;
@@ -168,27 +173,35 @@ public final class CompatibilityCheckUtils {
         }
     }
 
-    private static Object checkReturnValueMember(SymbolClass currentClass, JovaParser.Ret_stmtContext ctx, SymbolVariable returnedMember){
-       /* get expected type
-
+    private static Integer checkReturnValueMember(SymbolClass currentClass, JovaParser.Ret_stmtContext ctx, SymbolVariable returnedMember){
+        // TODO: Handle method members (see "incompatible_return/fail04.jova")
+       // get expected type
         Object expectedReturnType = getExpectedReturnType(currentClass, ctx);
 
         // get actual type
-
-        if (currentClass.getCurrentAccessedMethod().getReturnValue().getActualType() instanceof SymbolPrimitiveType) {
-            Integer expectedValue = ((SymbolPrimitiveType) currentClass.getCurrentAccessedMethod().getReturnValue().getActualType()).getValue();
-
-        } else {
-            SymbolType expectedSymbolType = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getType();
-            if (actualSymbolType != null && expectedSymbolType != actualSymbolType) {
-                return checkReturnValueCoercion(actualReturnValue, expectedSymbolType.getValue(), ctx, actualReturnString);
+        if (returnedMember.getType() == SymbolType.PRIMITIVE) {
+            Integer actualType = ((SymbolPrimitiveType) returnedMember.getActualType()).getValue();
+            if (actualType == expectedReturnType){
+                return actualType;
             } else {
-                return actualReturnValue;
+                if (expectedReturnType instanceof Integer) {
+                    Integer intRetType = ((Integer) expectedReturnType);
+                    return checkReturnValueCoercion(actualType, intRetType, ctx, SymbolPrimitiveType.valueOf(intRetType).toString());
+                } else if (expectedReturnType instanceof SymbolType){
+                    return checkReturnValueCoercion(actualType, ((Integer) expectedReturnType), ctx, returnedMember.getName());
+                } else {
+                    // should be unreachable
+                    return TYPE_ERROR;
+                }
             }
-
+        } else if (returnedMember.getType() == SymbolType.CLASS) {
+            SymbolType actualSymbolType = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getType();
+            if (actualSymbolType != null && expectedReturnType != actualSymbolType) {
+                return checkReturnValueCoercion(actualSymbolType.getValue(), returnedMember.getType().getValue(), ctx, "somestr");
+            } else {
+                return actualSymbolType.getValue();
+            }
         }
-        return expectedValue;
-        */
         return OK;
     }
 
