@@ -268,6 +268,7 @@ public class SymbolClass {
     }
 
     public SymbolVariable getMethodReturnValueById(String id){
+        // TODO @Magda: This must match the entire method signature, ID alone is not sufficient
         Optional<SymbolMethod> found = methods.stream().filter(element -> element.getName().equals(id)).findFirst();
         if (found.isEmpty()){
             return null;

@@ -129,6 +129,8 @@ public final class CompatibilityCheckUtils {
         } else if (SymbolType.valueOf(actualReturnValue) != null) {
             actualReturnString = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getTypeAsString();
             actualSymbolType = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getActualType();
+        } else if (actualReturnValue == SymbolType.METHOD.getValue()){
+            actualSymbolType = getMethodReturnPrimitiveType(currentClass, "id");
         } else if (currentMember != null) {
             Integer retVal = checkReturnValueMember(currentClass, ctx, currentMember);
             currentMember = null;
@@ -168,7 +170,7 @@ public final class CompatibilityCheckUtils {
             expectedValue = ((SymbolPrimitiveType) currentClass.getCurrentAccessedMethod().getReturnValue().getActualType()).getValue();
             return expectedValue;
         } else {
-            expectedType = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getActualType();
+            expectedType = currentClass.getCurrentAccessedMethod().getReturnValue().getActualType();
             return expectedType;
         }
     }
@@ -195,11 +197,11 @@ public final class CompatibilityCheckUtils {
                 }
             }
         } else if (returnedMember.getType() == SymbolType.CLASS) {
-            SymbolType actualSymbolType = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getType();
+            Object actualSymbolType = returnedMember.getActualType();
             if (actualSymbolType != null && expectedReturnType != actualSymbolType) {
-                return checkReturnValueCoercion(actualSymbolType.getValue(), returnedMember.getType().getValue(), ctx, "somestr");
+                return checkReturnValueCoercion(returnedMember.getType().getValue(), returnedMember.getType().getValue(), ctx, returnedMember.getTypeAsString());
             } else {
-                return actualSymbolType.getValue();
+                return returnedMember.getType().getValue();
             }
         }
         return OK;

@@ -14,6 +14,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     public static final int TYPE_CLASS = SymbolType.CLASS.getValue();
     public static final int TYPE_PRIMITIVE = SymbolType.PRIMITIVE.getValue();
+    public static final int TYPE_METHOD = SymbolType.METHOD.getValue();
     public static final int TYPE_ERROR = -30;
 
     public static final int ERROR_DOUBLE_DEFINITION_CLASS = -50;
@@ -419,7 +420,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
         for (SymbolMethod method : methods) {
             if (method.checkValidArgList(currentClass.getCurrentArgList())) {
-                int ret = 0;
+                int ret = TYPE_METHOD;
 
                 if (currentClass.getCurrentMemberAccess() != null && method.getAccessSymbol().equals(SymbolModifier.PRIVATE)
                         && !(((SymbolClass) currentClass.getCurrentMemberAccess().getActualType()).getClassName()).equals(currentClass.getClassName())) {

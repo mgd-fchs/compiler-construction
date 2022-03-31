@@ -389,9 +389,10 @@ public class TypeCheckerPublicTest {
     
     @Test
     public void testOpFail02() {
+        // TODO: @Magda This should throw an operator error (currently throws assign error)
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail+ "incorrect_operand/fail02.jova", debug);
-        assertTrue(result > 0);
+        assertTrue(result == 1);
     }
 
     @Test
