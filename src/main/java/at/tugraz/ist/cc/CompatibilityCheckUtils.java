@@ -29,6 +29,8 @@ public final class CompatibilityCheckUtils {
         // if operator is handed a method invocation
         SymbolVariable lhsRetVar = null;
         SymbolVariable rhsRetVar = null;
+        String lhs_typestr = getTypeStr(lhs_type, ctx.left.start.getText(), currentClass);
+        String rhs_typestr = getTypeStr(rhs_type, ctx.right.start.getText(), currentClass);
 
         if (lhs_type == TYPE_METHOD || rhs_type ==TYPE_METHOD) {
             if (lhs_type == TYPE_METHOD) {
@@ -39,6 +41,7 @@ public final class CompatibilityCheckUtils {
                     lhs_type = TYPE_CLASS;
                 } else if (lhsRetVar.getType().getValue() == TYPE_PRIMITIVE){
                     lhs_type = ((SymbolPrimitiveType) lhsRetVar.getActualType()).getValue();
+                    lhs_typestr = SymbolPrimitiveType.valueOf(lhs_type).toString();
                 }
             }
 
@@ -50,12 +53,11 @@ public final class CompatibilityCheckUtils {
                     rhs_type = TYPE_CLASS;
                 } else if (rhsRetVar.getType().getValue() == TYPE_PRIMITIVE){
                     rhs_type = ((SymbolPrimitiveType) rhsRetVar.getActualType()).getValue();
+                    rhs_typestr = SymbolPrimitiveType.valueOf(rhs_type).toString();
                 }
             }
         }
         // arithmetic and relational operations
-        String lhs_typestr = getTypeStr(lhs_type, ctx.left.start.getText(), currentClass);
-        String rhs_typestr = getTypeStr(rhs_type, ctx.right.start.getText(), currentClass);
 
         if (lhs_type == TYPE_CLASS || rhs_type == TYPE_CLASS){
             return checkRelOpClass(ctx, currentClass);
@@ -150,19 +152,19 @@ public final class CompatibilityCheckUtils {
             // case: expression is a function call
         } else if (exprReturnValue == TYPE_METHOD){
             String exprID = ctx.ass.start.getText();
-            Object returnValue = getMethodReturnType(currentClass, exprID);
-            if (returnValue instanceof SymbolVariable){
-                if (((SymbolVariable) returnValue).getActualType() == assignedVariable.getActualType()){
+            SymbolVariable returnValue = getMethodReturnType(currentClass, exprID);
+            if (returnValue.getType().getValue() == TYPE_CLASS){
+                if (returnValue.getActualType() == assignedVariable.getActualType()){
                     return OK;
                 } else {
-                    String actualReturnString = ((SymbolVariable) returnValue).getTypeAsString();
+                    String actualReturnString = returnValue.getTypeAsString();
                     ErrorHandler.INSTANCE.addIncompatibleReturnTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualReturnString);
                 }
-            } else if (returnValue instanceof Integer){
-                if ((Integer) returnValue == assignedVariable.getActualType()) {
+            } else if (returnValue.getType().getValue() == TYPE_PRIMITIVE){
+                if (returnValue.getActualType() == assignedVariable.getActualType()) {
                     return OK;
                 } else {
-                    String actualReturnString = SymbolPrimitiveType.valueOf((Integer) returnValue).toString();
+                    String actualReturnString = returnValue.getTypeAsString();
                     ErrorHandler.INSTANCE.addIncompatibleReturnTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualReturnString);
                     return TYPE_ERROR;
                 }
@@ -176,7 +178,7 @@ public final class CompatibilityCheckUtils {
 
     public static Integer checkReturnValue(Integer actualReturnValue, SymbolClass currentClass, JovaParser.Ret_stmtContext ctx) {
         String actualReturnString = null;
-        Object actualSymbolType = null;
+        SymbolVariable actualSymbolType = null;
 
         // actual return value
         if (SymbolPrimitiveType.valueOf(actualReturnValue) != null) {
@@ -186,7 +188,7 @@ public final class CompatibilityCheckUtils {
             actualReturnString = SymbolPrimitiveType.valueOf(actualReturnValue).toString();
         } else if (actualReturnValue == SymbolType.CLASS.getValue()) {
             actualReturnString = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getTypeAsString();
-            actualSymbolType = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getActualType();
+            actualSymbolType = currentClass.getCurrentScopeVariable(ctx.retval.start.getText());
         } else if (actualReturnValue == SymbolType.METHOD.getValue()) {
             actualSymbolType = getMethodReturnType(currentClass, "id");
         } else if (currentMember != null) {
@@ -197,22 +199,18 @@ public final class CompatibilityCheckUtils {
             return TYPE_ERROR;
         }
 
-        Object expectedReturnType = getExpectedReturnType(currentClass, ctx);
-        if (expectedReturnType instanceof SymbolVariable) {
+        SymbolVariable expectedReturnType = getExpectedReturnType(currentClass, ctx);
+        if (expectedReturnType.getType().getValue() == TYPE_CLASS) {
             if (expectedReturnType.equals(actualSymbolType)) {
                 return OK;
             } else {
-                return checkReturnValueCoercion(actualReturnValue, ((SymbolType) expectedReturnType).getValue(), ctx, actualReturnString);
+                return checkReturnValueCoercion(actualReturnValue, expectedReturnType.getType().getValue(), ctx, actualReturnString);
             }
-        } else if (expectedReturnType instanceof Integer) {
-            if (SymbolPrimitiveType.valueOf(((Integer) expectedReturnType)) != null) {
-                if (expectedReturnType == actualReturnValue) {
-                    return actualReturnValue;
-                } else {
-                    return checkReturnValueCoercion(actualReturnValue, ((Integer) expectedReturnType), ctx, actualReturnString);
-                }
+        } else if (expectedReturnType.getType().getValue() == TYPE_PRIMITIVE) {
+            if (expectedReturnType.getActualType() == actualReturnValue) {
+                return actualReturnValue;
             } else {
-                return TYPE_ERROR;
+                return checkReturnValueCoercion(actualReturnValue,((SymbolPrimitiveType) expectedReturnType.getActualType()).getValue(), ctx, actualReturnString);
             }
         } else {
             return TYPE_ERROR;
@@ -230,10 +228,8 @@ public final class CompatibilityCheckUtils {
             }
         } else if (typeInt == TYPE_PRIMITIVE) {
             typeStr = SymbolPrimitiveType.valueOf(typeInt).toString().toLowerCase();
-        } else if (typeInt == TYPE_METHOD) {
-            // TODO @Magda obvious
-            // get return value type of method
-            typeStr = "methodString";
+        } else {
+            return null;
         }
         return typeStr;
     }
@@ -267,44 +263,48 @@ public final class CompatibilityCheckUtils {
         }
     }
 
-    private static Object getExpectedReturnType(SymbolClass currentClass, JovaParser.Ret_stmtContext ctx) {
-        Object expectedType;
-        Integer expectedValue;
+    private static SymbolVariable getExpectedReturnType(SymbolClass currentClass, JovaParser.Ret_stmtContext ctx) {
+        SymbolVariable expectedType;
 
         // expected return value
-        if (currentClass.getCurrentAccessedMethod().getReturnValue().getActualType() instanceof SymbolPrimitiveType) {
-            expectedValue = ((SymbolPrimitiveType) currentClass.getCurrentAccessedMethod().getReturnValue().getActualType()).getValue();
-            return expectedValue;
+        if (currentClass.getCurrentAccessedMethod() != null){
+         expectedType = currentClass.getCurrentAccessedMethod().getReturnValue();
         } else {
-            expectedType = currentClass.getCurrentAccessedMethod().getReturnValue().getActualType();
-            return expectedType;
+            expectedType = null;
         }
+        return expectedType;
     }
 
     private static Integer checkReturnValueMember(SymbolClass currentClass, JovaParser.Ret_stmtContext ctx, SymbolVariable returnedMember) {
         // TODO: Handle method members (see "incompatible_return/fail04.jova")
         // get expected type
-        Object expectedReturnType = getExpectedReturnType(currentClass, ctx);
+        SymbolVariable expectedReturnType = getExpectedReturnType(currentClass, ctx);
 
         // get actual type
         if (returnedMember.getType() == SymbolType.PRIMITIVE) {
-            Integer actualType = ((SymbolPrimitiveType) returnedMember.getActualType()).getValue();
-            if (actualType == expectedReturnType) {
-                return actualType;
+            Integer actualType =  ((SymbolPrimitiveType) returnedMember.getActualType()).getValue();
+            if (expectedReturnType.getType().getValue() == TYPE_PRIMITIVE) {
+                if(expectedReturnType.getType().getValue() == actualType){
+                    return actualType;
+                }
             } else {
-                if (expectedReturnType instanceof Integer) {
-                    Integer intRetType = ((Integer) expectedReturnType);
+                if (expectedReturnType.getType().getValue() == TYPE_PRIMITIVE) {
+                    Integer intRetType = (Integer) expectedReturnType.getActualType();
                     return checkReturnValueCoercion(actualType, intRetType, ctx, SymbolPrimitiveType.valueOf(intRetType).toString());
-                } else if (expectedReturnType instanceof SymbolType) {
-                    return checkReturnValueCoercion(actualType, ((Integer) expectedReturnType), ctx, returnedMember.getName());
+                } else if (expectedReturnType.getType().getValue() == TYPE_CLASS) {
+                    return checkReturnValueCoercion(actualType, TYPE_CLASS, ctx, returnedMember.getName());
                 } else {
                     // should be unreachable
                     return TYPE_ERROR;
                 }
             }
         } else if (returnedMember.getType() == SymbolType.CLASS) {
-            Object actualSymbolType = returnedMember.getActualType();
-            if (actualSymbolType != null && expectedReturnType != actualSymbolType) {
+            SymbolVariable actualSymbolType = (SymbolVariable) returnedMember;
+            if (expectedReturnType.getType().getValue() == TYPE_PRIMITIVE){
+                ErrorHandler.INSTANCE.addIncompatibleReturnTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualSymbolType.getTypeAsString());
+                return TYPE_ERROR;
+            }
+            if (actualSymbolType != null && (expectedReturnType.getActualType().getClass() != actualSymbolType.getActualType().getClass())) {
                 return checkReturnValueCoercion(returnedMember.getType().getValue(), returnedMember.getType().getValue(), ctx, returnedMember.getTypeAsString());
             } else {
                 return returnedMember.getType().getValue();
@@ -336,7 +336,7 @@ public final class CompatibilityCheckUtils {
 
     private static SymbolVariable getMethodReturnType(SymbolClass currentClass, String id) {
         SymbolVariable methodReturnVariable;
-        // methodRetVal = currentClass.getMethodReturnValueById(id);
+        // TODO: Get methods by ID & signature
         methodReturnVariable = currentClass.getCurrentAccessedMethod().getReturnValue();
         return methodReturnVariable;
     }
