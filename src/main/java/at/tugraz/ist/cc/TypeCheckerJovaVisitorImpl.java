@@ -308,7 +308,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
         if (ctx.ass != null){
             Integer exprReturnValue = visit(ctx.expr());
-            CompatibilityCheckUtils.checkExpressionAssginment(exprReturnValue, ctx.id.start.getText(), currentClass, ctx);
+            CompatibilityCheckUtils.checkExpressionAssignment(exprReturnValue, ctx.id.start.getText(), currentClass, ctx);
         }
         // CompatibilityCheckUtils.checkAssignStatement();
         return errorIdExpr;

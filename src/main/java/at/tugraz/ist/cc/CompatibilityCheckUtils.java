@@ -6,9 +6,6 @@ import at.tugraz.ist.cc.symbol_table.SymbolPrimitiveType;
 import at.tugraz.ist.cc.symbol_table.SymbolType;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public final class CompatibilityCheckUtils {
 
     public static final int TYPE_INT = SymbolPrimitiveType.INT.getValue();
@@ -29,12 +26,12 @@ public final class CompatibilityCheckUtils {
 
         //TODO: check equal or unequal for class and nix types
         // if operator is handed a method invocation
-        if (SymbolType.valueOf(lhs_type) == null && SymbolPrimitiveType.valueOf(lhs_type) == null){
+        if (lhs_type == TYPE_METHOD){
             String leftID = ctx.left.start.getText();
             lhs_type = getMethodReturnPrimitiveType(currentClass, leftID);
         }
 
-        if (SymbolType.valueOf(rhs_type) == null && SymbolPrimitiveType.valueOf(rhs_type) == null){
+        if (rhs_type == TYPE_METHOD){
             String rightID = ctx.right.start.getText();
             rhs_type = getMethodReturnPrimitiveType(currentClass, rightID);
         }
@@ -88,7 +85,7 @@ public final class CompatibilityCheckUtils {
         } else if (typeInt == TYPE_METHOD){
             // TODO @Magda obvious
             // get return value type of method
-            typeStr = "dummyString";
+            typeStr = "methodString";
         }
         return typeStr;
     }
@@ -137,6 +134,9 @@ public final class CompatibilityCheckUtils {
             actualSymbolType = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getActualType();
         } else if (actualReturnValue == SymbolType.METHOD.getValue()){
             actualSymbolType = getMethodReturnPrimitiveType(currentClass, "id");
+            if (actualSymbolType == null){
+                actualSymbolType = getMethodReturnClassType(currentClass, "id");
+            }
         } else if (currentMember != null) {
             Integer retVal = checkReturnValueMember(currentClass, ctx, currentMember);
             currentMember = null;
@@ -234,12 +234,12 @@ public final class CompatibilityCheckUtils {
         return returnValue;
     }
 
-    private static int getMethodReturnPrimitiveType(SymbolClass currentClass, String id){
+    private static Integer getMethodReturnPrimitiveType(SymbolClass currentClass, String id){
         SymbolVariable methodRetVal;
         Integer primType = null;
         methodRetVal = currentClass.getMethodReturnValueById(id);
         if (methodRetVal == null){
-            return TYPE_ERROR;
+            return null;
         }
         if (methodRetVal.getActualType() instanceof SymbolPrimitiveType){
             primType = ((SymbolPrimitiveType) methodRetVal.getActualType()).getValue();
@@ -253,12 +253,11 @@ public final class CompatibilityCheckUtils {
         if (methodRetVal != null){
             return methodRetVal;
         } else {
-            // TODO: Add error here
             return null;
         }
     }
 
-    public static int checkExpressionAssginment(Integer exprReturnValue, String assignedID, SymbolClass currentClass, JovaParser.Assign_stmtContext ctx){
+    public static Integer checkExpressionAssignment(Integer exprReturnValue, String assignedID, SymbolClass currentClass, JovaParser.Assign_stmtContext ctx){
         // TODO: Error messages show incorrect types
         // TODO: Add coercion warnings
 
