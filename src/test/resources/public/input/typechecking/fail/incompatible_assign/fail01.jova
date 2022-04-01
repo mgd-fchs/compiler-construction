@@ -9,7 +9,7 @@ class Cls {
 	}
 
 	public string func(string x) {
-		return "42";
+		return "somestr";
 	}
 
 	public int cls(){
@@ -22,10 +22,6 @@ class Cls {
 		c= func(2);
 		return t.f;   // fail3
 	}
-
-    public string func1(string x) {
-        return "42";
-    }
 
 }
    class Tmp2 {

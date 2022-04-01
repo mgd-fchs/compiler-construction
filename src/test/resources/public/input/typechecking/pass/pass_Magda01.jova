@@ -1,0 +1,19 @@
+class Nested {
+
+  public string fortyTwo() {
+    return "42";
+  }
+
+  public int sixtyTwo() {
+    return 62;
+  }
+
+  public int nestedIsland() {
+  
+    int foo;
+
+    foo = fortyTwo() + sixtyTwo();
+
+    return sixtyTwo();
+  }
+}

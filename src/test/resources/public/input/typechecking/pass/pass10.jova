@@ -13,7 +13,7 @@ class Evaluation{
         return 0;
     }
 
-   public string func2(int a, int b, string asdf){
+   public int func2(int a, int b, string asdf){
       int x, zz;
 
       return this.a.y;

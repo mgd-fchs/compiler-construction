@@ -201,13 +201,14 @@ public final class CompatibilityCheckUtils {
 
         SymbolVariable expectedReturnType = getExpectedReturnType(currentClass, ctx);
         if (expectedReturnType.getType().getValue() == TYPE_CLASS) {
-            if (expectedReturnType.equals(actualSymbolType)) {
+            String expectedClassName = ((SymbolClass) expectedReturnType.getActualType()).getClassName();
+            if (expectedClassName == actualReturnString) {
                 return OK;
             } else {
                 return checkReturnValueCoercion(actualReturnValue, expectedReturnType.getType().getValue(), ctx, actualReturnString);
             }
         } else if (expectedReturnType.getType().getValue() == TYPE_PRIMITIVE) {
-            if (expectedReturnType.getActualType() == actualReturnValue) {
+            if (((SymbolPrimitiveType) expectedReturnType.getActualType()).getValue() == actualReturnValue) {
                 return actualReturnValue;
             } else {
                 return checkReturnValueCoercion(actualReturnValue,((SymbolPrimitiveType) expectedReturnType.getActualType()).getValue(), ctx, actualReturnString);
@@ -284,13 +285,16 @@ public final class CompatibilityCheckUtils {
         if (returnedMember.getType() == SymbolType.PRIMITIVE) {
             Integer actualType =  ((SymbolPrimitiveType) returnedMember.getActualType()).getValue();
             if (expectedReturnType.getType().getValue() == TYPE_PRIMITIVE) {
-                if(expectedReturnType.getType().getValue() == actualType){
+                Integer expType = ((SymbolPrimitiveType) expectedReturnType.getActualType()).getValue();
+                if(expType == actualType){
                     return actualType;
+                } else {
+                    return checkReturnValueCoercion(actualType, expType, ctx, SymbolPrimitiveType.valueOf(actualType).toString());
                 }
             } else {
                 if (expectedReturnType.getType().getValue() == TYPE_PRIMITIVE) {
                     Integer intRetType = (Integer) expectedReturnType.getActualType();
-                    return checkReturnValueCoercion(actualType, intRetType, ctx, SymbolPrimitiveType.valueOf(intRetType).toString());
+                    return checkReturnValueCoercion(actualType, intRetType, ctx, SymbolPrimitiveType.valueOf(actualType).toString());
                 } else if (expectedReturnType.getType().getValue() == TYPE_CLASS) {
                     return checkReturnValueCoercion(actualType, TYPE_CLASS, ctx, returnedMember.getName());
                 } else {
