@@ -15,6 +15,8 @@ public final class CompatibilityCheckUtils {
     public static final int TYPE_STR = SymbolPrimitiveType.STRING.getValue();
     public static final int TYPE_BOOL = SymbolPrimitiveType.BOOL.getValue();
     public static final int TYPE_CLASS = SymbolType.CLASS.getValue();
+    public static final int TYPE_PRIMITIVE = SymbolType.PRIMITIVE.getValue();
+    public static final int TYPE_METHOD = SymbolType.METHOD.getValue();
     public static final int TYPE_NIX = SymbolPrimitiveType.NIX.getValue();;
     private static final int TYPE_ERROR = -30;
     private static final int OK = 0;
@@ -72,7 +74,7 @@ public final class CompatibilityCheckUtils {
     }
 
     private static String getTypeStr(Integer typeInt, String id, SymbolClass currentClass) {
-        String typeStr;
+        String typeStr = null;
 
         if (typeInt == TYPE_CLASS){
             if (currentClass.getCurrentCallable() != null) {
@@ -81,8 +83,12 @@ public final class CompatibilityCheckUtils {
                 typeStr = currentClass.getCurrentScopeVariable(id).getTypeAsString();
             }
         }
-        else {
+        else if (typeInt == TYPE_PRIMITIVE){
             typeStr = SymbolPrimitiveType.valueOf(typeInt).toString().toLowerCase();
+        } else if (typeInt == TYPE_METHOD){
+            // TODO @Magda obvious
+            // get return value type of method
+            typeStr = "dummyString";
         }
         return typeStr;
     }
@@ -126,7 +132,7 @@ public final class CompatibilityCheckUtils {
                 return actualReturnValue;
             }
             actualReturnString = SymbolPrimitiveType.valueOf(actualReturnValue).toString();
-        } else if (SymbolType.valueOf(actualReturnValue) != null) {
+        } else if (actualReturnValue == SymbolType.CLASS.getValue()) {
             actualReturnString = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getTypeAsString();
             actualSymbolType = currentClass.getCurrentScopeVariable(ctx.retval.start.getText()).getActualType();
         } else if (actualReturnValue == SymbolType.METHOD.getValue()){
