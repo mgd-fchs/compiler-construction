@@ -528,9 +528,12 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             if (varType instanceof SymbolPrimitiveType){
                 currentVar = null;
                 return ((SymbolPrimitiveType) varType).getValue();
-            } else if (currentVar.getType() instanceof SymbolType) {
+            } else if (currentVar.getType() == SymbolType.CLASS) {
                 currentVar = null;
                 return TYPE_CLASS;
+            } else if (currentVar.getType() == SymbolType.METHOD){
+                currentVar = null;
+                return TYPE_METHOD;
             }
 
             // variable cannot be assigned without being defined first
