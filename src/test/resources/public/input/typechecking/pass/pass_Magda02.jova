@@ -1,0 +1,6 @@
+class Cls{
+
+	public int func(int x){
+		return 2+5+7;
+	}
+}

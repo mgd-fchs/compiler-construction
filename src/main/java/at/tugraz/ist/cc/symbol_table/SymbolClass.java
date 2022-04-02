@@ -23,7 +23,7 @@ public class SymbolClass {
     private String currentClassName;
     private Collection<String> currentIds;
     private SimpleCallable currentCallable;
-    private SymbolMethod currentAccessedMethod;
+    public SymbolMethod currentAccessedMethod;
     private SymbolVariable currentMemberAccess;
     private SymbolVariable currentArgVariable;
     private List<SymbolVariable> currentParams;

@@ -31,6 +31,11 @@ public final class CompatibilityCheckUtils {
             return checkRelOpClass(lhsVar, rhsVar, ctx, currentClass);
         }
 
+        if (lhsVar.getActualType() == TYPE_STR || rhsVar.getActualType() == TYPE_STR || lhsVar.getActualType() == TYPE_NIX || rhsVar.getActualType() == TYPE_NIX){
+            ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), ctx.op.getText());
+            return null;
+        }
+
         if (ctx.ADDOP() != null || ctx.MULOP() != null || ctx.RELOP() != null) {
             if (lhsVar.getActualType() == TYPE_INT && rhsVar.getActualType() == TYPE_INT) {
                 return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.INT, "");
@@ -137,11 +142,11 @@ public final class CompatibilityCheckUtils {
 
         SymbolVariable expectedReturnType = currentClass.getCurrentAccessedMethod().getReturnValue(); //TODO: Get correct method!
 
-        if (expectedReturnType == null || expectedReturnType.getActualType() != actualReturnValue.getActualType()) {
-            return TYPE_ERROR;
+        if (expectedReturnType == null || expectedReturnType.getActualType() == actualReturnValue.getActualType()) {
+            return OK;
         } else {
             ErrorHandler.INSTANCE.addIncompatibleReturnTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualReturnValue.getTypeAsString());
-            return OK;
+            return TYPE_ERROR;
         }
     }
 
