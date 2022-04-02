@@ -1,0 +1,14 @@
+class Cls{
+
+	public int func(){
+		char c;
+		
+		// invalid assignments
+		c = 'adf';
+		c = '&';
+		c = '/';
+	
+		return 0;
+	}
+}
+

@@ -1,0 +1,16 @@
+class Cls{
+	public int l;
+	
+	public char func(){
+		char s;
+		return s;
+	}
+	
+	public float func2(){
+		float f;
+		f = 0.003;
+
+		return f;
+	}
+}
+

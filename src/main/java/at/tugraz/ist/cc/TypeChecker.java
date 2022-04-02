@@ -29,6 +29,7 @@ public class TypeChecker {
 
         if (debug) {
             ErrorHandler.INSTANCE.printTypeErrors();
+            ErrorHandler.INSTANCE.printTypeWarnings();
         }
 
         if (ErrorHandler.INSTANCE.getNumTypeErrors() != 0) {

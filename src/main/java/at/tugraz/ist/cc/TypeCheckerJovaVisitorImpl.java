@@ -706,6 +706,10 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                 type = SymbolPrimitiveType.INT;
             } else if (ctx.STRING_LIT() != null) {
                 type = SymbolPrimitiveType.STRING;
+            } else if (ctx.CHAR_LIT() != null) {
+                type = SymbolPrimitiveType.CHAR;
+            } else if (ctx.FLOAT_LIT() != null) {
+                type = SymbolPrimitiveType.FLOAT;
             }
 
             if (type != null) {
@@ -724,8 +728,14 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         } else if (ctx.STRING_LIT() != null){
             currentClass.currentSymbolVariable = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.STRING, "");
             return OK;
-        } else if (ctx.INT_LIT() != null){
+        } else if (ctx.INT_LIT() != null) {
             currentClass.currentSymbolVariable = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.INT, "");
+            return OK;
+        } else if (ctx.CHAR_LIT() != null){
+            currentClass.currentSymbolVariable = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.CHAR, "");
+            return OK;
+        } else if (ctx.FLOAT_LIT() != null){
+            currentClass.currentSymbolVariable = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.FLOAT, "");
             return OK;
         } else if (ctx.KEY_NIX() != null){
             currentClass.currentSymbolVariable = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.NIX, "");

@@ -1,0 +1,18 @@
+class Cls{
+
+	public float func(){
+		float f;
+		int i;
+		bool b;
+		int c;
+	
+		f = i;		// warning 1
+		
+		b = f > i;  // warning 2
+		
+		f = f + i;	// warning 3
+		
+		return i; 	// warning 4
+	}
+}
+
