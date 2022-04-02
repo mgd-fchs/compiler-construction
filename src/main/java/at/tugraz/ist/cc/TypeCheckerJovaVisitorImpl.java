@@ -312,31 +312,78 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
         SymbolVariable assignedVarShould = currentClass.currentSymbolVariable;
 
+        int error = -1;
         if (ctx.expr() != null) {
-            int errorExpr = visitExpr(ctx.expr());
+            error = visitExpr(ctx.expr());
         } else if (ctx.object_alloc() != null) {
-            int errorObjc = visitObject_alloc(ctx.object_alloc());
+            error = visitObject_alloc(ctx.object_alloc());
         }
 
-        if (ctx.ass != null){
-            Integer exprReturnValue = visit(ctx.expr());
-
-            if (exprReturnValue == TYPE_ERROR){
-                return TYPE_ERROR;
-            }
-
-            SymbolVariable assignedVarIs = currentClass.currentSymbolVariable;
-            Integer validAssignment = CompatibilityCheckUtils.checkExpressionAssignment(assignedVarShould, assignedVarIs, ctx, currentClass);
-
-            if (validAssignment == TYPE_ERROR){
-                return TYPE_ERROR;
-            }
+        if (error != OK) {
+            return error;
         }
-        return errorIdExpr;
+
+        SymbolVariable assignedVarIs = currentClass.currentSymbolVariable;
+        Integer validAssignment = CompatibilityCheckUtils.checkExpressionAssignment(assignedVarShould, assignedVarIs, ctx, currentClass);
+
+        return validAssignment;
     }
 
     @Override
     public Integer visitMember_access(JovaParser.Member_accessContext ctx) {
+        if (currentClass.currentSymbolVariable.getType().equals(SymbolType.PRIMITIVE)) {
+            String id = null;
+            if (ctx.ID() != null) {
+                id = ctx.ID().toString();
+            } else if (ctx.method_invocation() != null) {
+                id = ctx.method_invocation().ID().toString();
+            }
+            /*
+            TODO: ask Newsgroup: or should it be this for method?: Then we have to at Simons code from below
+            ErrorHandler.INSTANCE.addCannotInvokeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                        var.getActualType().toString().toLowerCase(), id, params);
+             */
+            ErrorHandler.INSTANCE.addDoesNotHaveFieldError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                    currentClass.currentSymbolVariable.getTypeAsString(), id);
+
+            return  TYPE_ERROR;
+        }
+
+        SymbolClass classWithMember = (SymbolClass) currentClass.currentSymbolVariable.getActualType();
+
+        if (ctx.ID() != null) {
+            Optional<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> member_entry =
+                    classWithMember.getMemberIfExists(ctx.ID().toString());
+
+            if (member_entry.isEmpty()) {
+                ErrorHandler.INSTANCE.addDoesNotHaveFieldError(
+                        ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                        classWithMember.getClassName(), ctx.ID().toString());
+                return TYPE_ERROR;
+            }
+
+            SymbolVariable member = member_entry.get().getValue();
+            SymbolModifier modifier = member_entry.get().getKey();
+
+            if (modifier.equals(SymbolModifier.PRIVATE) && !classWithMember.equals(currentClass) ) {
+                ErrorHandler.INSTANCE.addMemberAccessError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                        ctx.ID().toString(), classWithMember.getClassName());
+                return TYPE_ERROR;
+            }
+
+            currentClass.currentSymbolVariable = member;
+        } else if (ctx.method_invocation() != null) {
+            // visitMethod_invocation already sets the currentClass.currentSymbolVariable
+            int error = visitMethod_invocation(ctx.method_invocation());
+            if (error != OK) {
+                return error;
+            }
+        }
+
+        return OK;
+
+/*
+
         SymbolVariable var = currentClass.getCurrentMemberAccess();
 
         if (var.getType() == SymbolType.PRIMITIVE) {
@@ -366,8 +413,9 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
                 ErrorHandler.INSTANCE.addCannotInvokeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
                         var.getActualType().toString().toLowerCase(), id, params);
-            }*/
+            }
             return OK;
+
         }
 
         SymbolClass class_accessed = (SymbolClass) var.getActualType();
@@ -413,9 +461,57 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
         // TODO: does this make sense?
         return visitChildren(ctx);
+         */
     }
 
-    @Override public Integer visitMethod_invocation(JovaParser.Method_invocationContext ctx) {
+
+    @Override
+    public Integer visitMethod_invocation(JovaParser.Method_invocationContext ctx) {
+        int error = OK;
+        SymbolClass classOfMethodInvocation = (SymbolClass) currentClass.currentSymbolVariable.getActualType();
+
+        List<SymbolVariable> args_backup = currentClass.getCurrentArgList();
+        currentClass.setArgList(new ArrayList<>());
+
+        if (ctx.arg_list() != null) {
+            error = visitArg_list(ctx.arg_list());
+            if (error != OK) {
+                currentClass.setArgList(args_backup);
+                return TYPE_ERROR;
+            }
+        }
+
+        String methodName = ctx.ID().toString();
+        Optional<SymbolMethod> foundMethod = classOfMethodInvocation.getMethods()
+                .stream()
+                .filter(method -> method.getName().equals(methodName) && method.checkValidArgList(currentClass.getCurrentArgList()))
+                .findAny();
+
+        if(foundMethod.isPresent()) {
+            if (!classOfMethodInvocation.equals(currentClass) && foundMethod.get().getAccessSymbol().equals(SymbolModifier.PRIVATE)) {
+                ErrorHandler.INSTANCE.addMethodAccessError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                        foundMethod.get().getName(), classOfMethodInvocation.getClassName(), foundMethod.get().getParamTypesAsString());
+                error = TYPE_ERROR;
+            } else {
+                currentClass.currentSymbolVariable = foundMethod.get().getReturnValue();
+            }
+
+        } else {
+            /* TODO
+            ErrorHandler.INSTANCE.addCannotInvokeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                    class_accessed.getClassName(), ctx.ID().toString(), params);
+            */
+
+            String[] params = currentClass.getCurrentArgList().stream().map(SymbolVariable::getTypeAsString).toArray(String[]::new);
+            ErrorHandler.INSTANCE.addUndefMethodError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.ID().toString(), params);
+            error = ERROR_GENERAL;
+        }
+
+        currentClass.setArgList(args_backup);
+        return error;
+
+        /*
+
         SymbolClass class_accessed = currentClass.getCurrentClassAccess();
         Collection<SymbolMethod> methods = class_accessed.getMatchingMethods(ctx.ID().toString());
 
@@ -462,9 +558,46 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
         currentClass.setArgList(args_backup);
         return -1;
+
+         */
     }
 
-    @Override public Integer visitId_expr(JovaParser.Id_exprContext ctx) {
+    @Override
+    public Integer visitId_expr(JovaParser.Id_exprContext ctx) {
+
+        SymbolVariable var_accessed = new SymbolVariable(SymbolType.CLASS, currentClass, "");
+
+        if (ctx.KEY_THIS() != null) {
+            var_accessed = new SymbolVariable(SymbolType.CLASS, currentClass, "");
+        } else if (ctx.ID() != null) {
+            var_accessed = currentClass.getCurrentScopeVariable(ctx.ID().toString());
+            if (var_accessed == null) {
+                ErrorHandler.INSTANCE.addUndefIdError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.ID().toString());
+                return TYPE_ERROR;
+            }
+        } else if (ctx.method_invocation() != null) {
+
+            int error = visitMethod_invocation(ctx.method_invocation());
+            if (error != OK) {
+                return error;
+            }
+        }
+
+        currentClass.currentSymbolVariable = var_accessed;
+
+        if (ctx.member_access() != null) {
+            for (JovaParser.Member_accessContext expr : ctx.member_access()) {
+                // visitMember_access should always set the currentClass.currentSymbolVariable
+                int error = visitMember_access(expr);
+                if (error != OK) {
+                    return error;
+                }
+            }
+        }
+
+        return OK;
+
+/*
         if (currentClass.currentlyGatheringArguments()) {
             if (ctx.ID() != null) {
                 SymbolVariable var = currentClass.getCurrentScopeVariable(ctx.ID().toString());
@@ -542,9 +675,24 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         // ErrorHandler.INSTANCE.addUndefIdError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), String.valueOf(ctx.ID().getText()));
         currentVar = null;
         return OK;
+
+ */
     }
 
-    @Override public Integer visitArg_list(JovaParser.Arg_listContext ctx) {
+    @Override
+    public Integer visitArg_list(JovaParser.Arg_listContext ctx) {
+        for (JovaParser.ExprContext expr : ctx.expr()) {
+            int error = visitExpr(expr);
+            if (error != OK) {
+                return error;
+            }
+
+            currentClass.addArgument(currentClass.currentSymbolVariable);
+        }
+
+        return OK;
+
+        /*
         int ret = 0;
         SymbolVariable backup = currentClass.getCurrentArgVariable();
         currentClass.setCurrentArgVariable(null);
@@ -562,9 +710,12 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         }
         currentClass.setCurrentArgVariable(backup);
         return ret;
+
+         */
     }
 
-    @Override public Integer visitExpr(JovaParser.ExprContext ctx) {
+    @Override
+    public Integer visitExpr(JovaParser.ExprContext ctx) {
         // TODO: Where do we need to throw errors in expressions?
 
         if (ctx.op != null) {
@@ -618,7 +769,8 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         return OK;
     }
 
-    @Override public Integer visitUnary_expr(JovaParser.Unary_exprContext ctx) {
+    @Override
+    public Integer visitUnary_expr(JovaParser.Unary_exprContext ctx) {
         Integer returnValue = visit(ctx.primary_expr());
         if (returnValue == TYPE_ERROR){
             return TYPE_ERROR;
@@ -631,12 +783,59 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         return OK;
     }
 
-    @Override public Integer visitPrimary_expr(JovaParser.Primary_exprContext ctx) {
+    @Override
+    public Integer visitPrimary_expr(JovaParser.Primary_exprContext ctx) {
         return visitChildren(ctx);
     }
 
     @Override
     public Integer visitObject_alloc(JovaParser.Object_allocContext ctx) {
+        String className = ctx.CLASS_TYPE().toString();
+
+        if (SymbolClass.MAIN_CLASS_NAME.equals(className)) {
+            ErrorHandler.INSTANCE.addMainInstatiationError(ctx.start.getLine(), ctx.start.getCharPositionInLine());
+            return ERROR_MAIN_INSTANTIATE;
+        }
+
+        // TODO this puts an undefined id error if class is not found => might be the the wrong error at this situation
+        Optional<SymbolClass> correspondingClass = symbolTable.getClassByName(className, ctx);
+        SymbolClass classObjectAlloc;
+
+        if (correspondingClass.isEmpty()) {
+            return ERROR_ID_UNDEF;
+        } else {
+            classObjectAlloc = correspondingClass.get();
+        }
+
+        currentClass.setArgList(new ArrayList<>());
+        if (ctx.ctor_args() != null) {
+            int error = visitCtor_args(ctx.ctor_args());
+            if (error != OK) {
+                return error;
+            }
+        }
+
+
+        Collection<SymbolConstructor> availableCtors = classObjectAlloc.getConstructors();
+        for (SymbolConstructor ctor : availableCtors) {
+            if (ctor.checkValidArgList(currentClass.getCurrentArgList())) {
+                currentClass.currentSymbolVariable = ctor.getReturnValue();
+                return OK;
+            }
+        }
+
+        String[] params = currentClass.getCurrentArgList()
+                .stream()
+                .map(SymbolVariable::getTypeAsString)
+                .toArray(String[]::new);
+
+        // TODO: Causes double error (see testUndeclFail03)
+        ErrorHandler.INSTANCE.addUndefMethodError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                correspondingClass.get().getClassName(), params);
+
+        return ERROR_UNKNOWN_CTOR;
+
+    /*
         String className = ctx.CLASS_TYPE().toString();
 
         if (SymbolClass.MAIN_CLASS_NAME.equals(className)) {
@@ -681,11 +880,17 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                 correspondingClass.get().getClassName(), params);
 
         return ERROR_UNKNOWN_CTOR;
+
+     */
     }
 
     @Override
     public Integer visitCtor_args(JovaParser.Ctor_argsContext ctx) {
-        return visitChildren(ctx);
+        if (ctx.arg_list() != null) {
+            return visitArg_list(ctx.arg_list());
+        }
+
+        return OK;
     }
 
     @Override

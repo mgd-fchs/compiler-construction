@@ -9,11 +9,14 @@ public abstract class SimpleCallable {
     protected final String name;
     protected final List<SymbolVariable> params;
     protected final List<SymbolVariable> localVariables;
+    protected final SymbolVariable returnValue;
 
 
-    public SimpleCallable(String name, List<SymbolVariable> params) {
+
+    public SimpleCallable(String name, List<SymbolVariable> params, SymbolVariable returnValue) {
         this.name = name;
         this.params = params;
+        this.returnValue = returnValue;
         this.localVariables = new ArrayList<>();
     }
 
@@ -107,6 +110,11 @@ public abstract class SimpleCallable {
         }
         return found.get();
     }
+
+    public SymbolVariable getReturnValue() {
+        return returnValue;
+    }
+
 
     /**
      * returns true if the objects are the same or if the names of the methods and also

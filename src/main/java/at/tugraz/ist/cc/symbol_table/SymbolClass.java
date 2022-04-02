@@ -211,7 +211,7 @@ public class SymbolClass {
     }
 
     public int buildConstructor(String className, JovaParser.CtorContext ctx) {
-        SymbolConstructor symbolConstructor = new SymbolConstructor(className, currentParams);
+        SymbolConstructor symbolConstructor = new SymbolConstructor(this, currentParams);
 
         int errorOccurred = 0;
         if(symbolConstructor.checkParamDoubleDeclaration(ctx.params().param_list()) != 0) {
