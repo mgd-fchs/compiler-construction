@@ -36,12 +36,23 @@ public final class CompatibilityCheckUtils {
             return null;
         }
 
-        if (ctx.ADDOP() != null || ctx.MULOP() != null || ctx.RELOP() != null) {
+        if (ctx.ADDOP() != null || ctx.MULOP() != null) {
             if (lhsVar.getActualType() == TYPE_INT && rhsVar.getActualType() == TYPE_INT) {
                 return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.INT, "");
             } else if ((lhsVar.getActualType() == TYPE_BOOL || lhsVar.getActualType() == TYPE_INT) && (lhsVar.getActualType() == TYPE_BOOL || lhsVar.getActualType() == TYPE_INT)) {
                 ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.op.getText(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), "int", "int");
                 return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.INT, "");
+            } else {
+                ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), ctx.op.getText());
+                return null;
+            }
+        }
+        if (ctx.RELOP() != null){
+            if (lhsVar.getActualType() == TYPE_INT && rhsVar.getActualType() == TYPE_INT) {
+                return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "");
+            } else if ((lhsVar.getActualType() == TYPE_BOOL || lhsVar.getActualType() == TYPE_INT) && (lhsVar.getActualType() == TYPE_BOOL || lhsVar.getActualType() == TYPE_INT)) {
+                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.op.getText(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), "int", "int");
+                return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "");
             } else {
                 ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), ctx.op.getText());
                 return null;
@@ -144,7 +155,11 @@ public final class CompatibilityCheckUtils {
 
         if (expectedReturnType == null || expectedReturnType.getActualType() == actualReturnValue.getActualType()) {
             return OK;
-        } else {
+        } else if ((actualReturnValue.getActualType() == TYPE_BOOL || actualReturnValue.getActualType() == TYPE_INT) && (expectedReturnType.getActualType() == TYPE_BOOL || expectedReturnType.getActualType() == TYPE_INT)) {
+            ErrorHandler.INSTANCE.addReturnTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualReturnValue.getTypeAsString(), expectedReturnType.getTypeAsString());
+            return OK;
+        }
+        else {
             ErrorHandler.INSTANCE.addIncompatibleReturnTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualReturnValue.getTypeAsString());
             return TYPE_ERROR;
         }

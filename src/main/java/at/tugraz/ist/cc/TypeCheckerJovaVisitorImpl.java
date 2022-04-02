@@ -517,7 +517,8 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                 currentVar = null;
                 return TYPE_ERROR;
             }
-
+            // TODO: Check this!
+            currentClass.currentSymbolVariable = currentVar;
             // check variable type and reset current variable
             Object varType = currentVar.getActualType();
 
@@ -613,7 +614,11 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         } else {
             // case: primary expression
             // currentSymbolVariable must be set within the primary expression
-            Integer primVisitRet = visit(ctx.prim);
+            Integer primVisitRet = visitChildren(ctx);
+
+            if (primVisitRet == TYPE_ERROR){
+                return TYPE_ERROR;
+            }
         }
 
         return OK;
