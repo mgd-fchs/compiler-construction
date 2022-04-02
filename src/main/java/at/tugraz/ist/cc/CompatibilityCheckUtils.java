@@ -88,63 +88,22 @@ public final class CompatibilityCheckUtils {
         }
         return new SymbolVariable(TYPE_PRIMITIVE, TYPE_BOOL, "");
     }
-/*
-    public static Integer checkExpressionAssignment(SymbolVariable exprReturnValue, JovaParser.Assign_stmtContext ctx, SymbolClass currentClass){
-        // TODO: Error messages show incorrect types
-        // TODO: Add coercion warnings
-        // TODO: Set a current method as well, remove ID
 
-        SymbolVariable assignedVariable = currentClass.getCurrentScopeVariable(assignedID);
-
-        if (assignedVariable == null){
-            if (currentMember != null) {
-                assignedVariable = currentMember;
-                currentMember = null;
-            } else {
-                ErrorHandler.INSTANCE.addUndefIdError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), assignedID);
-                return TYPE_ERROR;
-            }
-        }
+    public static Integer checkExpressionAssignment(SymbolVariable shouldVar, SymbolVariable isVar, JovaParser.Assign_stmtContext ctx, SymbolClass currentClass){
+        // TODO: Assignment should throw incompatible operator error ("=")
 
         // case: expression returns primitive type
-        if (SymbolPrimitiveType.valueOf(exprReturnValue) != null) {
-            if (assignedVariable.getActualType() instanceof SymbolPrimitiveType){
-                if(((SymbolPrimitiveType) assignedVariable.getActualType()).getValue() == exprReturnValue){
-                    return OK;
-                } else {
-                    // TODO: find out which error should be thrown here
-                    String actualReturnString = getTypeStr(exprReturnValue, assignedID, currentClass);
-                    ErrorHandler.INSTANCE.addIncompatibleReturnTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualReturnString);
-                    return TYPE_ERROR;
-                }
+        if (shouldVar.getActualType() !=  isVar.getActualType()) {
+            if ((shouldVar.getActualType() == TYPE_BOOL || shouldVar.getActualType() == TYPE_INT) && (isVar.getActualType() == TYPE_BOOL || isVar.getActualType() == TYPE_INT)) {
+                ErrorHandler.INSTANCE.addReturnTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), isVar.getTypeAsString(), shouldVar.getTypeAsString());
+                return OK;
             }
-            // case: expression is a function call
-        } else if (exprReturnValue == TYPE_METHOD){
-            String exprID = ctx.ass.start.getText();
-            SymbolVariable returnValue = getMethodReturnType(currentClass, exprID);
-            if (returnValue.getType().getValue() == TYPE_CLASS){
-                if (returnValue.getActualType() == assignedVariable.getActualType()){
-                    return OK;
-                } else {
-                    String actualReturnString = returnValue.getTypeAsString();
-                    ErrorHandler.INSTANCE.addIncompatibleReturnTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualReturnString);
-                }
-            } else if (returnValue.getType().getValue() == TYPE_PRIMITIVE){
-                if (returnValue.getActualType() == assignedVariable.getActualType()) {
-                    return OK;
-                } else {
-                    String actualReturnString = returnValue.getTypeAsString();
-                    ErrorHandler.INSTANCE.addIncompatibleReturnTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualReturnString);
-                    return TYPE_ERROR;
-                }
-            }
-
-        }// case: expression is an id_expression
-
-        // case: expression is an object allocation
+            ErrorHandler.INSTANCE.addIncompatibleReturnTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), isVar.getTypeAsString());
+            return TYPE_ERROR;
+        }
         return OK;
     }
-*/
+
     public static Integer checkReturnValue(SymbolVariable actualReturnValue, SymbolClass currentClass, JovaParser.Ret_stmtContext ctx) {
 
         if (actualReturnValue.getActualType() == TYPE_NIX) {

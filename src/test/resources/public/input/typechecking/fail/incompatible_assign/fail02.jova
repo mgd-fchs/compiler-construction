@@ -1,0 +1,12 @@
+
+class Cls {
+
+	public bool cls(){
+		int a, b, c;
+        t = new Tmp; 	//error1
+		a= "somestr"; 	// error2
+		b= true;      	// warning1
+		return b;   	// warning2
+	}
+
+}

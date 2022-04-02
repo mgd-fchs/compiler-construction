@@ -369,6 +369,7 @@ public class TypeCheckerPublicTest {
         // check coerced assignment of nix
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail + "incompatible_return/fail03.jova", debug);
+        ErrorHandler.INSTANCE.printTypeWarnings();
         assertTrue(result > 0);
     }
 
@@ -711,6 +712,15 @@ public class TypeCheckerPublicTest {
         ErrorHandler.INSTANCE.printTypeWarnings();
         assertEquals(4, result);
     }
+
+    @Test
+    public void testAssignFail02() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail+ "incompatible_assign/fail02.jova", debug);
+        ErrorHandler.INSTANCE.printTypeWarnings();
+        assertEquals(2, result);
+    }
+
 
 
 }
