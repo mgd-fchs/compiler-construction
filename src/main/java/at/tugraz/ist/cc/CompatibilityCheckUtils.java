@@ -46,7 +46,7 @@ public final class CompatibilityCheckUtils {
             }
 
             if (rhs_type == TYPE_METHOD) {
-                String rightID = ctx.left.start.getText();
+                String rightID = ctx.right.start.getText();
                 rhsRetVar = getMethodReturnType(currentClass, rightID);
 
                 if (rhsRetVar.getType().getValue() == TYPE_CLASS){
@@ -227,10 +227,10 @@ public final class CompatibilityCheckUtils {
             } else {
                 typeStr = currentClass.getCurrentScopeVariable(id).getTypeAsString();
             }
-        } else if (typeInt == TYPE_PRIMITIVE) {
-            typeStr = SymbolPrimitiveType.valueOf(typeInt).toString().toLowerCase();
-        } else {
+        } else if (typeInt == TYPE_METHOD){
             return null;
+        } else {
+            typeStr = SymbolPrimitiveType.valueOf(typeInt).toString().toLowerCase();;
         }
         return typeStr;
     }

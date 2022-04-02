@@ -369,7 +369,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             }
 
             if (currentClass.currentlyGatheringArguments()) {
-                //currentClass.addArgument(var);
                 currentClass.setCurrentArgVariable(member);
             }
             if (isReturnStatement){
