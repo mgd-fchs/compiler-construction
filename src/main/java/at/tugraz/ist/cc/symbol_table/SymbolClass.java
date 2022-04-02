@@ -29,6 +29,7 @@ public class SymbolClass {
     private List<SymbolVariable> currentParams;
     private List<SymbolVariable> currentArgList;
     private SymbolClass currentObjectAlloc;
+    public SymbolVariable currentSymbolVariable;
 
     public SymbolClass(String name) {
         className = name;

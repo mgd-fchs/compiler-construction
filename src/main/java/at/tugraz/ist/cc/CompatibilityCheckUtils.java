@@ -60,7 +60,7 @@ public final class CompatibilityCheckUtils {
         // arithmetic and relational operations
 
         if (lhs_type == TYPE_CLASS || rhs_type == TYPE_CLASS){
-            return checkRelOpClass(ctx, currentClass);
+            return checkRelOpClass(ctx, currentClass); // TODO: test me!
         }
 
         if (ctx.ADDOP() != null || ctx.MULOP() != null || ctx.RELOP() != null) {
