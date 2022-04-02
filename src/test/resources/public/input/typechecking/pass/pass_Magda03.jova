@@ -1,0 +1,38 @@
+// Compare classes
+class Test1 {
+}
+
+class Test2 {
+}
+
+class Test3 {
+}
+
+class Cls{
+
+	public Test1 func(int x){
+
+	    Test1 t;
+	    Test2 s;
+	    Test3 u;
+	    int a;
+
+	    t = new Test1;
+	    s = new Test2;
+	    u = new Test3;
+
+	    if(t == s){
+
+	    }
+
+        if(s != nix){
+
+        }
+
+	    while(u != t) {
+	        a = 0;
+	    }
+
+		return t;
+	}
+}

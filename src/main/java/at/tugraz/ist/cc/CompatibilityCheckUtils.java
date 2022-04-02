@@ -27,7 +27,6 @@ public final class CompatibilityCheckUtils {
 
         // arithmetic and relational operations
         if (lhsVar.getType() == TYPE_CLASS || rhsVar.getType() == TYPE_CLASS){
-            // TODO @Magdi: Test me!
             return checkRelOpClass(lhsVar, rhsVar, ctx, currentClass);
         }
 
@@ -78,7 +77,7 @@ public final class CompatibilityCheckUtils {
     public static SymbolVariable checkRelOpClass(SymbolVariable lhsVar, SymbolVariable rhsVar, JovaParser.ExprContext ctx, SymbolClass currentClass){
 
         if ((lhsVar.getActualType() == TYPE_NIX || lhsVar.getType() == TYPE_CLASS) && (rhsVar.getActualType() == TYPE_NIX || rhsVar.getType() == TYPE_CLASS)){
-            if (ctx.op.getText() != "==" && ctx.op.getText() != "!=") {
+            if (!ctx.op.getText().contains("==") && !ctx.op.getText().contains("!=")) {
                 ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), ctx.op.getText());
                 return null;
             }
@@ -90,15 +89,13 @@ public final class CompatibilityCheckUtils {
     }
 
     public static Integer checkExpressionAssignment(SymbolVariable shouldVar, SymbolVariable isVar, JovaParser.Assign_stmtContext ctx, SymbolClass currentClass){
-        // TODO: Assignment should throw incompatible operator error ("=")
 
-        // case: expression returns primitive type
         if (shouldVar.getActualType() !=  isVar.getActualType()) {
             if ((shouldVar.getActualType() == TYPE_BOOL || shouldVar.getActualType() == TYPE_INT) && (isVar.getActualType() == TYPE_BOOL || isVar.getActualType() == TYPE_INT)) {
-                ErrorHandler.INSTANCE.addReturnTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), isVar.getTypeAsString(), shouldVar.getTypeAsString());
+                ErrorHandler.INSTANCE.addUnaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), "=", isVar.getTypeAsString(), shouldVar.getTypeAsString());
                 return OK;
             }
-            ErrorHandler.INSTANCE.addIncompatibleReturnTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), isVar.getTypeAsString());
+            ErrorHandler.INSTANCE.addUnaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), isVar.getTypeAsString(), "=");
             return TYPE_ERROR;
         }
         return OK;
@@ -110,7 +107,8 @@ public final class CompatibilityCheckUtils {
             return OK;
         }
 
-        SymbolVariable expectedReturnType = currentClass.getCurrentAccessedMethod().getReturnValue(); //TODO: Get correct method!
+        //TODO: Re-implement this once current method is properly set -> possibly pass the the expected return type to this method directly
+        SymbolVariable expectedReturnType = currentClass.getCurrentAccessedMethod().getReturnValue();
 
         if (expectedReturnType == null || expectedReturnType.getActualType() == actualReturnValue.getActualType()) {
             return OK;
