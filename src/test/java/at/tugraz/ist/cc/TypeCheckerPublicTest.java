@@ -670,6 +670,13 @@ public class TypeCheckerPublicTest {
     }
 
     @Test
+    public void testPass_Magda03() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "pass_Magda03.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
     public void testPass_Simon09() {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_pass + "pass17.jova", debug);

@@ -12,13 +12,13 @@ public final class CompatibilityCheckUtils {
     public static final SymbolPrimitiveType TYPE_STR = SymbolPrimitiveType.STRING;
     public static final SymbolPrimitiveType TYPE_BOOL = SymbolPrimitiveType.BOOL;
     public static final SymbolPrimitiveType TYPE_NIX = SymbolPrimitiveType.NIX;
+    public static final SymbolPrimitiveType TYPE_FLOAT = SymbolPrimitiveType.FLOAT;
+    public static final SymbolPrimitiveType TYPE_CHAR = SymbolPrimitiveType.CHAR;
     public static final SymbolType TYPE_CLASS = SymbolType.CLASS;
     public static final SymbolType TYPE_PRIMITIVE = SymbolType.PRIMITIVE;
-    public static final SymbolType TYPE_METHOD = SymbolType.METHOD;
 
     private static final int TYPE_ERROR = -30;
     private static final int OK = 0;
-    public static SymbolVariable currentMember = null;
 
     private CompatibilityCheckUtils() {
     }
@@ -27,7 +27,6 @@ public final class CompatibilityCheckUtils {
 
         // arithmetic and relational operations
         if (lhsVar.getType() == TYPE_CLASS || rhsVar.getType() == TYPE_CLASS){
-            // TODO @Magdi: Test me!
             return checkRelOpClass(lhsVar, rhsVar, ctx, currentClass);
         }
 
@@ -39,9 +38,14 @@ public final class CompatibilityCheckUtils {
         if (ctx.ADDOP() != null || ctx.MULOP() != null) {
             if (lhsVar.getActualType() == TYPE_INT && rhsVar.getActualType() == TYPE_INT) {
                 return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.INT, "");
+            } else if (lhsVar.getActualType() == TYPE_FLOAT && rhsVar.getActualType() == TYPE_FLOAT){
+                return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.FLOAT, "");
             } else if ((lhsVar.getActualType() == TYPE_BOOL || lhsVar.getActualType() == TYPE_INT) && (lhsVar.getActualType() == TYPE_BOOL || lhsVar.getActualType() == TYPE_INT)) {
                 ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.op.getText(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), "int", "int");
                 return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.INT, "");
+            } else if ((lhsVar.getActualType() == TYPE_FLOAT || lhsVar.getActualType() == TYPE_INT) && (lhsVar.getActualType() == TYPE_FLOAT || lhsVar.getActualType() == TYPE_INT)) {
+                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.op.getText(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), "float", "float");
+                return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.FLOAT, "");
             } else {
                 ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), ctx.op.getText());
                 return null;
@@ -50,8 +54,13 @@ public final class CompatibilityCheckUtils {
         if (ctx.RELOP() != null){
             if (lhsVar.getActualType() == TYPE_INT && rhsVar.getActualType() == TYPE_INT) {
                 return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "");
+            } else if (lhsVar.getActualType() == TYPE_FLOAT && rhsVar.getActualType() == TYPE_FLOAT){
+                return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "");
             } else if ((lhsVar.getActualType() == TYPE_BOOL || lhsVar.getActualType() == TYPE_INT) && (lhsVar.getActualType() == TYPE_BOOL || lhsVar.getActualType() == TYPE_INT)) {
                 ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.op.getText(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), "int", "int");
+                return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "");
+            } else if ((lhsVar.getActualType() == TYPE_FLOAT || lhsVar.getActualType() == TYPE_INT) && (lhsVar.getActualType() == TYPE_FLOAT || lhsVar.getActualType() == TYPE_INT)) {
+                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.op.getText(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), "float", "float");
                 return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "");
             } else {
                 ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), ctx.op.getText());
@@ -78,7 +87,7 @@ public final class CompatibilityCheckUtils {
     public static SymbolVariable checkRelOpClass(SymbolVariable lhsVar, SymbolVariable rhsVar, JovaParser.ExprContext ctx, SymbolClass currentClass){
 
         if ((lhsVar.getActualType() == TYPE_NIX || lhsVar.getType() == TYPE_CLASS) && (rhsVar.getActualType() == TYPE_NIX || rhsVar.getType() == TYPE_CLASS)){
-            if (ctx.op.getText() != "==" && ctx.op.getText() != "!=") {
+            if (!ctx.op.getText().contains("==") && !ctx.op.getText().contains("!=")) {
                 ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), ctx.op.getText());
                 return null;
             }
@@ -90,15 +99,26 @@ public final class CompatibilityCheckUtils {
     }
 
     public static Integer checkExpressionAssignment(SymbolVariable shouldVar, SymbolVariable isVar, JovaParser.Assign_stmtContext ctx, SymbolClass currentClass){
-        // TODO: Assignment should throw incompatible operator error ("=")
-
-        // case: expression returns primitive type
         if (shouldVar.getActualType() !=  isVar.getActualType()) {
             if ((shouldVar.getActualType() == TYPE_BOOL || shouldVar.getActualType() == TYPE_INT) && (isVar.getActualType() == TYPE_BOOL || isVar.getActualType() == TYPE_INT)) {
-                ErrorHandler.INSTANCE.addReturnTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), isVar.getTypeAsString(), shouldVar.getTypeAsString());
+                // allow coercion from int to bool and vice versa
+                ErrorHandler.INSTANCE.addUnaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), "=", isVar.getTypeAsString(), shouldVar.getTypeAsString());
                 return OK;
             }
-            ErrorHandler.INSTANCE.addIncompatibleReturnTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), isVar.getTypeAsString());
+            if (shouldVar.getActualType() == TYPE_FLOAT && isVar.getActualType() == TYPE_INT) {
+                // allow coercion from int to float
+                ErrorHandler.INSTANCE.addUnaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), "=", isVar.getTypeAsString(), shouldVar.getTypeAsString());
+                return OK;
+            }
+            if (shouldVar.getActualType() == TYPE_STR && isVar.getActualType() == TYPE_CHAR){
+                // allow coercion from char to string
+                ErrorHandler.INSTANCE.addUnaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), "=", isVar.getTypeAsString(), shouldVar.getTypeAsString());
+                return OK;
+            }
+            if (shouldVar.getType() == TYPE_CLASS && isVar.getActualType() == TYPE_NIX){
+                return OK;
+            }
+            ErrorHandler.INSTANCE.addUnaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), isVar.getTypeAsString(), "=");
             return TYPE_ERROR;
         }
         return OK;
@@ -110,11 +130,22 @@ public final class CompatibilityCheckUtils {
             return OK;
         }
 
+        //TODO: Re-implement this once current method is properly set -> possibly pass the the expected return type to this method directly
         SymbolVariable expectedReturnType = currentClass.getCurrentCallable().getReturnValue(); //TODO: Get correct method!
 
         if (expectedReturnType == null || expectedReturnType.getActualType() == actualReturnValue.getActualType()) {
             return OK;
         } else if ((actualReturnValue.getActualType() == TYPE_BOOL || actualReturnValue.getActualType() == TYPE_INT) && (expectedReturnType.getActualType() == TYPE_BOOL || expectedReturnType.getActualType() == TYPE_INT)) {
+            ErrorHandler.INSTANCE.addReturnTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualReturnValue.getTypeAsString(), expectedReturnType.getTypeAsString());
+            return OK;
+        }
+        if (expectedReturnType.getActualType() == TYPE_FLOAT && actualReturnValue.getActualType() == TYPE_INT) {
+            // allow coercion from int to float
+            ErrorHandler.INSTANCE.addReturnTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualReturnValue.getTypeAsString(), expectedReturnType.getTypeAsString());
+            return OK;
+        }
+        if (expectedReturnType.getActualType() == TYPE_STR && actualReturnValue.getActualType() == TYPE_CHAR){
+            // allow coercion from char to string
             ErrorHandler.INSTANCE.addReturnTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualReturnValue.getTypeAsString(), expectedReturnType.getTypeAsString());
             return OK;
         }
@@ -155,6 +186,7 @@ public final class CompatibilityCheckUtils {
 
     public static SymbolVariable checkUnary(SymbolVariable unaryVar, JovaParser.Unary_exprContext ctx){
         if (ctx.ADDOP() != null){
+            // TODO: Should this be allowed for float?
             if (unaryVar.getActualType() != TYPE_INT){
                 if (unaryVar.getActualType() == TYPE_BOOL){
                     ErrorHandler.INSTANCE.addUnaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.ADDOP().getText(), unaryVar.getTypeAsString(), TYPE_INT.toString());

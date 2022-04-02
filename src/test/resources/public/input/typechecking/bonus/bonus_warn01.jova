@@ -1,0 +1,11 @@
+class Cls{
+
+	public string func(){
+		char c;
+		string s;
+	
+		s = c;	//	warning 1
+		return c; 			// warning 2
+	}
+}
+

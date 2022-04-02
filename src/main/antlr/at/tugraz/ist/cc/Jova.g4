@@ -19,7 +19,7 @@ KEY_THIS : 'this';
 
 AMOD : 'public' | 'private';
 
-PRIMITIVE_TYPE : 'int' | 'string' | 'bool';
+PRIMITIVE_TYPE : 'int' | 'string' | 'bool' | 'char' | 'float';
 
 CLASS_TYPE : UPPERCASE (LETTER | DIGIT0 | '_')*;
 
@@ -34,6 +34,8 @@ DOTOP : '.';
 
 INT_LIT : '0' | (DIGIT)(DIGIT0)* | '-'(DIGIT)(DIGIT0)*;
 BOOL_LIT : 'true' | 'false';
+CHAR_LIT : '\'' LETTER '\'';
+FLOAT_LIT : '-'? ('0' | (DIGIT)(DIGIT0)*) '.' ('0' | '0'*(DIGIT)(DIGIT0)*);
 
 fragment DIGIT : '1'..'9';
 fragment DIGIT0 : '0'..'9';
@@ -133,6 +135,8 @@ literal : INT_LIT
         | BOOL_LIT
         | STRING_LIT
         | KEY_NIX
+        | CHAR_LIT
+        | FLOAT_LIT
         ;
 
 control_stmt : if_stmt
