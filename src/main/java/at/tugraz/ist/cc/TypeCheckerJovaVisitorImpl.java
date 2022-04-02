@@ -298,6 +298,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitAssign_stmt(JovaParser.Assign_stmtContext ctx) {
+        isReturnStatement = true;
         int errorIdExpr = visitId_expr(ctx.id_expr());
 
         if (ctx.expr() != null) {
@@ -310,7 +311,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             Integer exprReturnValue = visit(ctx.expr());
             CompatibilityCheckUtils.checkExpressionAssignment(exprReturnValue, ctx.id.start.getText(), currentClass, ctx);
         }
-        // CompatibilityCheckUtils.checkAssignStatement();
+       isReturnStatement = false;
         return errorIdExpr;
     }
 

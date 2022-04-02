@@ -130,11 +130,16 @@ public final class CompatibilityCheckUtils {
         // TODO: Error messages show incorrect types
         // TODO: Add coercion warnings
 
-        SymbolVariable assignedVariable = currentClass.getCurrentCallable().getLocalVariableById(assignedID);
+        SymbolVariable assignedVariable = currentClass.getCurrentScopeVariable(assignedID);
 
         if (assignedVariable == null){
-            ErrorHandler.INSTANCE.addUndefIdError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), assignedID);
-            return TYPE_ERROR;
+            if (currentMember != null) {
+                assignedVariable = currentMember;
+                currentMember = null;
+            } else {
+                ErrorHandler.INSTANCE.addUndefIdError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), assignedID);
+                return TYPE_ERROR;
+            }
         }
 
         // case: expression returns primitive type
