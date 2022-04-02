@@ -1,7 +1,7 @@
 class Nested {
 
-  public string fortyTwo() {
-    return "42";
+  public int fortyTwo() {
+    return 42;
   }
 
   public int sixtyTwo() {

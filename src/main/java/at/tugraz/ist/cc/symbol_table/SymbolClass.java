@@ -23,12 +23,8 @@ public class SymbolClass {
     private String currentClassName;
     private Collection<String> currentIds;
     private SimpleCallable currentCallable;
-    public SymbolMethod currentAccessedMethod;
-    private SymbolVariable currentMemberAccess;
-    private SymbolVariable currentArgVariable;
     private List<SymbolVariable> currentParams;
     private List<SymbolVariable> currentArgList;
-    private SymbolClass currentObjectAlloc;
     public SymbolVariable currentSymbolVariable;
 
     public SymbolClass(String name) {
@@ -38,9 +34,6 @@ public class SymbolClass {
         currentParams = new ArrayList<>();
         currentIds = new ArrayList<>();
         constructors = new ArrayList<>();
-        currentMemberAccess = null;
-        currentAccessedMethod = null;
-        currentArgVariable = null;
 
         // needs to be 0 to signal that no method-invocation is currently checked
         currentArgList = null;
@@ -52,7 +45,7 @@ public class SymbolClass {
                 currentSymbolType == null ||
                 currentSymbolType == PRIMITIVE && currentSymbolPrimitiveType == null) {
             // should be non reachable!!!!
-            System.exit(-999);
+            System.exit(70);
         }
 
         for (String id : currentIds) {
@@ -74,7 +67,7 @@ public class SymbolClass {
                     member = new SymbolVariable(SymbolType.PRIMITIVE, currentSymbolPrimitiveType, id);
                     break;
                 default:
-                    System.exit(666);
+                    System.exit(71);
             }
 
 
@@ -97,7 +90,7 @@ public class SymbolClass {
         if (    currentSymbolType == null ||
                 currentSymbolType == PRIMITIVE && currentSymbolPrimitiveType == null) {
             // should be non reachable!!!!
-            System.exit(-999);
+            System.exit(72);
         }
         // TODO check if class is already there => name is not enough => function overloading
         // TODO check if already exists
@@ -114,7 +107,7 @@ public class SymbolClass {
                 break;
 
             default:
-                System.exit(666);
+                System.exit(73);
         }
 
         currentSymbolPrimitiveType = null;
@@ -144,7 +137,6 @@ public class SymbolClass {
         if (errorOccurred == 0) {
             methods.add(symbolMethod);
             currentCallable = symbolMethod;
-            currentAccessedMethod = symbolMethod;
         }
 
         return errorOccurred;
@@ -161,7 +153,7 @@ public class SymbolClass {
                 return new SymbolVariable(SymbolType.PRIMITIVE, symbolPrimitiveType, variableName);
 
             default:
-                System.exit(666);
+                System.exit(74);
                 return null;
         }
     }
@@ -187,7 +179,7 @@ public class SymbolClass {
                     symbolVariable = new SymbolVariable(SymbolType.PRIMITIVE, currentSymbolPrimitiveType, id);
                     break;
                 default:
-                    System.exit(666);
+                    System.exit(75);
             }
 
             if( currentCallable.getParams().stream().anyMatch(element -> element.getName().equals(id)) ||
@@ -235,11 +227,6 @@ public class SymbolClass {
         return errorOccurred;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(className, members, methods);
-    }
-
     public void setCurrentParams(List<SymbolVariable> currentParams) {
         this.currentParams = currentParams;
     }
@@ -260,42 +247,10 @@ public class SymbolClass {
         this.currentSymbolPrimitiveType = currentSymbolPrimitiveType;
     }
 
-    public SymbolVariable getMemberById(String id){
-        Optional<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> found = members.stream()
-                .filter(element -> element.getValue().getName().equals(id))
-                .findFirst();
-
-        return found.get().getValue();
-    }
-
-    public SymbolVariable getMethodReturnValueById(String id){
-        // TODO @Magda: This must match the entire method signature, ID alone is not sufficient
-        Optional<SymbolMethod> found = methods.stream().filter(element -> element.getName().equals(id)).findFirst();
-        if (found.isEmpty()){
-            return null;
-        } else {
-            return found.get().getReturnValue();
-        }
-    }
-
     public String getClassName() {
         return className;
     }
 
-    public SymbolVariable getCurrentMemberAccess() {
-        return currentMemberAccess;
-    }
-
-    public void setCurrentMemberAccess(SymbolVariable currentMemberAccess) {
-        this.currentMemberAccess = currentMemberAccess;
-    }
-
-    public SymbolClass getCurrentClassAccess() {
-        if (getCurrentMemberAccess() != null) {
-            return (SymbolClass) getCurrentMemberAccess().getActualType();
-        }
-        return this;
-    }
 
     public Collection<SymbolMethod> getMatchingMethods(String method) {
         Collection<SymbolMethod> tmp = SymbolMethod.IO_METHODS
@@ -313,23 +268,6 @@ public class SymbolClass {
 
     public Collection<SymbolConstructor> getConstructors() {
         return constructors;
-    }
-
-    public void addPrimitiveArgument(SymbolPrimitiveType type) {
-        currentArgList.add(new SymbolVariable(PRIMITIVE, type, ""));
-    }
-
-    public boolean checkIfVariableExists(String arg) {
-        SymbolVariable var = getCurrentScopeVariable(arg);
-
-        if (var == null) {
-            return false;
-        }
-
-        if (currentlyGatheringArguments()) {
-            currentArgList.add(var);
-        }
-        return true;
     }
 
     public void addArgument(SymbolVariable var) {
@@ -362,10 +300,6 @@ public class SymbolClass {
         return currentCallable.getMethodVariable(name);
     }
 
-    public void resetArgList() {
-        currentArgList = null;
-    }
-
     public void setArgList(List<SymbolVariable> list) {
         currentArgList = list;
     }
@@ -374,20 +308,8 @@ public class SymbolClass {
         return currentArgList;
     }
 
-    public boolean currentlyGatheringArguments() {
-        return (currentArgList != null);
-    }
-
-    public SymbolMethod getCurrentAccessedMethod() {
-        return currentAccessedMethod;
-    }
-
-    public void setCurrentAccessedMethod(SymbolMethod currentAccessedMethod) {
-        this.currentAccessedMethod = currentAccessedMethod;
-    }
-
-    public void setCurrentObjectAlloc(SymbolClass currentObjectAlloc) {
-        this.currentObjectAlloc = currentObjectAlloc;
+    public SimpleCallable getCurrentCallable() {
+        return currentCallable;
     }
 
     public SymbolType getCurrentSymbolType() {
@@ -402,18 +324,6 @@ public class SymbolClass {
         return currentClassName;
     }
 
-    public SymbolVariable getCurrentArgVariable() {
-        return currentArgVariable;
-    }
-
-    public void setCurrentArgVariable(SymbolVariable currentArgVariable) {
-        this.currentArgVariable = currentArgVariable;
-    }
-
-    public SymbolClass getCurrentObjectAlloc() {
-        return currentObjectAlloc;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -422,5 +332,17 @@ public class SymbolClass {
         return Objects.equals(className, that.className);
     }
 
-    public SimpleCallable getCurrentCallable() {return currentCallable;}
+    public Optional<SymbolMethod> getMatchingMethod(String methodName, List<SymbolVariable> currentArgList) {
+        Optional<SymbolMethod> foundMethod = methods.stream()
+               .filter(method -> method.getName().equals(methodName) && method.checkValidArgList(currentArgList))
+               .findAny();
+
+        if (foundMethod.isEmpty()) {
+            foundMethod = SymbolMethod.IO_METHODS.stream()
+                    .filter(method -> method.getName().equals(methodName) && method.checkValidArgList(currentArgList))
+                    .findAny();
+        }
+
+        return foundMethod;
+    }
 }

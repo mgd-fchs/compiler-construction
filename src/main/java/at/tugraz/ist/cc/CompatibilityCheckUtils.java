@@ -110,7 +110,7 @@ public final class CompatibilityCheckUtils {
             return OK;
         }
 
-        SymbolVariable expectedReturnType = currentClass.getCurrentAccessedMethod().getReturnValue(); //TODO: Get correct method!
+        SymbolVariable expectedReturnType = currentClass.getCurrentCallable().getReturnValue(); //TODO: Get correct method!
 
         if (expectedReturnType == null || expectedReturnType.getActualType() == actualReturnValue.getActualType()) {
             return OK;
@@ -206,7 +206,7 @@ public final class CompatibilityCheckUtils {
     private static SymbolVariable getMethodReturnType(SymbolClass currentClass, String id) {
         SymbolVariable methodReturnVariable;
         // TODO: Get methods by ID & signature
-        methodReturnVariable = currentClass.getCurrentAccessedMethod().getReturnValue();
+        methodReturnVariable = currentClass.getCurrentCallable().getReturnValue();
         return methodReturnVariable;
     }
 }

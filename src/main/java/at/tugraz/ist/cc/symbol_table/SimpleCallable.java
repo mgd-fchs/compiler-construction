@@ -50,7 +50,7 @@ public abstract class SimpleCallable {
                 return ((SymbolPrimitiveType) actualType).toString().toLowerCase();
             } else {
                 // should not be reachable
-                System.exit(-1);
+                System.exit(69);
                 return null;
             }
         }).toArray(String[]::new);

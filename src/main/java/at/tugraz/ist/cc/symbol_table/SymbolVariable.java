@@ -12,7 +12,7 @@ public class SymbolVariable {
         // TODO maybe change this kind of checks to asserts
         if (type == SymbolType.PRIMITIVE && !(actualType instanceof SymbolPrimitiveType) ||
                 type == SymbolType.CLASS && !(actualType instanceof  SymbolClass)) {
-            System.exit(-1);
+            System.exit(76);
         }
 
         this.type = type;
@@ -34,7 +34,7 @@ public class SymbolVariable {
         } else if (actualType instanceof SymbolPrimitiveType) {
             return ((SymbolPrimitiveType) actualType).toString().toLowerCase();
         } else {
-            System.exit(-1);
+            System.exit(77);
             return null;
         }
     }
