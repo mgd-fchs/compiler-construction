@@ -304,7 +304,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitAssign_stmt(JovaParser.Assign_stmtContext ctx) {
-        isReturnStatement = true;
         int errorIdExpr = visitId_expr(ctx.id_expr());
 
         if (ctx.expr() != null) {
@@ -312,12 +311,17 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         } else if (ctx.object_alloc() != null) {
             int errorObjc = visitObject_alloc(ctx.object_alloc());
         }
-
+/*
         if (ctx.ass != null){
             Integer exprReturnValue = visit(ctx.expr());
-            CompatibilityCheckUtils.checkExpressionAssignment(exprReturnValue, ctx.id.start.getText(), currentClass, ctx);
-        }
-       isReturnStatement = false;
+
+            if (exprReturnValue == TYPE_ERROR){
+                return TYPE_ERROR;
+            }
+
+            SymbolVariable exprReturnVar = currentClass.currentSymbolVariable;
+            Integer validAssignment = CompatibilityCheckUtils.checkExpressionAssignment(exprReturnVar, ctx, currentClass);
+        } */
         return errorIdExpr;
     }
 
@@ -378,10 +382,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             if (currentClass.currentlyGatheringArguments()) {
                 currentClass.setCurrentArgVariable(member);
             }
-            if (isReturnStatement){
-                CompatibilityCheckUtils.currentMember = member;
-            }
-
             currentClass.setCurrentMemberAccess(member);
             return OK;
         }
@@ -397,11 +397,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                 currentClass.setCurrentArgVariable(ret_var);
             }
             currentClass.setCurrentAccessedMethod(backup);
-
-            if (isReturnStatement){
-                CompatibilityCheckUtils.currentMember = ret_var;
-            }
-
             currentClass.setCurrentMemberAccess(ret_var);
             return OK;
         }
@@ -501,13 +496,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             }
 
             SymbolVariable backup = currentClass.getCurrentMemberAccess();
-
-            if (isReturnStatement){
-                CompatibilityCheckUtils.currentMember = var_accessed;
-            }
-
-            currentClass.setCurrentMemberAccess(var_accessed);
-//            int ret = visitChildren(ctx);
 
             int ret = 0;
             for (JovaParser.Member_accessContext expr : ctx.member_access()) {
@@ -636,7 +624,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         if (returnValue == TYPE_ERROR){
             return TYPE_ERROR;
         }
-        // TODO: @Magdi: implement
         SymbolVariable opReturnVar = CompatibilityCheckUtils.checkUnary(currentClass.currentSymbolVariable, ctx);
         if (opReturnVar == null){
             return TYPE_ERROR;
@@ -758,7 +745,14 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     @Override
     public Integer visitIf_stmt(JovaParser.If_stmtContext ctx) {
         Integer conditionType = visit(ctx.expr());
-        if (CompatibilityCheckUtils.checkConditionCompatibility(conditionType, ctx.expr(), currentClass) == TYPE_ERROR){
+        if (conditionType == TYPE_ERROR){
+            return TYPE_ERROR;
+        }
+
+        SymbolVariable validCondition = currentClass.currentSymbolVariable;
+        Integer condResult = CompatibilityCheckUtils.checkConditionCompatibility(validCondition, ctx.expr(), currentClass);
+
+        if (condResult == TYPE_ERROR){
             return TYPE_ERROR;
         }
 
@@ -768,7 +762,14 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     @Override
     public Integer visitWhile_stmt(JovaParser.While_stmtContext ctx) {
         Integer conditionType = visit(ctx.expr());
-        if (CompatibilityCheckUtils.checkConditionCompatibility(conditionType, ctx.expr(), currentClass) == TYPE_ERROR){
+        if (conditionType == TYPE_ERROR){
+            return TYPE_ERROR;
+        }
+
+        SymbolVariable validCondition = currentClass.currentSymbolVariable;
+        Integer condResult = CompatibilityCheckUtils.checkConditionCompatibility(validCondition, ctx.expr(), currentClass);
+
+        if (condResult == TYPE_ERROR) {
             return TYPE_ERROR;
         }
         return visitChildren(ctx);
