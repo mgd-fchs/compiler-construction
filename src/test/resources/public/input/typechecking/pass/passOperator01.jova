@@ -11,6 +11,7 @@ class C {
 class Main {
     public int main() {
         A a;
+        A a1;
         B b;
         C c;
         int d;
@@ -20,6 +21,7 @@ class Main {
         bool helperBool;
 
         a = new A;
+        a1 = new A;
         b = new B;
         c = new C;
         d = 1;
@@ -27,8 +29,8 @@ class Main {
         f = false;
         g = true;
 
-        helperBool = a == b;
-        helperBool = a != b;
+        helperBool = a == a1;
+        helperBool = a != a1;
 
         if (helperBool) {
             d = print("hello world");

@@ -7,7 +7,7 @@ class B {
 class Main {
     public int main() {
         A a;
-        B b;
+        A b;
         bool helperBool;
 
         helperBool = a == b;

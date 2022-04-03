@@ -90,6 +90,9 @@ public final class CompatibilityCheckUtils {
             if (!ctx.op.getText().contains("==") && !ctx.op.getText().contains("!=")) {
                 ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), ctx.op.getText());
                 return null;
+            } else if (lhsVar.getType() == TYPE_CLASS && rhsVar.getType() == TYPE_CLASS && !lhsVar.equalTypeAndActualType(rhsVar)){
+                ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), ctx.op.getText());
+                return null;
             }
         } else {
             ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), ctx.op.getText());
