@@ -751,7 +751,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         }
 
         SymbolVariable validCondition = currentClass.currentSymbolVariable;
-        Integer condResult = CompatibilityCheckUtils.checkConditionCompatibility(validCondition, ctx.expr(), currentClass);
+        Integer condResult = CompatibilityCheckUtils.checkConditionCompatibility(validCondition, ctx, currentClass);
 
         if (condResult != OK){
             return TYPE_ERROR;
@@ -768,7 +768,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         }
 
         SymbolVariable validCondition = currentClass.currentSymbolVariable;
-        Integer condResult = CompatibilityCheckUtils.checkConditionCompatibility(validCondition, ctx.expr(), currentClass);
+        Integer condResult = CompatibilityCheckUtils.checkConditionCompatibility2(validCondition, ctx, currentClass);
 
         if (condResult != OK) {
             return TYPE_ERROR;

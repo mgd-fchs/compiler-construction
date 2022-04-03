@@ -227,7 +227,20 @@ public final class CompatibilityCheckUtils {
         return null;
     }
 
-    public static Integer checkConditionCompatibility(SymbolVariable condition_type, JovaParser.ExprContext ctx, SymbolClass currentClass) {
+    public static Integer checkConditionCompatibility(SymbolVariable condition_type, JovaParser.If_stmtContext ctx, SymbolClass currentClass) {
+
+        if (condition_type.getActualType() != TYPE_BOOL && condition_type.getActualType() != TYPE_INT) {
+            ErrorHandler.INSTANCE.addIncompatibleCondTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), condition_type.getTypeAsString());
+            return TYPE_ERROR;
+        } else if (condition_type.getActualType() == TYPE_INT) {
+            ErrorHandler.INSTANCE.addConditionTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), condition_type.getTypeAsString(), "bool");
+            return OK;
+        } else {
+            return OK;
+        }
+    }
+
+    public static Integer checkConditionCompatibility2(SymbolVariable condition_type, JovaParser.While_stmtContext ctx, SymbolClass currentClass) {
 
         if (condition_type.getActualType() != TYPE_BOOL && condition_type.getActualType() != TYPE_INT) {
             ErrorHandler.INSTANCE.addIncompatibleCondTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), condition_type.getTypeAsString());
