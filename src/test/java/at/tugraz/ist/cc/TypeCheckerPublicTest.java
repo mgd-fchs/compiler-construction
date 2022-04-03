@@ -71,14 +71,13 @@ public class TypeCheckerPublicTest {
         assertEquals(0, result);
     }
 
-/*    @Test
+    @Test
     public void testPass09() {
-        // TODO: This should not pass IMO, mismatched return statement
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_pass + "pass05.jova", debug);
         assertEquals(0, result);
     }
-*/
+
     @Test
     public void testPass10() {
         // check assignment to 'nix'
