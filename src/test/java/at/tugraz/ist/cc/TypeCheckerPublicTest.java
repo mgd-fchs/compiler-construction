@@ -752,7 +752,6 @@ public class TypeCheckerPublicTest {
     @Test
     public void testPassReturn04() {
         ErrorHandler.INSTANCE.reset();
-        // TODO this testcase leads to an exception
         int result = typeChecker.checkTypes(path_pass + "passReturn04.jova", debug);
         assertEquals(0, result);
     }
@@ -781,7 +780,6 @@ public class TypeCheckerPublicTest {
     @Test
     public void testPassOperator02() {
         ErrorHandler.INSTANCE.reset();
-        // TODO: this leads to an exception
         int result = typeChecker.checkTypes(path_pass + "passOperator02.jova", debug);
         assertEquals(0, result);
     }
@@ -789,7 +787,6 @@ public class TypeCheckerPublicTest {
     @Test
     public void testPassOperator03() {
         ErrorHandler.INSTANCE.reset();
-        // TODO: this leads to an exception
         int result = typeChecker.checkTypes(path_pass + "passOperator03.jova", debug);
         assertEquals(0, result);
     }
@@ -811,7 +808,6 @@ public class TypeCheckerPublicTest {
     @Test
     public void testRetFail06() {
         // Return value should be a class but is int. With function call.
-        // TODO: leads to a exception
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail + "incompatible_return/fail06.jova", debug);
         assertEquals(1, result);
@@ -820,7 +816,6 @@ public class TypeCheckerPublicTest {
     @Test
     public void testRetFail07() {
         // Return value should be a class but is int. With function call.
-        // TODO: leads to a exception
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail + "incompatible_return/fail07.jova", debug);
         assertEquals(1, result);
@@ -840,8 +835,6 @@ public class TypeCheckerPublicTest {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail + "incompatible_return/fail09.jova", debug);
         assertEquals(1, result);
-
-        // TODO: Simon but the actual return is a int but this error appears: #1: Incompatible type 'bool' for return (line 37)
     }
 
     @Test
@@ -850,8 +843,6 @@ public class TypeCheckerPublicTest {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail + "incompatible_return/fail10.jova", debug);
         assertEquals(1, result);
-
-        // TODO: Simon but the actual return is a int but this error appears: #1: Incompatible type 'bool' for return (line 37)
     }
 
     @Test
@@ -883,7 +874,6 @@ public class TypeCheckerPublicTest {
 
     @Test
     public void testPassCoercion() {
-        // check coerced assignment of nix
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_coercion + "warning05.jova", debug);
         int warnings = ErrorHandler.INSTANCE.getTypeWarnings().length;
