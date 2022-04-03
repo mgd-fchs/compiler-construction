@@ -1,0 +1,20 @@
+class Helper {
+}
+
+class A {
+
+    private int func0() {
+
+        int a;
+        string b;
+        bool c;
+        Helper d;
+
+        this.a = 3;
+        this.b = "b";
+        this.c = true;
+        this.d = new Helper;
+
+        return 0;
+    }
+}

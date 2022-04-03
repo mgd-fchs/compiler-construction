@@ -802,6 +802,13 @@ public class TypeCheckerPublicTest {
     }
 
     @Test
+    public void testThisFail02() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "this/fail02.jova", debug);
+        assertEquals(4, result);
+    }
+
+    @Test
     public void testRetFail06() {
         // Return value should be a class but is int. With function call.
         // TODO: leads to a exception
@@ -847,5 +854,49 @@ public class TypeCheckerPublicTest {
         // TODO: Simon but the actual return is a int but this error appears: #1: Incompatible type 'bool' for return (line 37)
     }
 
+    @Test
+    public void testPassOperator04() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "passOperator04.jova", debug);
+        assertEquals(0, result);
+    }
 
+    @Test
+    public void testOperatorFail10() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "incorrect_operand/fail10.jova", debug);
+
+        final int relopError = 30;
+        final int relopClassTypeError = 8;
+        final int mulError = 9;
+        final int andError = 3;
+        final int orError = 3;
+        final int addError = 6;
+        final int notError = 3;
+
+        final int sumError = relopError + relopClassTypeError + mulError +
+                        andError + orError +  addError + notError;
+
+        assertEquals(sumError, result);
+    }
+
+
+    @Test
+    public void testPassCoercion() {
+        // check coerced assignment of nix
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_coercion + "warning05.jova", debug);
+        int warnings = ErrorHandler.INSTANCE.getTypeWarnings().length;
+        assertEquals(0, result);
+
+        final int relop = 18;
+        final int mulop = 3;
+        final int and = 1;
+        final int or = 1;
+        final int addop = 2;
+        final int not = 1;
+
+        final int sumWarning = relop+ mulop + and + or + addop + not;
+        assertEquals(sumWarning, warnings);
+    }
 }
