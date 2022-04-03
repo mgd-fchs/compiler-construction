@@ -1,0 +1,9 @@
+class Helper {
+
+}
+
+class A {
+  public Helper func() {
+    return nix;
+  }
+}
