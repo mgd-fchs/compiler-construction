@@ -1,0 +1,13 @@
+class A {
+  public int func() {
+    return nix;
+  }
+
+  public string func() {
+    return nix;
+  }
+
+  public bool func() {
+    return nix;
+  }
+}

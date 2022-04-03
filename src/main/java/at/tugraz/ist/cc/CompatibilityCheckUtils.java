@@ -129,14 +129,10 @@ public final class CompatibilityCheckUtils {
 
     public static Integer checkReturnValue(SymbolVariable actualReturnValue, SymbolClass currentClass, JovaParser.Ret_stmtContext ctx) {
 
-        if (actualReturnValue.getActualType() == TYPE_NIX) {
-            return OK;
-        }
-
         //TODO: Re-implement this once current method is properly set -> possibly pass the the expected return type to this method directly
         SymbolVariable expectedReturnType = currentClass.getCurrentCallable().getReturnValue(); //TODO: Get correct method!
 
-        if (expectedReturnType == null || expectedReturnType.getActualType() == actualReturnValue.getActualType()) {
+        if (expectedReturnType.equalTypeAndActualType(actualReturnValue) || expectedReturnType.getType().equals(SymbolType.CLASS) && actualReturnValue.getActualType() == TYPE_NIX) {
             return OK;
         } else if ((actualReturnValue.getActualType() == TYPE_BOOL || actualReturnValue.getActualType() == TYPE_INT) && (expectedReturnType.getActualType() == TYPE_BOOL || expectedReturnType.getActualType() == TYPE_INT)) {
             ErrorHandler.INSTANCE.addReturnTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualReturnValue.getTypeAsString(), expectedReturnType.getTypeAsString());
