@@ -24,11 +24,11 @@ public final class CompatibilityCheckUtils {
     private CompatibilityCheckUtils() {
     }
 
-    public static SymbolVariable checkOperatorCompatibility(SymbolVariable lhsVar, SymbolVariable rhsVar, JovaParser.ExprContext ctx, SymbolClass currentClass) {
+    public static SymbolVariable checkOperatorCompatibility(SymbolVariable lhsVar, SymbolVariable rhsVar, JovaParser.ExprContext ctx) {
 
         // arithmetic and relational operations
         if (lhsVar.getType() == TYPE_CLASS || rhsVar.getType() == TYPE_CLASS){
-            return checkRelOpClass(lhsVar, rhsVar, ctx, currentClass);
+            return checkRelOpClass(lhsVar, rhsVar, ctx);
         }
 
         if (lhsVar.getActualType() == TYPE_STR || rhsVar.getActualType() == TYPE_STR || lhsVar.getActualType() == TYPE_NIX || rhsVar.getActualType() == TYPE_NIX){
@@ -85,7 +85,7 @@ public final class CompatibilityCheckUtils {
         }
     }
 
-    public static SymbolVariable checkRelOpClass(SymbolVariable lhsVar, SymbolVariable rhsVar, JovaParser.ExprContext ctx, SymbolClass currentClass){
+    public static SymbolVariable checkRelOpClass(SymbolVariable lhsVar, SymbolVariable rhsVar, JovaParser.ExprContext ctx){
 
         if ((lhsVar.getActualType() == TYPE_NIX || lhsVar.getType() == TYPE_CLASS) && (rhsVar.getActualType() == TYPE_NIX || rhsVar.getType() == TYPE_CLASS)){
             if (!ctx.op.getText().contains("==") && !ctx.op.getText().contains("!=")) {
@@ -102,7 +102,7 @@ public final class CompatibilityCheckUtils {
         return new SymbolVariable(TYPE_PRIMITIVE, TYPE_BOOL, "");
     }
 
-    public static Integer checkExpressionAssignment(SymbolVariable shouldVar, SymbolVariable isVar, JovaParser.Assign_stmtContext ctx, SymbolClass currentClass){
+    public static Integer checkExpressionAssignment(SymbolVariable shouldVar, SymbolVariable isVar, JovaParser.Assign_stmtContext ctx){
         if (shouldVar.getActualType() !=  isVar.getActualType()) {
 
             if (    ((shouldVar.getActualType() == TYPE_BOOL || shouldVar.getActualType() == TYPE_INT) && (isVar.getActualType() == TYPE_BOOL || isVar.getActualType() == TYPE_INT)) /* allow coercion from int to bool and vice versa */
@@ -152,7 +152,7 @@ public final class CompatibilityCheckUtils {
     }
 
 
-    public static SymbolVariable checkTernaryOperatorCompatibility(SymbolVariable whenType, SymbolVariable thenType, SymbolVariable elseType, JovaParser.ExprContext ctx, SymbolClass currentClass) {
+    public static SymbolVariable checkTernaryOperatorCompatibility(SymbolVariable whenType, SymbolVariable thenType, SymbolVariable elseType, ParserRuleContext ctx) {
 
         // check condition
         if (whenType.getActualType() != TYPE_BOOL && whenType.getActualType() != TYPE_INT) {

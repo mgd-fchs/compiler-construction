@@ -317,7 +317,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         }
 
         SymbolVariable assignedVarIs = currentClass.currentSymbolVariable;
-        Integer validAssignment = CompatibilityCheckUtils.checkExpressionAssignment(assignedVarShould, assignedVarIs, ctx, currentClass);
+        Integer validAssignment = CompatibilityCheckUtils.checkExpressionAssignment(assignedVarShould, assignedVarIs, ctx);
 
         return validAssignment;
     }
@@ -588,7 +588,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             }
 
             // check types are compatible
-            SymbolVariable opReturnVar = CompatibilityCheckUtils.checkOperatorCompatibility(leftVariable, rightVariable, ctx, currentClass);
+            SymbolVariable opReturnVar = CompatibilityCheckUtils.checkOperatorCompatibility(leftVariable, rightVariable, ctx);
             if (opReturnVar == null){
                 return TYPE_ERROR;
             }
@@ -608,7 +608,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                 return TYPE_ERROR;
             }
 
-            SymbolVariable opReturnVar = CompatibilityCheckUtils.checkTernaryOperatorCompatibility(whenVariable, thenVariable, elseVariable, ctx, currentClass);
+            SymbolVariable opReturnVar = CompatibilityCheckUtils.checkTernaryOperatorCompatibility(whenVariable, thenVariable, elseVariable, ctx);
             if (opReturnVar == null){
                 return TYPE_ERROR;
             }
