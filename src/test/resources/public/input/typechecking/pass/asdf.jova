@@ -1,15 +1,21 @@
 class Helper {
 }
 
+class Helper2 {
+}
+
 class A{
 public int a(){
 
 
 Helper h1;
+Helper2 h2;
 bool b1;
 bool b2;
 int i1;
 string s1;
+
+b1 = nix != nix;
 
 // TODO remove this whole file
 h1 = (b1) ? nix : nix;

@@ -26,18 +26,12 @@ public final class CompatibilityCheckUtils {
 
     public static SymbolVariable checkOperatorCompatibility(SymbolVariable lhsVar, SymbolVariable rhsVar, JovaParser.ExprContext ctx) {
 
-        // arithmetic and relational operations
+
         if (lhsVar.getType() == TYPE_CLASS || rhsVar.getType() == TYPE_CLASS){
             return checkRelOpClass(lhsVar, rhsVar, ctx);
-        } else if (lhsVar.getActualType() == TYPE_NIX && rhsVar.getActualType() == TYPE_NIX) {
-            return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "");
         }
 
-        if (lhsVar.getActualType() == TYPE_STR || rhsVar.getActualType() == TYPE_STR || lhsVar.getActualType() == TYPE_NIX || rhsVar.getActualType() == TYPE_NIX){
-            ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.op.getCharPositionInLine(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), ctx.op.getText());
-            return null;
-        }
-
+        // arithmetic and relational operations
         if (ctx.ADDOP() != null || ctx.MULOP() != null) {
             if (lhsVar.getActualType() == TYPE_INT && rhsVar.getActualType() == TYPE_INT) {
                 return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.INT, "");
@@ -54,7 +48,17 @@ public final class CompatibilityCheckUtils {
                 return null;
             }
         }
-        if (ctx.RELOP() != null){
+
+        // relational
+        else if (ctx.RELOP() != null){
+
+            String actualRelop = ctx.RELOP().getSymbol().getText();
+            if (lhsVar.getActualType() == TYPE_NIX && rhsVar.getActualType() == TYPE_NIX && (actualRelop.equals("==") || actualRelop.equals("!="))) {
+                // edge case: ==/!= (for class types and Ctype/nix when both are nix)
+                return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "");
+            }
+
+
             if (lhsVar.getActualType() == TYPE_INT && rhsVar.getActualType() == TYPE_INT) {
                 return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "");
             } else if (lhsVar.getActualType() == TYPE_FLOAT && rhsVar.getActualType() == TYPE_FLOAT){
