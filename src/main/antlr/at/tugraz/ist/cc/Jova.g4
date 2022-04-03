@@ -31,6 +31,8 @@ OR : '||';
 ADDOP : '+' | '-';
 NOT : '!';
 DOTOP : '.';
+COLON : ':';
+QUESTIONMARK : '?';
 
 INT_LIT : '0' | (DIGIT)(DIGIT0)* | '-'(DIGIT)(DIGIT0)*;
 BOOL_LIT : 'true' | 'false';
@@ -114,7 +116,7 @@ expr : prim=primary_expr
      | left=expr op=RELOP right=expr
      | left=expr op=AND   right=expr
      | left=expr op=OR    right=expr
-     | <assoc=right> when=expr '?' then=expr ':' el=expr
+     | <assoc=right> when=expr question=QUESTIONMARK then=expr colon=COLON el=expr
      ;
 
 unary_expr : (NOT | ADDOP) primary_expr;

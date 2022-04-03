@@ -152,41 +152,44 @@ public final class CompatibilityCheckUtils {
     }
 
 
-    public static SymbolVariable checkTernaryOperatorCompatibility(SymbolVariable whenType, SymbolVariable thenType, SymbolVariable elseType, ParserRuleContext ctx) {
+    public static SymbolVariable checkTernaryOperatorCompatibility(SymbolVariable whenType, SymbolVariable thenType, SymbolVariable elseType, JovaParser.ExprContext ctx) {
+
+        int charPos = ctx.question.getCharPositionInLine();
+        int line = ctx.start.getLine();
 
         // check condition
         if (whenType.getActualType() != TYPE_BOOL && whenType.getActualType() != TYPE_INT) {
-            ErrorHandler.INSTANCE.addUnaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), whenType.getTypeAsString(), "?");
+            ErrorHandler.INSTANCE.addUnaryTypeError(line, charPos, whenType.getTypeAsString(), "?");
             return null;
         } else if (whenType.getActualType() == TYPE_INT) {
-            ErrorHandler.INSTANCE.addUnaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), "?", whenType.getTypeAsString(), "bool");
+            ErrorHandler.INSTANCE.addUnaryTypeCoercionWarning( line, charPos,"?", whenType.getTypeAsString(), "bool");
         }
 
+        charPos = ctx.colon.getCharPositionInLine();
         // check resulting expressions (then/else)
         if (thenType.getType() == TYPE_CLASS || thenType.getActualType() == TYPE_NIX){
             if (elseType.getType() == TYPE_CLASS || elseType.getActualType() == TYPE_NIX){
                 if (thenType.getType() == TYPE_CLASS && elseType.getType() == TYPE_CLASS){
                     if (!thenType.equals(elseType)){
-                        ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), thenType.getTypeAsString(), elseType.getTypeAsString(), ":");
+                        ErrorHandler.INSTANCE.addBinaryTypeError(line, charPos, thenType.getTypeAsString(), elseType.getTypeAsString(), ":");
                         return null;
+                    } else {
+                        return elseType;
                     }
-                    return elseType;
                 }
-                if (thenType.getActualType() == TYPE_NIX){
-                    return elseType;
-                }
-                return thenType;
+
+                return (thenType.getActualType() == TYPE_NIX) ? elseType : thenType;
             }
-            ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), thenType.getTypeAsString(), elseType.getTypeAsString(), ":");
+            ErrorHandler.INSTANCE.addBinaryTypeError(line, charPos, thenType.getTypeAsString(), elseType.getTypeAsString(), ":");
             return null;
         }
 
         if (thenType.getActualType() == TYPE_INT){
             if (elseType.getActualType() == TYPE_BOOL) {
-                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ":", thenType.getTypeAsString(), elseType.getTypeAsString(), "int", "int");
+                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(line, charPos,":", thenType.getTypeAsString(), elseType.getTypeAsString(), "int", "int");
                 return thenType;
             } else if (elseType.getActualType() != TYPE_INT){
-                ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), thenType.getTypeAsString(), elseType.getTypeAsString(), ":");
+                ErrorHandler.INSTANCE.addBinaryTypeError(line, charPos, thenType.getTypeAsString(), elseType.getTypeAsString(), ":");
                 return null;
             }
             return thenType;
@@ -194,10 +197,12 @@ public final class CompatibilityCheckUtils {
 
         if (thenType.getActualType() == TYPE_BOOL){
             if (elseType.getActualType() == TYPE_INT) {
-                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ":", thenType.getTypeAsString(), elseType.getTypeAsString(), "bool", "bool");
+                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(line, charPos, ":", thenType.getTypeAsString(), elseType.getTypeAsString(), "bool", "bool");
+
                 return thenType;
             } else if (elseType.getActualType() != TYPE_BOOL){
-                ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), thenType.getTypeAsString(), elseType.getTypeAsString(), ":");
+                ErrorHandler.INSTANCE.addBinaryTypeError(line, charPos, thenType.getTypeAsString(), elseType.getTypeAsString(), ":");
+
                 return null;
             }
             return thenType;
@@ -205,10 +210,10 @@ public final class CompatibilityCheckUtils {
 
         if (thenType.getActualType() == TYPE_FLOAT){
             if (elseType.getActualType() == TYPE_INT) {
-                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(),":", thenType.getTypeAsString(), elseType.getTypeAsString(), "float", "float");
+                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(line, charPos,":", thenType.getTypeAsString(), elseType.getTypeAsString(), "float", "float");
                 return thenType;
             } else if (elseType.getActualType() != TYPE_FLOAT){
-                ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), thenType.getTypeAsString(), elseType.getTypeAsString(), ":");
+                ErrorHandler.INSTANCE.addBinaryTypeError(line, charPos, thenType.getTypeAsString(), elseType.getTypeAsString(), ":");
                 return null;
             }
             return thenType;
@@ -216,10 +221,10 @@ public final class CompatibilityCheckUtils {
 
         if (thenType.getActualType() == TYPE_STR){
             if (elseType.getActualType() == TYPE_CHAR) {
-                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ":", thenType.getTypeAsString(), elseType.getTypeAsString(), "string", "string");
+                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(line, charPos, ":", thenType.getTypeAsString(), elseType.getTypeAsString(), "string", "string");
                 return thenType;
             } else if (elseType.getActualType() != TYPE_STR){
-                ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), thenType.getTypeAsString(), elseType.getTypeAsString(), ":");
+                ErrorHandler.INSTANCE.addBinaryTypeError(line, charPos, thenType.getTypeAsString(), elseType.getTypeAsString(), ":");
                 return null;
             }
             return thenType;
