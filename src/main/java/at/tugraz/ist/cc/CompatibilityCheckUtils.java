@@ -245,10 +245,16 @@ public final class CompatibilityCheckUtils {
         if (ctx.ADDOP() != null){
             if (unaryVar.getActualType() != TYPE_INT){
                 if (unaryVar.getActualType() == TYPE_BOOL){
-                    ErrorHandler.INSTANCE.addUnaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.ADDOP().getText(), unaryVar.getTypeAsString(), TYPE_INT.toString());
+
+                    ErrorHandler.INSTANCE.addUnaryTypeCoercionWarning(
+                            ctx.start.getLine(), ctx.ADDOP().getSymbol().getCharPositionInLine(),
+                            ctx.ADDOP().getText(), unaryVar.getTypeAsString(), TYPE_INT.toString());
+
                     return new SymbolVariable(TYPE_PRIMITIVE, TYPE_INT, "");
                 } else {
-                    ErrorHandler.INSTANCE.addUnaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), unaryVar.getTypeAsString(),ctx.ADDOP().getText());
+                    ErrorHandler.INSTANCE.addUnaryTypeError(
+                            ctx.start.getLine(), ctx.ADDOP().getSymbol().getCharPositionInLine(),
+                            unaryVar.getTypeAsString(),ctx.ADDOP().getText());
                 }
             } else {
                 return new SymbolVariable(TYPE_PRIMITIVE, TYPE_INT, "");
@@ -257,10 +263,16 @@ public final class CompatibilityCheckUtils {
         if (ctx.NOT()!= null){
             if (unaryVar.getActualType() != TYPE_BOOL){
                 if (unaryVar.getActualType() == TYPE_INT){
-                    ErrorHandler.INSTANCE.addUnaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.NOT().getText(), unaryVar.getTypeAsString(), TYPE_BOOL.toString());
+
+                    ErrorHandler.INSTANCE.addUnaryTypeCoercionWarning(
+                            ctx.start.getLine(), ctx.NOT().getSymbol().getCharPositionInLine(),
+                            ctx.NOT().getText(), unaryVar.getTypeAsString(), TYPE_BOOL.toString());
+
                     return new SymbolVariable(TYPE_PRIMITIVE, TYPE_INT, "");
                 } else {
-                    ErrorHandler.INSTANCE.addUnaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), unaryVar.getTypeAsString(),ctx.NOT().getText());
+                    ErrorHandler.INSTANCE.addUnaryTypeError(
+                            ctx.start.getLine(), ctx.NOT().getSymbol().getCharPositionInLine(),
+                            unaryVar.getTypeAsString(),ctx.NOT().getText());
                 }
             } else {
                 return new SymbolVariable(TYPE_PRIMITIVE, TYPE_BOOL, "");
