@@ -112,7 +112,7 @@ public final class CompatibilityCheckUtils {
                     (shouldVar.getActualType() == TYPE_STR && isVar.getActualType() == TYPE_CHAR) /* allow coercion from char to string*/ ) {
 
                 ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), "=",
-                        shouldVar.getTypeAsString(), shouldVar.getTypeAsString(), isVar.getTypeAsString(), shouldVar.getTypeAsString());
+                        shouldVar.getTypeAsString(), isVar.getTypeAsString(), shouldVar.getTypeAsString(), shouldVar.getTypeAsString());
                 return OK;
             } else if (shouldVar.getType() == TYPE_CLASS && isVar.getActualType() == TYPE_NIX){
                 return OK;
