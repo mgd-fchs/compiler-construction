@@ -728,6 +728,124 @@ public class TypeCheckerPublicTest {
         assertEquals(2, result);
     }
 
+    @Test
+    public void testPassThis01() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "passThis01.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassReturn02() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "passReturn02.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassReturn03() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "passReturn03.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassReturn04() {
+        ErrorHandler.INSTANCE.reset();
+        // TODO this testcase leads to an exception
+        int result = typeChecker.checkTypes(path_pass + "passReturn04.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassReturn05() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "passReturn05.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassReturn06() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "passReturn06.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassOperator01() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "passOperator01.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassOperator02() {
+        ErrorHandler.INSTANCE.reset();
+        // TODO: this leads to an exception
+        int result = typeChecker.checkTypes(path_pass + "passOperator02.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassOperator03() {
+        ErrorHandler.INSTANCE.reset();
+        // TODO: this leads to an exception
+        int result = typeChecker.checkTypes(path_pass + "passOperator03.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testThisFail01() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "this/fail01.jova", debug);
+        assertEquals(24, result);
+    }
+
+    @Test
+    public void testRetFail06() {
+        // Return value should be a class but is int. With function call.
+        // TODO: leads to a exception
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "incompatible_return/fail06.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testRetFail07() {
+        // Return value should be a class but is int. With function call.
+        // TODO: leads to a exception
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "incompatible_return/fail07.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testRetFail08() {
+        // Return value should be a class but is int. With function call.
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "incompatible_return/fail08.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testRetFail09() {
+        // Return value should be a string but is int. With function call and ternary operator
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "incompatible_return/fail09.jova", debug);
+        assertEquals(1, result);
+
+        // TODO: Simon but the actual return is a int but this error appears: #1: Incompatible type 'bool' for return (line 37)
+    }
+
+    @Test
+    public void testRetFail10() {
+        // Return value should be a string but is int. With function call and ternary operator
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "incompatible_return/fail10.jova", debug);
+        assertEquals(1, result);
+
+        // TODO: Simon but the actual return is a int but this error appears: #1: Incompatible type 'bool' for return (line 37)
+    }
 
 
 }

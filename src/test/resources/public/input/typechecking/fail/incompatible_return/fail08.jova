@@ -1,0 +1,26 @@
+class Helper {
+    private int a;
+}
+
+class A {
+
+  private int get3(){
+    return 3;
+  }
+
+  public Helper func() {
+    int foo;
+    Helper helper;
+    int a;
+
+    foo = 3;
+
+    a = 4;
+
+    return ((foo > 4) ? a : helper.a) + a * 15 * (16 - 23) - get3();
+    // TODO Simon #2: Cannot invoke method 'get3()' on type 'Helper' (line 20)
+    /*
+        class_accessed is Helper in the visitMethod_invocation => should not be the case
+    */
+  }
+}

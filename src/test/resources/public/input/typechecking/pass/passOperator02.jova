@@ -1,0 +1,95 @@
+class A {
+    private bool bool_;
+    private int int_;
+    private string string_;
+
+    public bool getBool(){
+       return bool_;
+    }
+
+    public int getInt(){
+       return int_;
+    }
+
+    public string getString(){
+       return string_;
+    }
+
+    public bool getBoolInverted(){
+       return !bool_;
+    }
+
+    public int getIntWithAddedParam(int param){
+       return int_ + param;
+    }
+
+    public bool invertBool(bool param){
+        return !param;
+    }
+}
+
+class B {
+    private A a;
+    public A getA(){
+        return a;
+    }
+}
+
+class C {
+    private B b;
+    public B getB(){
+        return b;
+    }
+}
+
+
+class Main {
+    public int main() {
+        A a;
+        B b;
+        C c;
+        int d;
+        int e;
+        bool f;
+        bool g;
+        bool helperBool;
+
+        a = new A;
+        b = new B;
+        c = new C;
+        d = 1;
+        e = 2;
+        f = false;
+        g = true;
+
+        helperBool = a == b;
+        helperBool = a != b;
+
+        if (helperBool) {
+            d = print("hello world") * 69;
+        }
+
+        helperBool = c.getB().getA().getBool();
+        while(helperBool) {
+            helperBool = c.getB().getA().getBoolInverted();
+            helperBool = c.getB().getA().invertBool(c.getB().getA().getBoolInverted());
+            d = c.getB().getA().getIntWithAddedParam(d) * c.getB().getA().getInt();
+        }
+
+        helperBool = (f == g) ? (f == g) : (f != g);
+        if (
+            (c.getB().getA().getBoolInverted() != c.getB().getA().invertBool(c.getB().getA().getBoolInverted()))
+            ? (f == (c.getB().getA().getBoolInverted() != c.getB().getA().invertBool(c.getB().getA().getBoolInverted())))
+            : (f != (c.getB().getA().getBoolInverted() != c.getB().getA().invertBool(c.getB().getA().getBoolInverted())))
+            )
+        {
+            d = 69;
+        }
+
+        if (print("hello world") >= 3) {
+            e = 69;
+        }
+
+        return 0;
+    }
+}
