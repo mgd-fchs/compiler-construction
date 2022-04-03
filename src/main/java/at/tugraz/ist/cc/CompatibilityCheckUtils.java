@@ -239,6 +239,7 @@ public final class CompatibilityCheckUtils {
 
     public static SymbolVariable checkUnary(SymbolVariable unaryVar, JovaParser.Unary_exprContext ctx){
         if (ctx.ADDOP() != null){
+            // TODO also support for float?
             if (unaryVar.getActualType() != TYPE_INT){
                 if (unaryVar.getActualType() == TYPE_BOOL){
 
@@ -264,7 +265,7 @@ public final class CompatibilityCheckUtils {
                             ctx.start.getLine(), ctx.NOT().getSymbol().getCharPositionInLine(),
                             ctx.NOT().getText(), unaryVar.getTypeAsString(), TYPE_BOOL.toString());
 
-                    return new SymbolVariable(TYPE_PRIMITIVE, TYPE_INT, "");
+                    return new SymbolVariable(TYPE_PRIMITIVE, TYPE_BOOL, "");
                 } else {
                     ErrorHandler.INSTANCE.addUnaryTypeError(
                             ctx.start.getLine(), ctx.NOT().getSymbol().getCharPositionInLine(),
