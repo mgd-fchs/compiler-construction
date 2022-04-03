@@ -103,25 +103,23 @@ public final class CompatibilityCheckUtils {
 
     public static Integer checkExpressionAssignment(SymbolVariable shouldVar, SymbolVariable isVar, JovaParser.Assign_stmtContext ctx, SymbolClass currentClass){
         if (shouldVar.getActualType() !=  isVar.getActualType()) {
-            if ((shouldVar.getActualType() == TYPE_BOOL || shouldVar.getActualType() == TYPE_INT) && (isVar.getActualType() == TYPE_BOOL || isVar.getActualType() == TYPE_INT)) {
-                // allow coercion from int to bool and vice versa
-                ErrorHandler.INSTANCE.addUnaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), "=", isVar.getTypeAsString(), shouldVar.getTypeAsString());
+
+            if (    ((shouldVar.getActualType() == TYPE_BOOL || shouldVar.getActualType() == TYPE_INT) && (isVar.getActualType() == TYPE_BOOL || isVar.getActualType() == TYPE_INT)) /* allow coercion from int to bool and vice versa */
+                ||
+                    (shouldVar.getActualType() == TYPE_FLOAT && isVar.getActualType() == TYPE_INT) /* allow coercion from int to float */
+
+                    ||
+                    (shouldVar.getActualType() == TYPE_STR && isVar.getActualType() == TYPE_CHAR) /* allow coercion from char to string*/ ) {
+
+                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), "=",
+                        shouldVar.getTypeAsString(), shouldVar.getTypeAsString(), isVar.getTypeAsString(), shouldVar.getTypeAsString());
+                return OK;
+            } else if (shouldVar.getType() == TYPE_CLASS && isVar.getActualType() == TYPE_NIX){
                 return OK;
             }
-            if (shouldVar.getActualType() == TYPE_FLOAT && isVar.getActualType() == TYPE_INT) {
-                // allow coercion from int to float
-                ErrorHandler.INSTANCE.addUnaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), "=", isVar.getTypeAsString(), shouldVar.getTypeAsString());
-                return OK;
-            }
-            if (shouldVar.getActualType() == TYPE_STR && isVar.getActualType() == TYPE_CHAR){
-                // allow coercion from char to string
-                ErrorHandler.INSTANCE.addUnaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), "=", isVar.getTypeAsString(), shouldVar.getTypeAsString());
-                return OK;
-            }
-            if (shouldVar.getType() == TYPE_CLASS && isVar.getActualType() == TYPE_NIX){
-                return OK;
-            }
-            ErrorHandler.INSTANCE.addUnaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), isVar.getTypeAsString(), "=");
+
+            ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                    shouldVar.getTypeAsString(), isVar.getTypeAsString(), "=");
             return TYPE_ERROR;
         }
         return OK;
