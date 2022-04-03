@@ -903,4 +903,45 @@ public class TypeCheckerPublicTest {
         final int sumWarning = relop+ mulop + and + or + addop + not;
         assertEquals(sumWarning, warnings);
     }
+
+    @Test
+    public void testTernaryPass01() {
+        // Expect: Coercion warning bool to int (line 9);
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_coercion + "warning_ternary01.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testTernaryPass02() {
+        // Expect: Coercion warning bool to int (line 9);
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_coercion + "warning_ternary02.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testTernaryFail01() {
+        // Expect: Coercion warning bool to int (line 9);
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "ternary/fail01.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testTernaryFail02() {
+        // Expect: Coercion warning bool to int (line 9);
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "ternary/fail02.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testTernaryFail03() {
+        // Expect: Coercion warning bool to int (line 9);
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "ternary/fail03.jova", debug);
+        assertEquals(1, result);
+    }
+
 }
