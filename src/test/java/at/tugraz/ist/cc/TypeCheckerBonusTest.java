@@ -13,7 +13,7 @@ public class TypeCheckerBonusTest {
     
     TypeChecker typeChecker = new TypeChecker();
     boolean debug = true;
-    // TODO: Document in README
+    // TODO @Magda Document in README
     @Test
     public void testBonusFail01() {
         // check syntax for float

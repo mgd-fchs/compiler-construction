@@ -9,7 +9,7 @@ class Main {
     test = new Test;
 	
     while(test){
-      print("Some words...")
+      return 0;
     }
     return 0;
   }

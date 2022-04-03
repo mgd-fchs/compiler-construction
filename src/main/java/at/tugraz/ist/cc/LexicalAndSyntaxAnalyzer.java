@@ -12,7 +12,7 @@ import java.util.List;
  *
  */
 public class LexicalAndSyntaxAnalyzer {
-    // TODO add comment that this is mostly the code from the tutorium
+    // Note: This code is largely inspired by the Tutorial
 
     private class LexerErrorListener extends BaseErrorListener {
         @Override

@@ -2,10 +2,11 @@ class Main {
 
   public int main() {
     string test;
+
     test = "someteststring";
 	
     while(test){
-      print("Some words...")
+      return 1;
     }
     return 0;
   }

@@ -70,7 +70,7 @@ class A {
         bool e;
         bool result;
 
-        result = a == b; // TODO this is not working
+        result = a == b;
         result = a != b;
 
         result = a == c;

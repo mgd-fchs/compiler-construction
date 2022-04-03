@@ -269,31 +269,4 @@ public final class CompatibilityCheckUtils {
         return null;
     }
 
-    private static Integer checkReturnValueCoercion(Integer actualValue, Integer expectedValue, JovaParser.Ret_stmtContext ctx, String actualReturnString) {
-        SymbolPrimitiveType actualType = SymbolPrimitiveType.valueOf(actualValue);
-        SymbolPrimitiveType expectedType = SymbolPrimitiveType.valueOf(expectedValue);
-        Integer returnValue;
-
-        if (actualType == SymbolPrimitiveType.BOOL || actualType == SymbolPrimitiveType.INT) {
-            if (expectedType == SymbolPrimitiveType.BOOL || expectedType == SymbolPrimitiveType.INT) {
-                ErrorHandler.INSTANCE.addReturnTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualType.toString(), expectedType.toString());
-                returnValue = expectedValue;
-            } else {
-                ErrorHandler.INSTANCE.addIncompatibleReturnTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualReturnString);
-                returnValue = TYPE_ERROR;
-            }
-        } else {
-            ErrorHandler.INSTANCE.addIncompatibleReturnTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), actualReturnString);
-            returnValue = TYPE_ERROR;
-        }
-
-        return returnValue;
-    }
-
-    private static SymbolVariable getMethodReturnType(SymbolClass currentClass, String id) {
-        SymbolVariable methodReturnVariable;
-        // TODO: Get methods by ID & signature
-        methodReturnVariable = currentClass.getCurrentCallable().getReturnValue();
-        return methodReturnVariable;
-    }
 }
