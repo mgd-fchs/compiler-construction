@@ -158,7 +158,7 @@ public final class CompatibilityCheckUtils {
     }
 
 
-    public static SymbolVariable checkTernaryOperatorCompatibility(SymbolVariable whenType, SymbolVariable thenType, SymbolVariable elseType, JovaParser.ExprContext ctx) {
+    public static SymbolVariable checkTernaryOperatorCompatibility(SymbolVariable thenType, SymbolVariable elseType, JovaParser.ExprContext ctx) {
 
         int line = ctx.start.getLine();
         int charPos = ctx.colon.getCharPositionInLine();
