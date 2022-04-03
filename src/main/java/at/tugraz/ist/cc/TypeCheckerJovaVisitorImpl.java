@@ -600,7 +600,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             Integer whenType = visit(ctx.when);
             SymbolVariable whenVariable = currentClass.currentSymbolVariable;
 
-            if (whenType != OK) {
+            if (whenType == OK) {
                 Integer whenResult = CompatibilityCheckUtils.checkConditionCompatibility(whenVariable, ctx);
                 // I do not need this error => further checking possible
             }
