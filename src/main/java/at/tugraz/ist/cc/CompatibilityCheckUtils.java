@@ -40,10 +40,10 @@ public final class CompatibilityCheckUtils {
                 return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.INT, "");
             } else if (lhsVar.getActualType() == TYPE_FLOAT && rhsVar.getActualType() == TYPE_FLOAT){
                 return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.FLOAT, "");
-            } else if ((lhsVar.getActualType() == TYPE_BOOL || lhsVar.getActualType() == TYPE_INT) && (lhsVar.getActualType() == TYPE_BOOL || lhsVar.getActualType() == TYPE_INT)) {
+            } else if ((lhsVar.getActualType() == TYPE_BOOL || lhsVar.getActualType() == TYPE_INT) && (rhsVar.getActualType() == TYPE_BOOL || rhsVar.getActualType() == TYPE_INT)) {
                 ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.op.getText(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), "int", "int");
                 return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.INT, "");
-            } else if ((lhsVar.getActualType() == TYPE_FLOAT || lhsVar.getActualType() == TYPE_INT) && (lhsVar.getActualType() == TYPE_FLOAT || lhsVar.getActualType() == TYPE_INT)) {
+            } else if ((lhsVar.getActualType() == TYPE_FLOAT || lhsVar.getActualType() == TYPE_INT) && (rhsVar.getActualType() == TYPE_FLOAT || rhsVar.getActualType() == TYPE_INT)) {
                 ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.op.getText(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), "float", "float");
                 return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.FLOAT, "");
             } else {
@@ -56,10 +56,10 @@ public final class CompatibilityCheckUtils {
                 return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "");
             } else if (lhsVar.getActualType() == TYPE_FLOAT && rhsVar.getActualType() == TYPE_FLOAT){
                 return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "");
-            } else if ((lhsVar.getActualType() == TYPE_BOOL || lhsVar.getActualType() == TYPE_INT) && (lhsVar.getActualType() == TYPE_BOOL || lhsVar.getActualType() == TYPE_INT)) {
+            } else if ((lhsVar.getActualType() == TYPE_BOOL || lhsVar.getActualType() == TYPE_INT) && (rhsVar.getActualType() == TYPE_BOOL || rhsVar.getActualType() == TYPE_INT)) {
                 ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.op.getText(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), "int", "int");
                 return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "");
-            } else if ((lhsVar.getActualType() == TYPE_FLOAT || lhsVar.getActualType() == TYPE_INT) && (lhsVar.getActualType() == TYPE_FLOAT || lhsVar.getActualType() == TYPE_INT)) {
+            } else if ((lhsVar.getActualType() == TYPE_FLOAT || lhsVar.getActualType() == TYPE_INT) && (rhsVar.getActualType() == TYPE_FLOAT || rhsVar.getActualType() == TYPE_INT)) {
                 ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.op.getText(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), "float", "float");
                 return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "");
             } else {
