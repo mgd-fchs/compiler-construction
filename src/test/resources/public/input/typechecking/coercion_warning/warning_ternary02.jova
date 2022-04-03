@@ -1,0 +1,24 @@
+class Cls{
+	
+	private int func(){
+		
+		string a;
+		bool b;
+		float i;
+		int f;
+		
+		b = false;
+		
+		a = b ? 'f' : "string";
+		a = b ? "string" : 'c';
+				
+		i = b ? 0.004 : 1;
+
+		f = b ? false : 3;
+		f = b ? 2 : true;
+		
+		return f;
+		
+	}
+
+}

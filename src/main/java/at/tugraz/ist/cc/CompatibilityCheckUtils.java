@@ -126,9 +126,7 @@ public final class CompatibilityCheckUtils {
     }
 
     public static Integer checkReturnValue(SymbolVariable actualReturnValue, SymbolClass currentClass, JovaParser.Ret_stmtContext ctx) {
-
-        //TODO: Re-implement this once current method is properly set -> possibly pass the the expected return type to this method directly
-        SymbolVariable expectedReturnType = currentClass.getCurrentCallable().getReturnValue(); //TODO: Get correct method!
+        SymbolVariable expectedReturnType = currentClass.getCurrentCallable().getReturnValue();
 
         if (expectedReturnType.equalTypeAndActualType(actualReturnValue) || expectedReturnType.getType().equals(SymbolType.CLASS) && actualReturnValue.getActualType() == TYPE_NIX) {
             return OK;
@@ -152,20 +150,81 @@ public final class CompatibilityCheckUtils {
         }
     }
 
+
     public static SymbolVariable checkTernaryOperatorCompatibility(SymbolVariable whenType, SymbolVariable thenType, SymbolVariable elseType, JovaParser.ExprContext ctx, SymbolClass currentClass) {
-        // TODO: Check error messages for ternary operator
-        // TODO: Reconsider return value + do we need to check if else and then type are the same?
-        // TODO: Add some test cases (incl. nix-type!)
+
         // check condition
         if (whenType.getActualType() != TYPE_BOOL && whenType.getActualType() != TYPE_INT) {
-            ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), whenType.getTypeAsString(), thenType.getTypeAsString(), "?");
+            ErrorHandler.INSTANCE.addUnaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), whenType.getTypeAsString(), "?");
             return null;
         } else if (whenType.getActualType() == TYPE_INT) {
-            ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), "?", whenType.getTypeAsString(), thenType.getTypeAsString(), "bool", "bool");
-            return thenType;
-        } else {
+            ErrorHandler.INSTANCE.addUnaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), "?", whenType.getTypeAsString(), "bool");
+        }
+
+        // check resulting expressions (then/else)
+        if (thenType.getType() == TYPE_CLASS || thenType.getActualType() == TYPE_NIX){
+            if (elseType.getType() == TYPE_CLASS || elseType.getActualType() == TYPE_NIX){
+                if (thenType.getType() == TYPE_CLASS && elseType.getType() == TYPE_CLASS){
+                    if (!thenType.equals(elseType)){
+                        ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), thenType.getTypeAsString(), elseType.getTypeAsString(), ":");
+                        return null;
+                    }
+                    return elseType;
+                }
+                if (thenType.getActualType() == TYPE_NIX){
+                    return elseType;
+                }
+                return thenType;
+            }
+            ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), thenType.getTypeAsString(), elseType.getTypeAsString(), ":");
+            return null;
+        }
+
+        if (thenType.getActualType() == TYPE_INT){
+            if (elseType.getActualType() == TYPE_BOOL) {
+                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ":", thenType.getTypeAsString(), elseType.getTypeAsString(), "int", "int");
+                return thenType;
+            } else if (elseType.getActualType() != TYPE_INT){
+                ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), thenType.getTypeAsString(), elseType.getTypeAsString(), ":");
+                return null;
+            }
             return thenType;
         }
+
+        if (thenType.getActualType() == TYPE_BOOL){
+            if (elseType.getActualType() == TYPE_INT) {
+                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ":", thenType.getTypeAsString(), elseType.getTypeAsString(), "bool", "bool");
+                return thenType;
+            } else if (elseType.getActualType() != TYPE_BOOL){
+                ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), thenType.getTypeAsString(), elseType.getTypeAsString(), ":");
+                return null;
+            }
+            return thenType;
+        }
+
+        if (thenType.getActualType() == TYPE_FLOAT){
+            if (elseType.getActualType() == TYPE_INT) {
+                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(),":", thenType.getTypeAsString(), elseType.getTypeAsString(), "float", "float");
+                return thenType;
+            } else if (elseType.getActualType() != TYPE_FLOAT){
+                ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), thenType.getTypeAsString(), elseType.getTypeAsString(), ":");
+                return null;
+            }
+            return thenType;
+        }
+
+        if (thenType.getActualType() == TYPE_STR){
+            if (elseType.getActualType() == TYPE_CHAR) {
+                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ":", thenType.getTypeAsString(), elseType.getTypeAsString(), "string", "string");
+                return thenType;
+            } else if (elseType.getActualType() != TYPE_STR){
+                ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), thenType.getTypeAsString(), elseType.getTypeAsString(), ":");
+                return null;
+            }
+            return thenType;
+        }
+
+        return null;
     }
 
     public static Integer checkConditionCompatibility(SymbolVariable condition_type, JovaParser.ExprContext ctx, SymbolClass currentClass) {
@@ -183,7 +242,6 @@ public final class CompatibilityCheckUtils {
 
     public static SymbolVariable checkUnary(SymbolVariable unaryVar, JovaParser.Unary_exprContext ctx){
         if (ctx.ADDOP() != null){
-            // TODO: Should this be allowed for float?
             if (unaryVar.getActualType() != TYPE_INT){
                 if (unaryVar.getActualType() == TYPE_BOOL){
                     ErrorHandler.INSTANCE.addUnaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.ADDOP().getText(), unaryVar.getTypeAsString(), TYPE_INT.toString());

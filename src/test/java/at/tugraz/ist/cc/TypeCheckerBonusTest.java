@@ -13,7 +13,6 @@ public class TypeCheckerBonusTest {
     
     TypeChecker typeChecker = new TypeChecker();
     boolean debug = true;
-    // TODO: Warnings displayed twice??
     // TODO: Document in README
     @Test
     public void testBonusFail01() {
