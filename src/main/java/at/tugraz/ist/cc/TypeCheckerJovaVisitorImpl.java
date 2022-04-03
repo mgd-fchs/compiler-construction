@@ -510,13 +510,16 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             }
 
         } else {
-            /* TODO
-            ErrorHandler.INSTANCE.addCannotInvokeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
-                    class_accessed.getClassName(), ctx.ID().toString(), params);
-            */
-
             String[] params = currentClass.getCurrentArgList().stream().map(SymbolVariable::getTypeAsString).toArray(String[]::new);
-            ErrorHandler.INSTANCE.addUndefMethodError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.ID().toString(), params);
+
+            if (ctx.parent instanceof JovaParser.Member_accessContext && ((JovaParser.Member_accessContext) ctx.parent).DOTOP() != null) {
+                ErrorHandler.INSTANCE.addCannotInvokeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+                        classOfMethodInvocation.getClassName(), ctx.ID().toString(), params);
+            }
+            else {
+                ErrorHandler.INSTANCE.addUndefMethodError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.ID().toString(), params);
+            }
+
             error = ERROR_GENERAL;
         }
 

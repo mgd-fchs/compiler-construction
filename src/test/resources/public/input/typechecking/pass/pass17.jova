@@ -33,4 +33,10 @@ class Test {
     public int test2(Test4 x) {
         return test1((test1() + 5 + test1((this.x.getTest().getTest().getNum() + (((this.x.getTest().getTest().getNum() + x.getNum() +88)))))));
     }
+
+  /*  public int test3() {
+
+        return this.x.getTesting();
+    }
+    */
 }
