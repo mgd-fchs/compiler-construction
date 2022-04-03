@@ -771,6 +771,13 @@ public class TypeCheckerPublicTest {
     }
 
     @Test
+    public void testPassReturn07() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "passReturn07.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
     public void testPassOperator01() {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_pass + "passOperator01.jova", debug);
@@ -843,6 +850,14 @@ public class TypeCheckerPublicTest {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail + "incompatible_return/fail10.jova", debug);
         assertEquals(1, result);
+    }
+
+    @Test
+    public void testRetFail11() {
+        // Return value should be a string but is int. With function call and ternary operator
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "incompatible_return/fail11.jova", debug);
+        assertEquals(3, result);
     }
 
     @Test
