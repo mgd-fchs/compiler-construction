@@ -32,7 +32,7 @@ public final class CompatibilityCheckUtils {
         }
 
         if (lhsVar.getActualType() == TYPE_STR || rhsVar.getActualType() == TYPE_STR || lhsVar.getActualType() == TYPE_NIX || rhsVar.getActualType() == TYPE_NIX){
-            ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), ctx.op.getText());
+            ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.op.getCharPositionInLine(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), ctx.op.getText());
             return null;
         }
 
@@ -42,13 +42,13 @@ public final class CompatibilityCheckUtils {
             } else if (lhsVar.getActualType() == TYPE_FLOAT && rhsVar.getActualType() == TYPE_FLOAT){
                 return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.FLOAT, "");
             } else if ((lhsVar.getActualType() == TYPE_BOOL || lhsVar.getActualType() == TYPE_INT) && (rhsVar.getActualType() == TYPE_BOOL || rhsVar.getActualType() == TYPE_INT)) {
-                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.op.getText(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), "int", "int");
+                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.op.getCharPositionInLine(), ctx.op.getText(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), "int", "int");
                 return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.INT, "");
             } else if ((lhsVar.getActualType() == TYPE_FLOAT || lhsVar.getActualType() == TYPE_INT) && (rhsVar.getActualType() == TYPE_FLOAT || rhsVar.getActualType() == TYPE_INT)) {
-                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.op.getText(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), "float", "float");
+                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.op.getCharPositionInLine(), ctx.op.getText(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), "float", "float");
                 return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.FLOAT, "");
             } else {
-                ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), ctx.op.getText());
+                ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.op.getCharPositionInLine(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), ctx.op.getText());
                 return null;
             }
         }
@@ -58,13 +58,13 @@ public final class CompatibilityCheckUtils {
             } else if (lhsVar.getActualType() == TYPE_FLOAT && rhsVar.getActualType() == TYPE_FLOAT){
                 return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "");
             } else if ((lhsVar.getActualType() == TYPE_BOOL || lhsVar.getActualType() == TYPE_INT) && (rhsVar.getActualType() == TYPE_BOOL || rhsVar.getActualType() == TYPE_INT)) {
-                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.op.getText(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), "int", "int");
+                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.op.getCharPositionInLine(), ctx.op.getText(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), "int", "int");
                 return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "");
             } else if ((lhsVar.getActualType() == TYPE_FLOAT || lhsVar.getActualType() == TYPE_INT) && (rhsVar.getActualType() == TYPE_FLOAT || rhsVar.getActualType() == TYPE_INT)) {
-                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.op.getText(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), "float", "float");
+                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.op.getCharPositionInLine(), ctx.op.getText(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), "float", "float");
                 return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "");
             } else {
-                ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), ctx.op.getText());
+                ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.op.getCharPositionInLine(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), ctx.op.getText());
                 return null;
             }
         }
@@ -74,10 +74,10 @@ public final class CompatibilityCheckUtils {
             if (lhsVar.getActualType() == TYPE_BOOL && rhsVar.getActualType() == TYPE_BOOL) {
                 return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "");
             } else if ((lhsVar.getActualType() == TYPE_BOOL || lhsVar.getActualType() == TYPE_INT) && (rhsVar.getActualType() == TYPE_BOOL || rhsVar.getActualType() == TYPE_INT)) {
-                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.op.getText(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), "bool", "bool");
+                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.op.getCharPositionInLine(), ctx.op.getText(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), "bool", "bool");
                 return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "");
             } else {
-                ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), ctx.op.getText());
+                ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.op.getCharPositionInLine(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), ctx.op.getText());
                 return null;
             }
         } else {
@@ -89,14 +89,14 @@ public final class CompatibilityCheckUtils {
 
         if ((lhsVar.getActualType() == TYPE_NIX || lhsVar.getType() == TYPE_CLASS) && (rhsVar.getActualType() == TYPE_NIX || rhsVar.getType() == TYPE_CLASS)){
             if (!ctx.op.getText().contains("==") && !ctx.op.getText().contains("!=")) {
-                ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), ctx.op.getText());
+                ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.op.getCharPositionInLine(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), ctx.op.getText());
                 return null;
             } else if (lhsVar.getType() == TYPE_CLASS && rhsVar.getType() == TYPE_CLASS && !lhsVar.equalTypeAndActualType(rhsVar)){
-                ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), ctx.op.getText());
+                ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.op.getCharPositionInLine(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), ctx.op.getText());
                 return null;
             }
         } else {
-            ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), ctx.op.getText());
+            ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.op.getCharPositionInLine(), lhsVar.getTypeAsString(), rhsVar.getTypeAsString(), ctx.op.getText());
             return null;
         }
         return new SymbolVariable(TYPE_PRIMITIVE, TYPE_BOOL, "");
@@ -112,14 +112,14 @@ public final class CompatibilityCheckUtils {
                     ||
                     (shouldVar.getActualType() == TYPE_STR && isVar.getActualType() == TYPE_CHAR) /* allow coercion from char to string*/ ) {
 
-                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), "=",
+                ErrorHandler.INSTANCE.addBinaryTypeCoercionWarning(ctx.start.getLine(), ctx.assign_symbol.getCharPositionInLine(), "=",
                         shouldVar.getTypeAsString(), isVar.getTypeAsString(), shouldVar.getTypeAsString(), shouldVar.getTypeAsString());
                 return OK;
             } else if (shouldVar.getType() == TYPE_CLASS && isVar.getActualType() == TYPE_NIX){
                 return OK;
             }
 
-            ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
+            ErrorHandler.INSTANCE.addBinaryTypeError(ctx.start.getLine(), ctx.assign_symbol.getCharPositionInLine(),
                     shouldVar.getTypeAsString(), isVar.getTypeAsString(), "=");
             return TYPE_ERROR;
         }
