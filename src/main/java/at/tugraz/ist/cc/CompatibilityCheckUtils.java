@@ -5,6 +5,7 @@ import at.tugraz.ist.cc.symbol_table.SymbolClass;
 import at.tugraz.ist.cc.symbol_table.SymbolPrimitiveType;
 import at.tugraz.ist.cc.symbol_table.SymbolType;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
+import org.antlr.v4.runtime.ParserRuleContext;
 
 public final class CompatibilityCheckUtils {
 
@@ -227,20 +228,7 @@ public final class CompatibilityCheckUtils {
         return null;
     }
 
-    public static Integer checkConditionCompatibility(SymbolVariable condition_type, JovaParser.If_stmtContext ctx, SymbolClass currentClass) {
-
-        if (condition_type.getActualType() != TYPE_BOOL && condition_type.getActualType() != TYPE_INT) {
-            ErrorHandler.INSTANCE.addIncompatibleCondTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), condition_type.getTypeAsString());
-            return TYPE_ERROR;
-        } else if (condition_type.getActualType() == TYPE_INT) {
-            ErrorHandler.INSTANCE.addConditionTypeCoercionWarning(ctx.start.getLine(), ctx.start.getCharPositionInLine(), condition_type.getTypeAsString(), "bool");
-            return OK;
-        } else {
-            return OK;
-        }
-    }
-
-    public static Integer checkConditionCompatibility2(SymbolVariable condition_type, JovaParser.While_stmtContext ctx, SymbolClass currentClass) {
+    public static Integer checkConditionCompatibility(SymbolVariable condition_type, ParserRuleContext ctx) {
 
         if (condition_type.getActualType() != TYPE_BOOL && condition_type.getActualType() != TYPE_INT) {
             ErrorHandler.INSTANCE.addIncompatibleCondTypeError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), condition_type.getTypeAsString());
