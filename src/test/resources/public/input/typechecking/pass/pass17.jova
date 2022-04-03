@@ -40,3 +40,39 @@ class Test {
     }
     */
 }
+
+
+class Test33 {
+    private int a;
+    public int print(int x, int y) {
+        return 0;
+    }
+
+    public int test1(int x) {
+        return print(a, x);
+    }
+
+    public int tryout(Test t) {
+        return t.test1(0);
+    }
+
+    public Test t(Test t) {
+        Test b;
+        b = (a == 5) ? nix : nix;
+        //return b;
+        return (a == 5) ? ((b == nix) ? nix : b) : nix;
+    }
+
+
+    public Test t2(Test t) {
+        int a;
+        return (a == 5) ? t : nix;
+    }
+
+    public bool testing(int b) {
+        if ((this.a == (b - 34)) ? 33 : 0) {
+
+        }
+        return (this.a == (b - 34)) ? 33 : 0;
+    }
+}
