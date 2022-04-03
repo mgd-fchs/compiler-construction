@@ -156,7 +156,7 @@ public final class CompatibilityCheckUtils {
 
         int charPos = ctx.question.getCharPositionInLine();
         int line = ctx.start.getLine();
-
+/*
         // check condition
         if (whenType.getActualType() != TYPE_BOOL && whenType.getActualType() != TYPE_INT) {
             ErrorHandler.INSTANCE.addUnaryTypeError(line, charPos, whenType.getTypeAsString(), "?");
@@ -165,6 +165,7 @@ public final class CompatibilityCheckUtils {
             ErrorHandler.INSTANCE.addUnaryTypeCoercionWarning( line, charPos,"?", whenType.getTypeAsString(), "bool");
         }
 
+ */
         charPos = ctx.colon.getCharPositionInLine();
         // check resulting expressions (then/else)
         if (thenType.getType() == TYPE_CLASS || thenType.getActualType() == TYPE_NIX){

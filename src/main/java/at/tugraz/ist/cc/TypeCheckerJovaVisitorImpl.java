@@ -599,6 +599,9 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             // case: ternary operator
             Integer whenType = visit(ctx.when);
             SymbolVariable whenVariable = currentClass.currentSymbolVariable;
+            Integer whenResult = CompatibilityCheckUtils.checkConditionCompatibility(whenVariable, ctx);
+
+
             Integer thenType = visit(ctx.then);
             SymbolVariable thenVariable =currentClass.currentSymbolVariable;
             Integer elseType = visit(ctx.el);

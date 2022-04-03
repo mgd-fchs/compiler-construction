@@ -1,11 +1,23 @@
+class Helper {
+}
+
 class A{
 public int a(){
 
 
-
+Helper h1;
 bool b1;
 bool b2;
 int i1;
+string s1;
+
+
+b1 = !b1;
+b1 = !s1;
+b1 = !i1;
+b1 = !h1;
+
+
 
 i1 = (true) ? 1 : 0;
 
@@ -20,4 +32,6 @@ if(!i1 + b1){
 
 return 0;
 }
+
+
 }
