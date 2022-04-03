@@ -29,6 +29,8 @@ public final class CompatibilityCheckUtils {
         // arithmetic and relational operations
         if (lhsVar.getType() == TYPE_CLASS || rhsVar.getType() == TYPE_CLASS){
             return checkRelOpClass(lhsVar, rhsVar, ctx);
+        } else if (lhsVar.getActualType() == TYPE_NIX && rhsVar.getActualType() == TYPE_NIX) {
+            return new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "");
         }
 
         if (lhsVar.getActualType() == TYPE_STR || rhsVar.getActualType() == TYPE_STR || lhsVar.getActualType() == TYPE_NIX || rhsVar.getActualType() == TYPE_NIX){
