@@ -39,7 +39,7 @@ class A {
         int a;
         bool b;
 
-        result = a * a;
+        result = a * b;
         result = a / b;
         result = a % b;
 
