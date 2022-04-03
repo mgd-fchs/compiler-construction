@@ -599,13 +599,16 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             // case: ternary operator
             Integer whenType = visit(ctx.when);
             SymbolVariable whenVariable = currentClass.currentSymbolVariable;
-            Integer whenResult = CompatibilityCheckUtils.checkConditionCompatibility(whenVariable, ctx);
 
+            if (whenType != OK) {
+                Integer whenResult = CompatibilityCheckUtils.checkConditionCompatibility(whenVariable, ctx);
+                // I do not need this error => further checking possible
+            }
 
             Integer thenType = visit(ctx.then);
-            SymbolVariable thenVariable =currentClass.currentSymbolVariable;
+            SymbolVariable thenVariable = currentClass.currentSymbolVariable;
             Integer elseType = visit(ctx.el);
-            SymbolVariable elseVariable =currentClass.currentSymbolVariable;
+            SymbolVariable elseVariable = currentClass.currentSymbolVariable;
 
             if (whenType != OK || thenType != OK || elseType != OK) {
                 return TYPE_ERROR;

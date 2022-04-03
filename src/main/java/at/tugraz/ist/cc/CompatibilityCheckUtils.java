@@ -154,19 +154,9 @@ public final class CompatibilityCheckUtils {
 
     public static SymbolVariable checkTernaryOperatorCompatibility(SymbolVariable whenType, SymbolVariable thenType, SymbolVariable elseType, JovaParser.ExprContext ctx) {
 
-        int charPos = ctx.question.getCharPositionInLine();
         int line = ctx.start.getLine();
-/*
-        // check condition
-        if (whenType.getActualType() != TYPE_BOOL && whenType.getActualType() != TYPE_INT) {
-            ErrorHandler.INSTANCE.addUnaryTypeError(line, charPos, whenType.getTypeAsString(), "?");
-            return null;
-        } else if (whenType.getActualType() == TYPE_INT) {
-            ErrorHandler.INSTANCE.addUnaryTypeCoercionWarning( line, charPos,"?", whenType.getTypeAsString(), "bool");
-        }
+        int charPos = ctx.colon.getCharPositionInLine();
 
- */
-        charPos = ctx.colon.getCharPositionInLine();
         // check resulting expressions (then/else)
         if (thenType.getType() == TYPE_CLASS || thenType.getActualType() == TYPE_NIX){
             if (elseType.getType() == TYPE_CLASS || elseType.getActualType() == TYPE_NIX){

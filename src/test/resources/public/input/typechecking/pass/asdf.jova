@@ -11,6 +11,8 @@ bool b2;
 int i1;
 string s1;
 
+// TODO remove this whole file
+h1 = (b1) ? nix : nix;
 
 b1 = !b1;
 b1 = !s1;
