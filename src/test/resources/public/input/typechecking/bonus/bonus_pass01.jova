@@ -3,13 +3,13 @@ class Cls{
 	
 	public char func(){
 		char s;
+		s = 'a';
 		return s;
 	}
 	
 	public float func2(){
 		float f;
 		f = 0.003;
-
 		return f;
 	}
 }

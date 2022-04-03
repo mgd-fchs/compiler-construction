@@ -1,0 +1,13 @@
+class Cls{
+	
+	private int func(){
+		
+		char a;
+		bool b;
+		b = false;
+		a = b ? 'f' : "string";
+		return a;
+		
+	}
+
+}

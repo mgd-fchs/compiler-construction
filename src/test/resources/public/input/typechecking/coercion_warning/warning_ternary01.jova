@@ -1,0 +1,13 @@
+class Cls{
+	
+	private int func(){
+		
+		int a;
+		bool b;
+		b = false;
+		a = (7 > 9) ? 4 : b;
+		return a;
+		
+	}
+
+}
