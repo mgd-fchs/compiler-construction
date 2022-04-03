@@ -943,4 +943,19 @@ public class TypeCheckerPublicTest {
         assertEquals(1, result);
     }
 
+    @Test
+    public void testExampleFromAssigmentSheet() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "exampleFromAssigmentSheet.jova", debug);
+        ErrorHandler.INSTANCE.printErrorsAndWarnings();
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testAsdf() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "asdf.jova", debug);
+        ErrorHandler.INSTANCE.printErrorsAndWarnings();
+        assertEquals(0, result);
+    }
 }
