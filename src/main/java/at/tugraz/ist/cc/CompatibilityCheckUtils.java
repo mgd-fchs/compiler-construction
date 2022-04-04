@@ -175,7 +175,7 @@ public final class CompatibilityCheckUtils {
                     }
                 }
 
-                return (thenType.getActualType() == TYPE_NIX) ? elseType : thenType;
+                return /*(thenType.getActualType() == TYPE_NIX) ? elseType :*/ thenType;
             }
             ErrorHandler.INSTANCE.addBinaryTypeError(line, charPos, thenType.getTypeAsString(), elseType.getTypeAsString(), ":");
             return null;
