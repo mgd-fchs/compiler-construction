@@ -34,7 +34,7 @@ DOTOP : '.';
 COLON : ':';
 QUESTIONMARK : '?';
 
-INT_LIT : '0' | (DIGIT)(DIGIT0)* | '-'(DIGIT)(DIGIT0)*;
+INT_LIT : '0' | (DIGIT)(DIGIT0)*;
 BOOL_LIT : 'true' | 'false';
 CHAR_LIT : '\'' LETTER '\'';
 FLOAT_LIT : '-'? ('0' | (DIGIT)(DIGIT0)*) '.' ('0' | '0'*(DIGIT)(DIGIT0)*);
