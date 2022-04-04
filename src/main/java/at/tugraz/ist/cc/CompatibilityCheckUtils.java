@@ -164,7 +164,15 @@ public final class CompatibilityCheckUtils {
         int charPos = ctx.colon.getCharPositionInLine();
 
         // check resulting expressions (then/else)
-        if (thenType.getType() == TYPE_CLASS || thenType.getActualType() == TYPE_NIX){
+        if (thenType.getType() == TYPE_CLASS){
+            if (thenType.equalTypeAndActualType(elseType) || elseType.getActualType() == TYPE_NIX) {
+                return thenType;
+            } else {
+                ErrorHandler.INSTANCE.addBinaryTypeError(line, charPos, thenType.getTypeAsString(), elseType.getTypeAsString(), ":");
+                return null;
+            }
+/*
+
             if (elseType.getType() == TYPE_CLASS || elseType.getActualType() == TYPE_NIX){
                 if (thenType.getType() == TYPE_CLASS && elseType.getType() == TYPE_CLASS){
                     if (!thenType.equals(elseType)){
@@ -179,6 +187,8 @@ public final class CompatibilityCheckUtils {
             }
             ErrorHandler.INSTANCE.addBinaryTypeError(line, charPos, thenType.getTypeAsString(), elseType.getTypeAsString(), ":");
             return null;
+
+ */
         }
 
         if (thenType.getActualType() == TYPE_INT){
