@@ -7,6 +7,7 @@ class Cls{
 		c = 'adf';
 		c = '&';
 		c = '/';
+		c = '7';
 	
 		return 0;
 	}

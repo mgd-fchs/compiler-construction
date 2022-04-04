@@ -11,6 +11,7 @@ public class LexicalAndSyntaxPublicTest {
 
     private final String path_lexer = "src/test/resources/public/input/lexer/";
     private final String path_parser = "src/test/resources/public/input/parser/";
+    private final String path_bonus = "src/test/resources/public/input/parser/bonus/";
 
     LexicalAndSyntaxAnalyzer lexAndSyntax = new LexicalAndSyntaxAnalyzer();
     boolean debug = true;
@@ -405,4 +406,21 @@ public class LexicalAndSyntaxPublicTest {
         int result = lexAndSyntax.parser(path_parser + "fail28.jova", debug);
         assertTrue(result > 0);
     }
+
+    @Test
+    public void testBonusFail01() {
+        // check syntax for float
+        ErrorHandler.INSTANCE.reset();
+        int result = lexAndSyntax.parser(path_bonus + "bonus_fail01.jova", debug);
+        assertEquals(3, result);
+    }
+
+    @Test
+    public void testBonusFail02() {
+        // check syntax for char
+        ErrorHandler.INSTANCE.reset();
+        int result = lexAndSyntax.parser(path_bonus + "bonus_fail02.jova", debug);
+        assertTrue(result > 0);
+    }
+
 }

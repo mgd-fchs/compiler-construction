@@ -13,21 +13,29 @@ public class TypeCheckerBonusTest {
     
     TypeChecker typeChecker = new TypeChecker();
     boolean debug = true;
-    // TODO @Magda Document in README
+
     @Test
-    public void testBonusFail01() {
-        // check syntax for float
+    public void testBonusPass01() {
+        // check simple pass case (assignments)
         ErrorHandler.INSTANCE.reset();
-        int result = typeChecker.checkTypes(path_bonus + "bonus_fail01.jova", debug);
-        assertEquals(3, result);
+        int result = typeChecker.checkTypes(path_bonus + "bonus_pass01.jova", debug);
+        assertEquals(0, result);
     }
 
     @Test
-    public void testBonusFail02() {
-        // check syntax for char
+    public void testBonusPass02() {
+        // Define and retrieve class members of type float + return values
         ErrorHandler.INSTANCE.reset();
-        int result = typeChecker.checkTypes(path_bonus + "bonus_fail02.jova", debug);
-        assertTrue(result > 0);
+        int result = typeChecker.checkTypes(path_bonus + "bonus_pass02.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testBonusPass03() {
+        // Define and retrieve class members of type char + return values
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_bonus + "bonus_pass03.jova", debug);
+        assertEquals(0, result);
     }
 
     @Test
@@ -43,14 +51,6 @@ public class TypeCheckerBonusTest {
         // check coercion for char
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_bonus + "bonus_warn02.jova", debug);
-        assertEquals(0, result);
-    }
-
-    @Test
-    public void testBonusPass01() {
-        // check coercion for char
-        ErrorHandler.INSTANCE.reset();
-        int result = typeChecker.checkTypes(path_bonus + "bonus_pass01.jova", debug);
         assertEquals(0, result);
     }
 }
