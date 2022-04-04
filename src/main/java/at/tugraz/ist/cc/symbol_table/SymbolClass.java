@@ -114,15 +114,7 @@ public class SymbolClass {
         currentSymbolType = null;
         currentParams = new ArrayList<>();
 
-        // TODO it might be the case that the output order of the errors is not right.
-        if ( className.equals(SymbolClass.MAIN_CLASS_NAME) &&
-                        (symbolMethod.getAccessSymbol() != SymbolModifier.PUBLIC ||
-                        !symbolMethod.getName().equals(SymbolMethod.MAIN_METHOD_NAME) ||
-                        !(symbolMethod.getReturnValue().getActualType() instanceof SymbolPrimitiveType) ||
-                        symbolMethod.getReturnValue().getActualType() != SymbolPrimitiveType.INT)){
-            ErrorHandler.INSTANCE.addMainMemberError(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-            return TypeCheckerJovaVisitorImpl.ERROR_MAIN_WITH_WRONG_METHOD;
-        }
+
 
         if(symbolMethod.checkParamDoubleDeclaration(ctx.params().param_list()) != 0) {
             errorOccurred = TypeCheckerJovaVisitorImpl.ERROR_DOUBLE_DECLARATION_VARIABLE;
@@ -131,7 +123,17 @@ public class SymbolClass {
         if (SymbolMethod.IO_METHODS.contains(symbolMethod) || methods.contains(symbolMethod)) {
             ErrorHandler.INSTANCE.addMethodDoubleDefError( ctx.start.getLine(), ctx.start.getCharPositionInLine(),
                     symbolMethod.getName(), className, symbolMethod.getParamTypesAsString());
-            errorOccurred = TypeCheckerJovaVisitorImpl.ERROR_DOUBLE_DECLARATION_METHOD;
+            return TypeCheckerJovaVisitorImpl.ERROR_DOUBLE_DECLARATION_METHOD;
+        }
+
+        // TODO it might be the case that the output order of the errors is not right.
+        if ( className.equals(SymbolClass.MAIN_CLASS_NAME) &&
+                (symbolMethod.getAccessSymbol() != SymbolModifier.PUBLIC ||
+                        !symbolMethod.getName().equals(SymbolMethod.MAIN_METHOD_NAME) ||
+                        !(symbolMethod.getReturnValue().getActualType() instanceof SymbolPrimitiveType) ||
+                        symbolMethod.getReturnValue().getActualType() != SymbolPrimitiveType.INT)){
+            ErrorHandler.INSTANCE.addMainMemberError(ctx.start.getLine(), ctx.start.getCharPositionInLine());
+            return TypeCheckerJovaVisitorImpl.ERROR_MAIN_WITH_WRONG_METHOD;
         }
 
         if (errorOccurred == 0) {

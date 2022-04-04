@@ -171,11 +171,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     }
 
     @Override public Integer visitMethod_decl(JovaParser.Method_declContext ctx) {
-        if (currentClass.getClassName().equals(SymbolClass.MAIN_CLASS_NAME) && currentClass.getMethods().size() > 0) {
-            ErrorHandler.INSTANCE.addMainMemberError(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-            return ERROR_GENERAL;
-        }
-
         int headStatus = visitMethod_head(ctx.method_head());
 
         // if the head is not ok or double definition we stop looking at the method
