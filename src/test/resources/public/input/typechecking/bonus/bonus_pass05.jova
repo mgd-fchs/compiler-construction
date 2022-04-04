@@ -1,0 +1,14 @@
+
+class Cls {
+
+    public char num;
+
+    public char func(char x){
+        bool b;
+        char f;
+
+        this.num = b? 'a':f;
+
+        return this.num;
+    }
+}

@@ -1,0 +1,14 @@
+class Cls{
+
+    public float f, g, h;
+    public int a;
+
+    public int func(){
+
+        f = !g;
+
+        g = (a > f) ? g : a;
+        a = g ? f : h;
+        return a;
+    }
+}

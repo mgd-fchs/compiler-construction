@@ -37,6 +37,9 @@ Implemented BONUS tasks:
     char: ternary operator
     float: arithmetic operations (addop, mulop, relop), ternary operator, unary (addop only)
 - Test cases:
+    Since all other functionalities are tested within the main test class ("java/at/tugraz/ist/cc/TypeCheckerPublicTest.java"),
+    the bonus test cases only pertain to the added syntax and coercion rules:
+
     - Syntax tests: "java/at/tugraz/ist/cc/LexicalAndSyntaxPublicTest.java"
         - testBonusFail01(): Check that incorrect syntax for float is rejected
         - testBonusFail02(): Check that incorrect syntax for char is rejected
@@ -44,11 +47,14 @@ Implemented BONUS tasks:
     - Type check tests: "java/at/tugraz/ist/cc/TypeCheckerBonusTest.java"
         - testBonusPass01(): Check simple assign and return cases
         - testBonusPass02(): Define and retrieve class members of type float
-        - testBonusPass02(): Define and retrieve class members of type char
-        - testBonusPass03(): Check defined operators on float
-        - testBonusPass04(): Check defined operators on char
-        - testBonusCoercion01(): Check correct coercion warnings for float operations
-        - testBonusCoercion02(): Check correct coercion warnings for char
+        - testBonusPass03(): Define and retrieve class members of type char
+        - testBonusPass04(): Check correct operators on float
+        - testBonusPass05(): Check correct operators on char
+        - testBonusFail01(): Check incompatible operators on float fail
+        - testBonusFail02(): Check incompatible operators on char fail
+        - testBonusCoercion01(): Check coercion warnings for float
+        - testBonusCoercion02(): Check coercion warnings for char
+
 -------------------
 Remarks for task 2:
 -------------------

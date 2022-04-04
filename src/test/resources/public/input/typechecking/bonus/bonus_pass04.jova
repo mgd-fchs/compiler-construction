@@ -1,22 +1,15 @@
+class Cls{
 
-class Cls {
+    public float f, g, h;
+    public int a;
 
-    public char num;
+    public float func(){
 
-    public char func(char x){
+        f = -g;
 
-        this.num = x;
-
-        return this.num;
-    }
-}
-
-class Cls2 {
-    private Cls cls;
-
-    private char main(){
-        cls = new Cls;
-
-        return cls.func('f');
+        g = (g > h) ? f : h;
+        h = f + 0.23;
+        f = 12.34*g/(f+7);
+        return f;
     }
 }
