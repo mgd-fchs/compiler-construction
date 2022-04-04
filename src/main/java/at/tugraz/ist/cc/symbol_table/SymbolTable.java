@@ -49,7 +49,7 @@ public class SymbolTable {
                 element -> element.getClassName().equals(name)).findFirst();
 
         if (found.isEmpty()){
-            ErrorHandler.INSTANCE.addUndefIdError(
+            ErrorHandler.INSTANCE.addUnknownTypeError(
                     ctx.start.getLine(), ctx.start.getCharPositionInLine(), name);
         }
 
