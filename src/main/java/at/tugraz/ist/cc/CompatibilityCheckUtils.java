@@ -171,24 +171,6 @@ public final class CompatibilityCheckUtils {
                 ErrorHandler.INSTANCE.addBinaryTypeError(line, charPos, thenType.getTypeAsString(), elseType.getTypeAsString(), ":");
                 return null;
             }
-/*
-
-            if (elseType.getType() == TYPE_CLASS || elseType.getActualType() == TYPE_NIX){
-                if (thenType.getType() == TYPE_CLASS && elseType.getType() == TYPE_CLASS){
-                    if (!thenType.equals(elseType)){
-                        ErrorHandler.INSTANCE.addBinaryTypeError(line, charPos, thenType.getTypeAsString(), elseType.getTypeAsString(), ":");
-                        return null;
-                    } else {
-                        return elseType;
-                    }
-                }
-
-                return (thenType.getActualType() == TYPE_NIX) ? elseType : thenType;
-            }
-            ErrorHandler.INSTANCE.addBinaryTypeError(line, charPos, thenType.getTypeAsString(), elseType.getTypeAsString(), ":");
-            return null;
-
- */
         }
 
         if (thenType.getActualType() == TYPE_INT){
