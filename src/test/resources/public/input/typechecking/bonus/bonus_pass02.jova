@@ -1,0 +1,22 @@
+
+class Cls {
+
+    public float num;
+
+    public float func(float x){
+
+        this.num = x;
+
+        return this.num;
+    }
+}
+
+class Cls2 {
+    private Cls cls;
+
+    private float main(){
+        cls = new Cls;
+
+        return cls.func(3.0);
+    }
+}

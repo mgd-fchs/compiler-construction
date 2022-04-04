@@ -1,14 +1,20 @@
 class Cls{
 
-	public int func(){
-		char c;
-		
-		// invalid assignments
-		c = 'adf';
-		c = '&';
-		c = '/';
-	
-		return 0;
-	}
-}
+    public char f, g, h;
+    public string a;
+    public int l;
 
+    public char func(){
+
+        f = !g; // error
+
+        g = (a > f) ? g : a;
+        a = g ? f : h;
+        l = f + g;
+
+        if (g){
+            l = 2;
+        }
+        return a;
+    }
+}

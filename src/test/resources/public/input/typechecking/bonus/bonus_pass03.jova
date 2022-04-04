@@ -1,0 +1,22 @@
+
+class Cls {
+
+    public char num;
+
+    public char func(char x){
+
+        this.num = x;
+
+        return this.num;
+    }
+}
+
+class Cls2 {
+    private Cls cls;
+
+    private char main(){
+        cls = new Cls;
+
+        return cls.func('f');
+    }
+}
