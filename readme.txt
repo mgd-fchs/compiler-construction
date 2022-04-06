@@ -2,9 +2,9 @@ Frame work tested with OpenJDK11 + gradle 7.4
 
 Group17
 
-Max Mustermann    (1630001)   max.mustermann@student.tugraz.at
-Miriam Musterfrau (1630002)   miriam.musterfrau@student.tugraz.at
-Richard Heinz     (11814002)  richard.heinz@student.tugraz.at
+Max Mustermann          (1630001)   max.mustermann@student.tugraz.at
+Richard Heinz           (11814002)  richard.heinz@student.tugraz.at
+Magdalena Hinterkörner  (11807636)  m.hinterkoerner@student.tugraz.at
 
 
 Description of the Program:

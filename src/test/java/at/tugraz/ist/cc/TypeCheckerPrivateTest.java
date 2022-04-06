@@ -130,10 +130,10 @@ public class TypeCheckerPrivateTest {
     }
 
     @Test
-    public void testOperatorFail06() {
+    public void testFailOperators06() {
         // a lot of different possibilities of wrong type for all operators
         ErrorHandler.INSTANCE.reset();
-        int result = typeChecker.checkTypes(path_fail + "operators/op_fail06_wrongType.jova", debug);
+        int result = typeChecker.checkTypes(path_fail + "operators/op_fail06.jova", debug);
 
         final int relopError = 30;
         final int relopClassTypeError = 8;
@@ -147,6 +147,22 @@ public class TypeCheckerPrivateTest {
                 andError + orError +  addError + notError;
 
         assertEquals(sumError, result);
+    }
+
+    @Test
+    public void testFailOperators07() {
+        // Incorrect use of relational operators
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "operators/op_fail05.jova", debug);
+        assertEquals(3, result);
+    }
+
+    @Test
+    public void testFailOperators08() {
+        // Incorrect use of relational operators
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "operators/op_fail05.jova", debug);
+        assertEquals(3, result);
     }
 
     // WARN: Operators (unary, binary, ternary)
@@ -174,6 +190,38 @@ public class TypeCheckerPrivateTest {
         assertEquals(0, result);
     }
 
+    @Test
+    public void testWarnOperators04() {
+        // Coercion ternary op
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_warn + "operators/ternop_warn02.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testWarnOperators05() {
+        // Coercion ternary op
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_warn + "operators/ternop_warn03.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testWarnOperators06() {
+        // Coercion relational op
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_warn + "operators/relop_warn01.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testWarnOperators07() {
+        // Coercion unary op
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_warn + "operators/op_warn03.jova", debug);
+        assertEquals(0, result);
+    }
+
     // PASS: Conditions
     @Test
     public void testPassConditions01() {
@@ -189,6 +237,14 @@ public class TypeCheckerPrivateTest {
         // if & while with nested logical expressions, incl. coercion
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_warn + "conditions/cond_warn01.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testWarnConditions02() {
+        // if & while with nested logical expressions, incl. coercion
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_warn + "conditions/cond_warn02.jova", debug);
         assertEquals(0, result);
     }
 
@@ -208,6 +264,15 @@ public class TypeCheckerPrivateTest {
         int result = typeChecker.checkTypes(path_fail + "conditions/cond_fail02.jova", debug);
         assertEquals(3, result);
     }
+
+    @Test
+    public void testFailConditions03() {
+        // incorrect ternary conditions
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "conditions/cond_fail03.jova", debug);
+        assertEquals(1, result);
+    }
+
 
     // PASS: Return statements
     @Test
