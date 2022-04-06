@@ -129,6 +129,26 @@ public class TypeCheckerPrivateTest {
         assertEquals(3, result);
     }
 
+    @Test
+    public void testOperatorFail06() {
+        // a lot of different possibilities of wrong type for all operators
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "operators/op_fail06_wrongType.jova", debug);
+
+        final int relopError = 30;
+        final int relopClassTypeError = 8;
+        final int mulError = 9;
+        final int andError = 3;
+        final int orError = 3;
+        final int addError = 6;
+        final int notError = 3;
+
+        final int sumError = relopError + relopClassTypeError + mulError +
+                andError + orError +  addError + notError;
+
+        assertEquals(sumError, result);
+    }
+
     // WARN: Operators (unary, binary, ternary)
     @Test
     public void testWarnOperators01() {
