@@ -4,7 +4,7 @@ Group17
 
 Max Mustermann    (1630001)   max.mustermann@student.tugraz.at
 Miriam Musterfrau (1630002)   miriam.musterfrau@student.tugraz.at
-John Doe          (1630003)   john.doe@student.tugraz.at
+Richard Heinz     (11814002)  richard.heinz@student.tugraz.at
 
 
 Description of the Program:
