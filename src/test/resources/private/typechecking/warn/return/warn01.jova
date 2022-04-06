@@ -1,0 +1,36 @@
+class Helper {
+
+}
+
+class A {
+
+  public int fortyTwo() {
+    return true;					// coerce bool to int
+  }
+
+  public bool helloWorld() {
+    return print("Hello World!");  	// coerce int to bool
+  }
+
+  public bool returnTrue() {
+    return true;
+  }
+
+  public Helper returnHelper() {
+    Helper a;
+    a = new Helper;
+    return a;
+  }
+
+  public Helper returnParam(Helper a) {
+      return a;
+  }
+  
+  public bool combine() {
+	int a;
+	int b;
+	a = 27;
+	b = fortyTwo();
+	return (a+b)*fortyTwo();		// coerce int to bool
+  }
+}

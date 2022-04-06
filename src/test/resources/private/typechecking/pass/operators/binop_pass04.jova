@@ -1,0 +1,19 @@
+class A {
+}
+
+class B {
+}
+
+class Main {
+    public int main() {
+        A a;
+        A b;
+        bool helperBool;
+
+        helperBool = a == b;
+        helperBool = a != b;
+
+
+        return 0;
+    }
+}
