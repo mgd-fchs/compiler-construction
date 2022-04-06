@@ -1,0 +1,30 @@
+class Smth {
+	public int f;
+
+}
+
+class Nested {
+
+  private Smth smth;
+  private int mem;
+  
+  public int fortyTwo() {
+    return 42;
+  }
+
+  public int func() {
+    return smth.f;
+  }
+
+  public int nestedIsland() {
+  
+    int foo;
+	int a;
+	a = +56;
+	
+    foo = -((fortyTwo() + func())/70 + a)*smth.f;
+	foo = -((a - fortyTwo())*this.mem)/-a;
+
+    return func();
+  }
+}

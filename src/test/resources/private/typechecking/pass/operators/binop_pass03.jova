@@ -1,0 +1,30 @@
+class Smth {
+	public bool f;
+
+}
+
+class Nested {
+
+  private Smth smth;
+  private bool mem;
+  
+  public bool fortyTwo() {
+    return true;
+  }
+
+  public bool func() {
+    return smth.f;
+  }
+
+  public bool nestedIsland() {
+  
+    bool foo;
+	bool a;
+	a = !true;
+	
+    foo = !((fortyTwo() && func()) || (70 && a))||smth.f;
+	foo = ((!a && fortyTwo())||this.mem)&&a;
+
+    return func();
+  }
+}
