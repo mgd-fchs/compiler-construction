@@ -1,0 +1,17 @@
+class Helper {
+}
+
+class Main {
+}
+
+class Test {
+    public int a;
+    public string b;
+    public int c;
+    public string d;
+
+
+    public int func(char param0, Helper param1, Main param2 ) {
+        return 0;
+    }
+}

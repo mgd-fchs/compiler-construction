@@ -1,0 +1,14 @@
+class Main{
+
+}
+
+class Helper{
+
+}
+
+class Test{
+    public int a;
+    public string b;
+    public Helper c;
+    public Main d;
+}

@@ -1,0 +1,8 @@
+class Helper {
+
+}
+
+class Test {
+    Test(int a, string a, bool a, float a, char a, Helper a){
+    }
+}

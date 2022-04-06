@@ -1,0 +1,13 @@
+class Main {
+}
+
+class Helper {
+}
+
+class Test {
+    public int a;
+    public string b;
+
+    Test(char param0, Helper param1, Main param2 ) {
+    }
+}

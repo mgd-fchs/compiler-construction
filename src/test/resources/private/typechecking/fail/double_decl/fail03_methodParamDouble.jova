@@ -1,0 +1,9 @@
+class Helper {
+
+}
+
+class Test {
+    private int func(int a, string a, bool a, float a, char a, Helper a){
+        return 0;
+    }
+}

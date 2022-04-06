@@ -1,0 +1,16 @@
+class Helper {
+}
+
+class Test {
+    private int a;
+    private string b;
+    private Helper c;
+
+    public int func() {
+        int d;
+        Unknown e;
+        bool f;
+
+        return 0;
+    }
+}

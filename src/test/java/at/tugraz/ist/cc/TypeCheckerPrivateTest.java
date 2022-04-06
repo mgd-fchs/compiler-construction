@@ -12,7 +12,7 @@ public class TypeCheckerPrivateTest {
     private final String path_fail = "src/test/resources/private/typechecking/fail/";
     private final String path_pass = "src/test/resources/private/typechecking/pass/";
     private final String path_warn = "src/test/resources/private/typechecking/warn/";
-    
+
     TypeChecker typeChecker = new TypeChecker();
     boolean debug = true;
 
@@ -334,4 +334,204 @@ public class TypeCheckerPrivateTest {
         assertEquals(3, result);
     }
 
+    @Test
+    public void testFailDoubleDecl01() {
+        // double decl of local variables
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "double_decl/fail01_localDoubleVar.jova", debug);
+        assertEquals(5, result);
+    }
+
+
+    @Test
+    public void testFailDoubleDecl02() {
+        // double decl member variables
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "double_decl/fail02_memberDoubleVar.jova", debug);
+        assertEquals(11, result);
+    }
+
+    @Test
+    public void testFailDoubleDecl03() {
+        // double parameter of method
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "double_decl/fail03_methodParamDouble.jova", debug);
+        assertEquals(5, result);
+    }
+
+    @Test
+    public void testFailDoubleDecl04() {
+        // double parameter of ctor
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "double_decl/fail04_ctorParamDouble.jova", debug);
+        assertEquals(5, result);
+    }
+
+    @Test
+    public void testFailDoubleDecl05() {
+        // double local and method param
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "double_decl/fail05_localMethodParamDouble.jova", debug);
+        assertEquals(13, result);
+    }
+
+    @Test
+    public void testFailDoubleDecl06() {
+        // double class definition
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "double_decl/fail06_classDouble.jova", debug);
+        assertEquals(3, result);
+    }
+
+    @Test
+    public void testFailDoubleDecl07() {
+        // double methods with different return values
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "double_decl/fail07_methodDouble.jova", debug);
+        assertEquals(8, result);
+    }
+
+    @Test
+    public void testFailDoubleDecl08() {
+        // double ctors
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "double_decl/fail08_ctorDouble.jova", debug);
+        assertEquals(3, result);
+    }
+
+    @Test
+    public void testFailDoubleDecl09() {
+        // same signature as the global print methods
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "double_decl/fail09_printMethodsDouble.jova", debug);
+        assertEquals(5, result);
+    }
+
+    @Test
+    public void testFailDoubleDecl10() {
+        // local and ctor param double
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "double_decl/fail10_localCtorParamDouble.jova", debug);
+        assertEquals(7, result);
+    }
+
+    @Test
+    public void testFailMain01() {
+        // Main class with member
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "main_structure/fail01_withMember.jova", debug);
+        assertEquals(12, result);
+    }
+
+    @Test
+    public void testFailMain02() {
+        // Main class with methods which are not the public int main()
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "main_structure/fail02_withMethods.jova", debug);
+        assertEquals(4, result);
+    }
+
+    @Test
+    public void testFailMain03() {
+        // Main class with methods which are not the public int main() and some member
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "main_structure/fail03_withMethodsAndMembers.jova", debug);
+        assertEquals(4, result);
+    }
+
+    @Test
+    public void testFailMain04() {
+        // Main class with ctor
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "main_structure/fail04_withCtor.jova", debug);
+        assertEquals(4, result);
+    }
+
+    @Test
+    public void testFailMain05() {
+        // Main class with ctor
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "main_structure/fail05_mainAsMember.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testFailMain06() {
+        // Main class as method param
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "main_structure/fail06_mainAsMethodParam.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testFailMain07() {
+        // Main class as ctor param
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "main_structure/fail07_mainAsCtorParam.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testFailMain08() {
+        // Main class as member
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "main_structure/fail08_mainAsMember.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testFailMain09() {
+        // Main class as local var
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "main_structure/fail09_mainAsLocalVar.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testFailMain10() {
+        // Main class with two public int main()
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "main_structure/fail10_mainWithTwoMainMethods.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testUnknown01() {
+        // unknown class as member
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "unknown/fail01_unknownClassAsMember.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testUnknown02() {
+        // unknown class as local
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "unknown/fail02_unknownClassAsLocal.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testUnknown03() {
+        // unknown class as method param
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "unknown/fail03_unknownClassAsMethodParam.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testUnknown04() {
+        // unknown class as ctor param
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "unknown/fail04_unknownClassAsCtorParam.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testUnknown05() {
+        // unknown class as return value
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "unknown/fail05_unknownClassAsReturnValue.jova", debug);
+        assertEquals(1, result);
+    }
 }

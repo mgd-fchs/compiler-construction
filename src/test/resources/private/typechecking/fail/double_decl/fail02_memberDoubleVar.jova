@@ -1,0 +1,17 @@
+class Helper {
+}
+
+class Test {
+    private int a;
+    private string a;
+    private bool a;
+    private float a;
+    private char a;
+    private Helper a;
+    public int a;
+    public string a;
+    public bool a;
+    public float a;
+    public char a;
+    public Helper a;
+}

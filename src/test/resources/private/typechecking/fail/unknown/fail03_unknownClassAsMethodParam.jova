@@ -1,0 +1,13 @@
+class Helper {
+}
+
+class Test {
+    private int a;
+    private string b;
+
+    public int func(int param0, string param1, Unknown param2, char param3) {
+        int local;
+
+        return 0;
+    }
+}

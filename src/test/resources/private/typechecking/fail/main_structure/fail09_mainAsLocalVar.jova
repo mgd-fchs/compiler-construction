@@ -1,0 +1,17 @@
+class Main {
+}
+
+class Helper {
+}
+
+class Test {
+
+    public int func() {
+        Helper a;
+        char b;
+        Main c;
+        string d;
+
+        return 0;
+    }
+}

@@ -1,0 +1,17 @@
+class Helper {
+}
+
+class Main {
+    private int a;
+    private string b;
+    private bool c;
+    private float d;
+    private char e;
+    private Helper f;
+    public int g;
+    public string h;
+    public bool i;
+    public float j;
+    public char k;
+    public Helper l;
+}

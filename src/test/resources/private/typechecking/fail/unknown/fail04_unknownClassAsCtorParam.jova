@@ -1,0 +1,8 @@
+class Helper {
+}
+
+class Test {
+
+    Test(int param0, string param1, Unknown param2, char param3) {
+    }
+}

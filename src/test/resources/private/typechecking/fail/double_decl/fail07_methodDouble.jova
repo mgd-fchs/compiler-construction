@@ -1,0 +1,44 @@
+class Test {
+
+    private int func(int a){
+        return 0;
+    }
+
+    private float func(int a){
+        return 0;
+    }
+
+    private bool func(int a){
+        return true;
+    }
+
+    private string func(int a){
+        return "asdf";
+    }
+
+    private Helper func(int a){
+        return nix;
+    }
+
+
+    private int func(int a, float b){
+        return 0;
+    }
+
+    private float func(int a, float b){
+        return 0;
+    }
+
+    private bool func(int a, float b){
+        return true;
+    }
+
+    private string func(int a, float b){
+        return "asdf";
+    }
+
+    private Helper func(int a, float b){
+        return nix;
+    }
+
+}

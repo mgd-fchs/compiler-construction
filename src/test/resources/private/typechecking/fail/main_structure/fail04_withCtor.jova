@@ -1,0 +1,22 @@
+class Main
+{
+    Main()
+    {
+    }
+
+    Main(int a)
+    {
+
+    }
+
+    Main(int a, string b)
+    {
+
+    }
+
+
+    Main(int a, string b, bool c)
+    {
+
+    }
+}

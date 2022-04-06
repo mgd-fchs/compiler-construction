@@ -1,0 +1,16 @@
+class Helper {
+}
+
+class Main {
+
+  public int main() {
+    int a;
+    string a;
+    bool a;
+    float a;
+    char a;
+    Helper a;
+
+    return 0;
+  }
+}

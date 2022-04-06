@@ -1,0 +1,12 @@
+class Main {
+  private int a;
+  private string b;
+
+  public int func() {
+    return 0;
+  }
+
+  public int another_fun(){
+	return 1;
+  }
+}
