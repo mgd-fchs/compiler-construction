@@ -1,0 +1,27 @@
+class Tmp {
+  public string f;
+}
+
+class Tmp1 {
+  public string f;
+}
+
+class Cls {
+
+	public bool cls(){
+		int a, b, c;
+		string d;
+		bool f;
+		
+		Tmp t;
+		
+		a = nix;
+		d = nix;
+		f = nix;
+		
+		t = nix;
+
+		return false;
+	}
+
+}

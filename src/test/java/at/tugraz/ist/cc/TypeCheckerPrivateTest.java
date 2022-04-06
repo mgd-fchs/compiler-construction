@@ -73,6 +73,21 @@ public class TypeCheckerPrivateTest {
         assertEquals(0, result);
     }
 
+    @Test
+    public void testPassOperator05() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "operators/binop_pass04.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassOperator06() {
+        // check equals and unequals operation for int and bool
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "operators/binop_pass05.jova", debug);
+        assertEquals(0, result);
+    }
+
     // FAIL: Operators (unary, binary, ternary)
     @Test
     public void testFailOperators01() {
@@ -171,6 +186,151 @@ public class TypeCheckerPrivateTest {
         // incorrect ternary conditions
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail + "conditions/cond_fail02.jova", debug);
+        assertEquals(3, result);
+    }
+
+    // PASS: Return statements
+    @Test
+    public void testPassReturn01() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "return/pass01.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassReturn02() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "return/pass02.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassReturn03() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "return/pass03.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassReturn04() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "return/pass04.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassReturn05() {
+        // return nix
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "return/pass05.jova", debug);
+        assertEquals(0, result);
+    }
+
+    // WARN: Return statements
+    @Test
+    public void testWarnReturn01() {
+        // if & while with nested logical expressions, incl. coercion
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_warn + "return/warn01.jova", debug);
+        assertEquals(0, result);
+    }
+
+    // FAIL: Return statements
+    @Test
+    public void testFailReturn01() {
+        // return method that is class member
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "return/fail01.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testFailReturn02() {
+        // return class member
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "return/fail02.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testFailReturn03() {
+        // return function call
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "return/fail03.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testFailReturn04() {
+        // return function call
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "return/fail04.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testFailReturn05() {
+        // return function call
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "return/fail05.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testFailReturn06() {
+        // return function call
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "return/fail05.jova", debug);
+        assertEquals(1, result);
+    }
+
+    // PASS: Assignment
+    @Test
+    public void testPassAssign01() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "assign/pass01.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassAssign02() {
+        // assign literals, function return values, classes, and nix
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "assign/pass02.jova", debug);
+        assertEquals(0, result);
+    }
+
+    // WARN: Assignment
+    @Test
+    public void testWarnAssign01() {
+        // raise coercion warnings
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_warn + "assign/warn01.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testFailAssign01() {
+        // assign incorrect methods and class members
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "assign/fail01.jova", debug);
+        assertEquals(4, result);
+    }
+
+    @Test
+    public void testFailAssign02() {
+        // assign incorrect class type and literals
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "assign/fail02.jova", debug);
+        assertEquals(2, result);
+    }
+
+
+    @Test
+    public void testFailAssign03() {
+        // assign nix
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "assign/fail03.jova", debug);
         assertEquals(3, result);
     }
 

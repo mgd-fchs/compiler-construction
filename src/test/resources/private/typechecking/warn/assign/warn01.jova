@@ -1,0 +1,38 @@
+class Evaluation{
+	
+	public int var;
+	public bool boo;
+	
+    public int somefun(){
+		int a;
+		if (a!=var){
+			a = boo;			// coerce bool to int
+		}
+        return 32;
+    }
+
+    Evaluation() {
+      int foo, h;
+	  bool bar;
+	  
+      foo = 42;
+      bar = somefun() + foo;     // coerce int to bool
+    }
+
+}
+
+class Cls {
+	public Evaluation eval;
+	public Evaluation eval2;
+	
+	public Evaluation getEval(){
+		return this.eval;
+	}
+	
+	private int anotherfun(){
+		eval2 = this.getEval();
+		eval = nix;
+		return 0;
+	}
+	
+}

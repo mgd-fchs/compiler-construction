@@ -1,0 +1,38 @@
+class Test{
+public int x;
+
+  public int t(int x, bool b, Test t) {
+    return 0;
+  }
+  
+  public string saysmth(bool b) {
+	return "hihello";
+  }
+
+}
+
+class Main2 {
+   private Test test;
+   private Test x;
+
+   private int testing(int x) {
+        return this.x.t(0, true, this.x);
+   }
+
+  public int main22() {
+    int txt, txt1, txt2, txt3;
+	string st1, st2;
+	bool b1, b2;
+	
+    this.test.x = this.testing(testing(testing(testing(0))));
+	
+	b1 = true;
+	
+	txt = (7> txt2) ? txt1 : this.testing(txt3);
+	
+	st1 = this.test.saysmth(8 == 4);
+
+    return 0;
+  }
+
+}

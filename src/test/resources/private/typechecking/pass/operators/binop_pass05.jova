@@ -1,0 +1,14 @@
+
+class Main {
+    public int main() {
+
+		bool b1, b2, b3;
+		int a, b, c;
+		
+		b1 = ((a == b)&&(c > 3));
+		
+		b2 = !b1&&(a != c);
+
+        return 0;
+    }
+}
