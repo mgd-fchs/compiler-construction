@@ -1,0 +1,41 @@
+class T {
+}
+
+class Smth {
+	public int f;
+	public string g;
+}
+
+class Nested {
+
+  private Smth smth;
+  private bool mem;
+  
+  public bool fortyTwo() {
+    return true;
+  }
+
+  public int func() {
+    return smth.f;
+  }
+
+  public bool nestedIsland() {
+	string str;
+    int foo;
+	bool a;
+	T t1;
+	T t2;
+	T t3;
+	
+	t1 = new T;
+	t2 = new T;
+	
+	foo = !a ? 4 : (fortyTwo()-smth.f);
+	str = ((!a && false)||this.mem)&&a ? "mystring" : smth.g;
+	
+	t3 = !true ? t1 : t2;
+	t2 = this.mem ? t1 : nix;
+	
+    return a;
+  }
+}

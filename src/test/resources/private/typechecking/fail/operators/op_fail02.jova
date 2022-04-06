@@ -1,0 +1,33 @@
+class Smth {
+	public int f;
+}
+
+class Nested {
+
+  private Smth smth;
+  private string mem;
+  
+  public int fortyTwo() {
+    return 0;
+  }
+  
+  public Smth wasNix() {
+    return nix;
+  }
+
+  public int func() {
+    return smth.f;
+  }
+  public int nestedIsland() {
+  
+    int foo;
+	int a;
+	a = +"somestr";									// error
+	
+    foo = -((fortyTwo() + func())/70 + a)*smth;		// error
+	foo = -((a - wasNix()))/-a;  					// error
+	foo = ((a - fortyTwo())*this.mem)/a;  			// error
+
+    return func();
+  }
+}

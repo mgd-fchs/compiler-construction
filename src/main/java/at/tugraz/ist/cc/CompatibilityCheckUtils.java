@@ -237,7 +237,6 @@ public final class CompatibilityCheckUtils {
 
     public static SymbolVariable checkUnary(SymbolVariable unaryVar, JovaParser.Unary_exprContext ctx){
         if (ctx.ADDOP() != null){
-            // TODO also support for float?
 
             if (unaryVar.getActualType() != TYPE_INT){
                 if (unaryVar.getActualType() == TYPE_FLOAT){

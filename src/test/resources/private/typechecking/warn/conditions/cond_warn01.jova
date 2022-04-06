@@ -1,0 +1,40 @@
+
+class Test1 {
+
+	public int memint;
+	public bool membool;
+}
+
+class Cls{
+
+	public Test1 func(int x){
+
+	    Test1 t;
+		int u;
+		bool f;
+		int a;
+		int c;
+		
+		u = 4;
+		t = new Test1;
+	    
+	    if(t == nix){
+			u = u+1;
+			c = false;
+	    }
+
+        if(t.memint > 0){
+
+        }
+
+	    while(!(u > 7)) {
+	        a = 0;
+	    }
+		
+		if ((t.membool && (f == true) ) && c){
+		
+		}
+
+		return t;
+	}
+}

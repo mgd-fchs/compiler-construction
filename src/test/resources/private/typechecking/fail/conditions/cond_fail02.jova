@@ -1,0 +1,21 @@
+
+class Test1 {
+
+	public int memint;
+	public bool membool;
+}
+
+class Cls{
+
+	public Test1 func(int x){
+		string res;
+		string txt;
+	    Test1 t;
+		
+		t = nix ? t : nix;
+		t = "someotherstr" ? t : nix;
+		t = t ? t : nix;
+		
+		return t;
+	}
+}

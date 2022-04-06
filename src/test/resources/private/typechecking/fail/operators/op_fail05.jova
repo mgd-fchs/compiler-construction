@@ -1,0 +1,25 @@
+class Smth {
+	public int f;
+}
+
+class Nested {
+  private Smth smthfun(){
+	return nix;
+  }
+
+  private int func(){
+	int a;
+	bool b;
+	Smth smth;
+	Smth smth1;
+	
+	smth = new Smth;
+	smth1 = new Smth;
+	
+	b = a > smth; 				// error
+	b = "str" < a;				// error
+	b = a <= nix;			// error
+	
+	return 0;
+  }
+}
