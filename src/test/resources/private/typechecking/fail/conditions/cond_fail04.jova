@@ -1,0 +1,21 @@
+class Evaluation{
+  private int c1;
+
+  private string func2(string b){
+    return 0;
+  }
+
+  private int func1(){
+    int a;
+    bool b1;
+    string f;
+
+    while(this.func2(this.func2("i"))){
+        if(this.func2(this.func2(this.func2("i")))){
+        }
+    }
+
+    return a;
+  }
+}
+

@@ -1,0 +1,34 @@
+class Testing {
+    public int func1(int x) {
+        return 0;
+    }
+
+    public int func1(bool z) {
+        return 0;
+    }
+
+    public int func1(string z) {
+        return 0;
+    }
+
+    public int func2a() {
+        return func1(true);
+    }
+
+    public int func2b() {
+        return func1(69);
+    }
+
+    public int func2c() {
+        return func1("true 69");
+    }
+
+/*
+    public int func2d() {
+        return func1(nix);
+    }
+*/
+}
+
+
+

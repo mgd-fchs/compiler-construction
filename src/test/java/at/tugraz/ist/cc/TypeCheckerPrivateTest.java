@@ -231,6 +231,14 @@ public class TypeCheckerPrivateTest {
         assertEquals(0, result);
     }
 
+    @Test
+    public void testPassConditions02() {
+        // nested if & while calls
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "conditions/cond_pass02.jova", debug);
+        assertEquals(0, result);
+    }
+
     // WARN: Conditions
     @Test
     public void testWarnConditions01() {
@@ -251,10 +259,10 @@ public class TypeCheckerPrivateTest {
     // FAIL: Conditions
     @Test
     public void testFailConditions01() {
-        // if & while with incorrect conditions
+        // if & while with nix condition
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail + "conditions/cond_fail01.jova", debug);
-        assertEquals(3, result);
+        assertEquals(1, result);
     }
 
     @Test
@@ -267,12 +275,34 @@ public class TypeCheckerPrivateTest {
 
     @Test
     public void testFailConditions03() {
-        // incorrect ternary conditions
+        // incorrect condition 'nix'
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail + "conditions/cond_fail03.jova", debug);
         assertEquals(1, result);
     }
 
+    @Test
+    public void testFailConditions04() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "conditions/cond_fail04.jova", debug);
+        assertEquals(2, result);
+    }
+
+    @Test
+    public void testFailConditions05() {
+        // incorrect condition class type
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "conditions/cond_fail05.jova", debug);
+        assertEquals(2, result);
+    }
+
+    @Test
+    public void testFailConditions06() {
+        // incorrect condition string type
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "conditions/cond_fail06.jova", debug);
+        assertEquals(2, result);
+    }
 
     // PASS: Return statements
     @Test
@@ -306,6 +336,13 @@ public class TypeCheckerPrivateTest {
     @Test
     public void testPassReturn05() {
         // return nix
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "return/pass05.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassReturn06() {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_pass + "return/pass05.jova", debug);
         assertEquals(0, result);
@@ -372,6 +409,7 @@ public class TypeCheckerPrivateTest {
     // PASS: Assignment
     @Test
     public void testPassAssign01() {
+        // assign return value of nested function
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_pass + "assign/pass01.jova", debug);
         assertEquals(0, result);
@@ -385,6 +423,22 @@ public class TypeCheckerPrivateTest {
         assertEquals(0, result);
     }
 
+    @Test
+    public void testPassAssign03() {
+        // assign results of operations
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "assign/pass03.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassAssign04() {
+        // assign class member values
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "assign/pass04.jova", debug);
+        assertEquals(0, result);
+    }
+
     // WARN: Assignment
     @Test
     public void testWarnAssign01() {
@@ -394,6 +448,7 @@ public class TypeCheckerPrivateTest {
         assertEquals(0, result);
     }
 
+    // FAIL: Assignment
     @Test
     public void testFailAssign01() {
         // assign incorrect methods and class members
@@ -410,13 +465,20 @@ public class TypeCheckerPrivateTest {
         assertEquals(2, result);
     }
 
-
     @Test
     public void testFailAssign03() {
         // assign nix
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail + "assign/fail03.jova", debug);
         assertEquals(3, result);
+    }
+
+    @Test
+    public void testFailAssign04() {
+        // assign nix, assign incorrect class members
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "assign/fail04.jova", debug);
+        assertEquals(2, result);
     }
 
     @Test

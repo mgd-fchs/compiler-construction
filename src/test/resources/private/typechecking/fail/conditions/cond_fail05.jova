@@ -14,10 +14,20 @@ class Cls{
 		bool f;
 		int a;
 		bool c;
-
-		if (nix){
 		
-		}
+
+		u = 4;
+		t = new Test1;
+	    
+	    if(t){
+			u = u+1;
+			c = false;
+	    }
+
+        while(t){
+            u = u+1;
+            c = false;
+        }
 
 		return t;
 	}

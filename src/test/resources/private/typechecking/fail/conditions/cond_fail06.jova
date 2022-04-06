@@ -1,0 +1,41 @@
+
+class Test1 {
+
+	public int memint;
+	public bool membool;
+}
+
+class Cls{
+
+	public Test1 func(int x){
+
+	    Test1 t;
+		int u;
+		bool f;
+		int a;
+		bool c;
+		
+
+		u = 4;
+		t = new Test1;
+	    
+        if ("somestr"){
+
+        }
+
+        while ("somestr"){
+
+        }
+
+        while(t.membool) {
+            a = 0;
+        }
+
+        if ((t.membool && (f || true) ) && c){
+
+        }
+
+
+		return t;
+	}
+}

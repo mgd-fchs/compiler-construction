@@ -1,0 +1,31 @@
+class Cls{
+    public int intmem;
+    public bool boolmem;
+    public string strmem;
+}
+
+class Somecls{
+
+    public Cls cls;
+}
+
+class Exp{
+    private Cls cls;
+    private Somecls somecls;
+    private string str;
+
+    public bool fun(int x){
+        int myint;
+        bool b;
+
+        myint = x;
+
+        cls = this.somecls.cls;
+        x = this.somecls.cls.intmem;
+        b = this.somecls.cls.boolmem;
+        this.somecls = this.somecls.cls.strmem;
+        this.str = nix;
+
+        return b;
+    }
+}
