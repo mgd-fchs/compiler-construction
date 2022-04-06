@@ -23,9 +23,7 @@ public class TypeCheckerPrivateTest {
         assertEquals(6, result);
     }
 
-
-
-    // PASS: Relative operators
+    // PASS: Equality operator
     @Test
     public void testPassEquals01() {
         ErrorHandler.INSTANCE.reset();
@@ -33,7 +31,7 @@ public class TypeCheckerPrivateTest {
         assertEquals(0, result);
     }
 
-    // FAIL: Relative operators
+    // FAIL: Equality operator
     @Test
     public void testFailEquals01() {
         ErrorHandler.INSTANCE.reset();
@@ -72,6 +70,72 @@ public class TypeCheckerPrivateTest {
         // nested ternary operations with function returns, literals, variables, and class members
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_pass + "operators/ternop_pass01.jova", debug);
+        assertEquals(0, result);
+    }
+
+    // FAIL: Operators (unary, binary, ternary)
+    @Test
+    public void testFailOperators01() {
+        // Incorrect logical operations (string, Ctype, nix), incl. binary and unary operations
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "operators/op_fail01.jova", debug);
+        assertEquals(3, result);
+    }
+
+    @Test
+    public void testFailOperators02() {
+        // Incorrect arithmetic operations (string, Ctype, nix), incl. binary and unary operations
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "operators/op_fail02.jova", debug);
+        assertEquals(4, result);
+    }
+
+    @Test
+    public void testFailOperators03() {
+        // Incorrect unary operations only
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "operators/op_fail03.jova", debug);
+        assertEquals(3, result);
+    }
+
+    @Test
+    public void testFailOperators04() {
+        // Incorrect ternary operations (only rhs/lhs compatibility -> condition is tested separately)
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "operators/op_fail04.jova", debug);
+        assertEquals(2, result);
+    }
+
+    @Test
+    public void testFailOperators05() {
+        // Incorrect use of relational operators
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "operators/op_fail05.jova", debug);
+        assertEquals(3, result);
+    }
+
+    // WARN: Operators (unary, binary, ternary)
+    @Test
+    public void testWarnOperators01() {
+        // Coercion arithmetic ops incl unary
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_warn + "operators/op_warn01.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testWarnOperators02() {
+        // Coercion logical ops incl unary
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_warn + "operators/op_warn02.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testWarnOperators03() {
+        // Coercion ternary op
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_warn + "operators/ternop_warn01.jova", debug);
         assertEquals(0, result);
     }
 

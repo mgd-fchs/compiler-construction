@@ -1,0 +1,22 @@
+class Smth {
+	public int f;
+}
+
+class Nested {
+  private Smth smthfun(){
+	return nix;
+  }
+
+  private int func(){
+	int a;
+	bool b;
+	Smth smth;
+	smth = new Smth;
+	
+	a = !"string";
+	a = -smth;
+	b = !smthfun();
+	
+	return 0;
+  }
+}

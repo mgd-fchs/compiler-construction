@@ -1,0 +1,24 @@
+class Smth {
+	public int f;
+}
+
+class Nested {
+  private Smth smthfun(){
+	return nix;
+  }
+
+  private int func(){
+	int a;
+	bool b;
+	Smth smth;
+	Smth smth1;
+	
+	smth = new Smth;
+	smth1 = new Smth;
+	
+	a = true ? smth : nix; 		// error
+	b = false ? b : "str";		// error
+	
+	return 0;
+  }
+}

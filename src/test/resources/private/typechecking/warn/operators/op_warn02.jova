@@ -1,0 +1,35 @@
+class Smth {
+	public bool f;
+
+}
+
+class Nested {
+
+  private Smth smth;
+  private bool mem;
+  private int intmem;
+  
+  public int fortyTwo() {
+    return 0;
+  }
+  
+  public Smth wasNix() {
+    return nix;
+  }
+
+  public bool func() {
+    return smth.f;
+  }
+
+  public bool nestedIsland() {
+  
+    bool foo;
+	bool a;
+	a = !this.intmem; 											// coerce int to bool
+	
+    foo = !(fortyTwo() && func()) || true; 						// coerce int to bool
+	foo = (!this.intmem ||this.mem)&&a; 						// coerce int to bool
+
+    return func();
+  }
+}

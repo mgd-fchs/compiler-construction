@@ -1,0 +1,35 @@
+class Smth {
+	public bool f;
+
+}
+
+class Nested {
+
+  private Smth smth;
+  private bool mem;
+  private string strmem;
+  
+  public bool fortyTwo() {
+    return true;
+  }
+  
+  public Smth wasNix() {
+    return nix;
+  }
+
+  public bool func() {
+    return smth.f;
+  }
+
+  public bool nestedIsland() {
+  
+    bool foo;
+	bool a;
+	a = !this.strmem; 											// error
+	
+    foo = !((fortyTwo() && func()) || (70 && smth))||smth.f; 	//error
+	foo = ((!a && wasNix())||this.mem)&&a; 						//error
+
+    return func();
+  }
+}

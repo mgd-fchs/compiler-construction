@@ -1,0 +1,32 @@
+class Smth {
+	public int f;
+}
+
+class Nested {
+
+  private Smth smth;
+  private int mem;
+  
+  public bool fortyTwo() {
+    return true;
+  }
+  
+  public Smth wasNix() {
+    return nix;
+  }
+
+  public int func() {
+    return smth.f;
+  }
+  public int nestedIsland() {
+  
+    int foo;
+	int a;
+	a = -true;		// coerce bool to int
+	
+    foo = -((fortyTwo() + func())/70 + a);		// coerce bool to int
+	foo = ((a - fortyTwo())*this.mem)/a;  		// coerce bool to int
+
+    return func();
+  }
+}
