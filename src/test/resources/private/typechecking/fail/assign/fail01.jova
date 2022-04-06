@@ -1,0 +1,39 @@
+class Tmp {
+  public string f;
+}
+
+class Cls {
+    public Tmp t;
+
+	public int func(int x) {
+		return 42;
+	}
+
+	public string func(string x) {
+		return "somestr";
+	}
+
+	public int cls(){
+		int a, b, c;
+        Tmp t;
+        t = new Tmp;
+		
+		a= "somestr";
+		c= func("a");
+		t = t.f;
+		
+		return 1;
+	}
+
+}
+   class Tmp2 {
+        public Cls c;
+
+        public int tmp2(){
+			int a;
+			
+			a = c.t.f;
+            
+			return 0;
+        }
+    }

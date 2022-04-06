@@ -1,0 +1,29 @@
+class Evaluation{
+
+    public int somefun(){
+        return 2;
+    }
+
+    Evaluation() {
+      int foo, bar, h;
+      foo = 42;
+      bar = somefun() + foo;
+    }
+
+}
+
+class Cls {
+	public Evaluation eval;
+	public Evaluation eval2;
+	
+	public Evaluation getEval(){
+		return this.eval;
+	}
+	
+	private int anotherfun(){
+		eval2 = this.getEval();
+		eval = nix;
+		return 0;
+	}
+	
+}

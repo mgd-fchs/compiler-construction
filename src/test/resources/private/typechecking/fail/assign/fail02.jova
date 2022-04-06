@@ -1,0 +1,20 @@
+class Tmp {
+  public string f;
+}
+
+class Tmp1 {
+  public string f;
+}
+
+class Cls {
+
+	public bool cls(){
+		int a, b, c;
+		Tmp t;
+		
+        t = new Tmp1; 
+		a= "somestr";
+		return false;
+	}
+
+}
