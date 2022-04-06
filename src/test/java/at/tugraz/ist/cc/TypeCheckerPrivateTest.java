@@ -11,6 +11,7 @@ public class TypeCheckerPrivateTest {
 
     private final String path_fail = "src/test/resources/private/typechecking/fail/";
     private final String path_pass = "src/test/resources/private/typechecking/pass/";
+    private final String path_warn = "src/test/resources/private/typechecking/warn/";
     
     TypeChecker typeChecker = new TypeChecker();
     boolean debug = true;
@@ -24,7 +25,7 @@ public class TypeCheckerPrivateTest {
 
 
 
-    // Relative operators
+    // PASS: Relative operators
     @Test
     public void testPassEquals01() {
         ErrorHandler.INSTANCE.reset();
@@ -32,6 +33,7 @@ public class TypeCheckerPrivateTest {
         assertEquals(0, result);
     }
 
+    // FAIL: Relative operators
     @Test
     public void testFailEquals01() {
         ErrorHandler.INSTANCE.reset();
@@ -41,14 +43,14 @@ public class TypeCheckerPrivateTest {
 
     // PASS: Operators (unary, binary, ternary)
     @Test
-    public void testPassOp01() {
+    public void testPassOperators01() {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_pass + "operators/binop_pass01.jova", debug);
         assertEquals(0, result);
     }
 
     @Test
-    public void testPassOp02() {
+    public void testPassOperators02() {
         // arithmetic operations with function returns, literals, variables, and class members
         // unary and binary operations
         ErrorHandler.INSTANCE.reset();
@@ -57,7 +59,7 @@ public class TypeCheckerPrivateTest {
     }
 
     @Test
-    public void testPassOp03() {
+    public void testPassOperators03() {
         // logical operations with function returns, literals, variables, and class members
         // unary and binary operations
         ErrorHandler.INSTANCE.reset();
@@ -66,10 +68,46 @@ public class TypeCheckerPrivateTest {
     }
 
     @Test
-    public void testPassOp04() {
+    public void testPassOperators04() {
         // nested ternary operations with function returns, literals, variables, and class members
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_pass + "operators/ternop_pass01.jova", debug);
         assertEquals(0, result);
     }
+
+    // PASS: Conditions
+    @Test
+    public void testPassConditions01() {
+        // if & while with nested logical expressions, no coercion
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "conditions/cond_pass01.jova", debug);
+        assertEquals(0, result);
+    }
+
+    // WARN: Conditions
+    @Test
+    public void testWarnConditions01() {
+        // if & while with nested logical expressions, incl. coercion
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_warn + "conditions/cond_warn01.jova", debug);
+        assertEquals(0, result);
+    }
+
+    // FAIL: Conditions
+    @Test
+    public void testFailConditions01() {
+        // if & while with incorrect conditions
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "conditions/cond_fail01.jova", debug);
+        assertEquals(3, result);
+    }
+
+    @Test
+    public void testFailConditions02() {
+        // incorrect ternary conditions
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "conditions/cond_fail02.jova", debug);
+        assertEquals(3, result);
+    }
+
 }
