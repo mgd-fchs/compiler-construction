@@ -1,0 +1,14 @@
+class Test2 {
+    public int x;
+}
+
+class Test{
+    private Test2 temp() {
+        Test2 t;
+        return t;
+    }
+
+    public int test() {
+        return this.temp().x;
+    }
+}

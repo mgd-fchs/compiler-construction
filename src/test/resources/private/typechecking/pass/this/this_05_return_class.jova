@@ -1,0 +1,9 @@
+class Test{
+    public int testing (Test t) {
+        return 0;
+    }
+
+    public int test(int x) {
+        return this.testing(this);
+    }
+}

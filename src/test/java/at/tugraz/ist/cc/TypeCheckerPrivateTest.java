@@ -189,6 +189,75 @@ public class TypeCheckerPrivateTest {
     }
 
 
+    /** Method Invocation Tests **/
+    @Test
+    public void testFailThis01() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "this/this_01_local_var.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testFailThis02() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "this/this_02_param.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testFailThis03() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "this/this_03_return_this.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testFailThis04() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "this/this_04_wrong_class.jova", debug);
+        assertEquals(1, result);
+    }
+
+
+
+
+    @Test
+    public void testPassThis01() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "this/this_01_member.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassThis02() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "this/this_02_method.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassThis03() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "this/this_03_method+class+member.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassThis04() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "this/this_04_param.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassThis05() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "this/this_05_return_class.jova", debug);
+        assertEquals(0, result);
+    }
+
+
+
 
 
     // PASS: Equality operator

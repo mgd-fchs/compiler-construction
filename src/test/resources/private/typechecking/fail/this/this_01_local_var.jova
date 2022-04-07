@@ -1,0 +1,6 @@
+class Test{
+    public int test() {
+        int x;
+        return this.x;
+    }
+}

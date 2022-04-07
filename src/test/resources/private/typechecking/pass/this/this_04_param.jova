@@ -1,0 +1,12 @@
+class Test2 {
+    public int testing (Test2 t) {
+        return 0;
+    }
+}
+
+class Test{
+    private Test2 t;
+    public int test(int x) {
+        return t.testing(this.t);
+    }
+}

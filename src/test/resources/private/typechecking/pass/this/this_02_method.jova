@@ -1,0 +1,9 @@
+class Test{
+    private int temp(int x) {
+        return 0;
+    }
+
+    public int test() {
+        return this.temp(0);
+    }
+}
