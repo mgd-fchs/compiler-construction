@@ -1,0 +1,25 @@
+class Class5 {
+    public string getText;
+}
+
+class Class4 {
+    public Class5 c;
+}
+
+class Class3 {
+    public Class4 c;
+}
+
+class Class2 {
+    public Class3 c;
+}
+
+class Class1 {
+    private Class2 c;
+    private string test1(Class2 c){
+        return c.c.c.c.getText();
+    }
+}
+
+
+

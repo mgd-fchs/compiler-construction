@@ -1,0 +1,20 @@
+class Class3 {
+}
+
+class Class2 {
+    public int test() {
+       return 0;
+    }
+}
+
+class Class1 {
+    private Class2 c2;
+    private Class3 c3;
+
+    private int test1(Class2 c){
+        return c2.test() + c3.test();
+    }
+}
+
+
+

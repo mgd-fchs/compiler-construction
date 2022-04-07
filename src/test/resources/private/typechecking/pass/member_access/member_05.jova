@@ -1,0 +1,34 @@
+class Class5 {
+    public int x;
+
+    public Class5 func() {
+        return this;
+    }
+}
+
+class Class4 {
+    public Class5 c;
+}
+
+class Class3 {
+    public Class4 c;
+}
+
+class Class2 {
+    public Class3 c;
+}
+
+class Class1 {
+    private Class2 c;
+
+    private int func1(int x, string y, bool z, Class5 c5) {
+        return c5.x;
+    }
+
+    private int func(){
+        return func1(0, "sdfas", true, c.c.c.c.func());
+    }
+}
+
+
+

@@ -258,6 +258,73 @@ public class TypeCheckerPrivateTest {
 
 
 
+    /** Member Access Tests **/
+    @Test
+    public void testFailMember01() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "member_access/member_01.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testFailMember02() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "member_access/member_02.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testFailMember03() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "member_access/member_03.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testFailMember04() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "member_access/member_04.jova", debug);
+        assertEquals(1, result);
+    }
+
+
+
+    @Test
+    public void testPassMember01() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "member_access/member_01.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassMember02() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "member_access/member_02.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassMember03() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "member_access/member_03.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassMember04() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "member_access/member_04.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassMember05() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "member_access/member_05.jova", debug);
+        assertEquals(0, result);
+    }
+
+
 
 
     // PASS: Equality operator

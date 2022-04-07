@@ -6,7 +6,7 @@ class Test2 {
 
 class Test{
     private Test2 t;
-    public int test(int x) {
-        return t.testing(this.t);
+    public int test(int t) {
+        return this.t.testing(this.t);
     }
 }

@@ -1,0 +1,14 @@
+class Class2 {
+    public int test() {
+        return 69;
+    }
+}
+
+class Class1 {
+    private int test1(Class2 c){
+        return c.test();
+    }
+}
+
+
+
