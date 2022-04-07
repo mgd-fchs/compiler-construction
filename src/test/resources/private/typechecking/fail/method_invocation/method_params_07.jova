@@ -1,15 +1,11 @@
-class Test {
-    private int x;
-
-    public int getX(int x, Test t) {
-        return this.x;
-    }
+class Testing2 {
+    public int x;
 }
 
 class Testing {
   private int x;
   private Testing t;
-  private Test test;
+  private Testing2 t2;
 
   public Testing test3(int x, bool t) {
        return this.t;
@@ -24,6 +20,10 @@ class Testing {
     }
 
   public int test() {
-        return test2(test1(0), test3(test.getX(x, test), true));
+        return test2(test1(0), test3(t2.x, true), test1(5));
+    }
+
+  public int test4() {
+        return test2(test1(0), t2, test1(5));
     }
 }

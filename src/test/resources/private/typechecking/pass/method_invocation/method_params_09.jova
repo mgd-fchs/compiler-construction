@@ -1,0 +1,11 @@
+class Main2 {
+   private int testing(int x) {
+        return 0;
+   }
+
+  public int main22() {
+    int test;
+
+    return testing(testing(testing(testing(testing(testing(testing(0)))))));
+  }
+}
