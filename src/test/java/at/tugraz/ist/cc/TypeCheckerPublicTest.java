@@ -803,19 +803,7 @@ public class TypeCheckerPublicTest {
         assertEquals(0, result);
     }
 
-    @Test
-    public void testThisFail01() {
-        ErrorHandler.INSTANCE.reset();
-        int result = typeChecker.checkTypes(path_fail + "this/fail01.jova", debug);
-        assertEquals(24, result);
-    }
 
-    @Test
-    public void testThisFail02() {
-        ErrorHandler.INSTANCE.reset();
-        int result = typeChecker.checkTypes(path_fail + "this/fail02.jova", debug);
-        assertEquals(4, result);
-    }
 
     @Test
     public void testRetFail06() {

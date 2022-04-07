@@ -225,7 +225,33 @@ public class TypeCheckerPrivateTest {
         assertEquals(1, result);
     }
 
+    @Test
+    public void testThisFail05() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "this/this_05_unknown.jova", debug);
+        assertEquals(16, result);
+    }
 
+    @Test
+    public void testThisFail06() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "this/this_06_forLocal.jova", debug);
+        assertEquals(4, result);
+    }
+
+    @Test
+    public void testThisFail07() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "this/this_07_forParam.jova", debug);
+        assertEquals(8, result);
+    }
+
+    @Test
+    public void testThisFail08() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "this/this_08_forParam.jova", debug);
+        assertEquals(4, result);
+    }
 
 
     @Test
@@ -263,7 +289,12 @@ public class TypeCheckerPrivateTest {
         assertEquals(0, result);
     }
 
-
+    @Test
+    public void testPassThis06() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "this/this_06_multiple.jova", debug);
+        assertEquals(0, result);
+    }
 
     /** Member Access Tests **/
     @Test
