@@ -379,6 +379,23 @@ public class TypeCheckerPrivateTest {
         assertEquals(0, result);
     }
 
+    @Test
+    public void testPassConditions03() {
+        // ternary operator condition
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "conditions/cond_pass03.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassConditions04() {
+        // ternary operator condition
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "conditions/cond_pass04.jova", debug);
+        assertEquals(0, result);
+    }
+
+
     // WARN: Conditions
     @Test
     public void testWarnConditions01() {
