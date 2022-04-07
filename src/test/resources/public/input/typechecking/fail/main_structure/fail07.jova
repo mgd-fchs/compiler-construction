@@ -1,8 +1,0 @@
-class Main {
-}
-
-class Main {
-  public string main() {
-    return 0;
-  }
-}

@@ -1,6 +1,0 @@
-class Test {
-
-   public int func1(Onknown0 param, Onknown1 param){
-     return 1;
-   }
-}

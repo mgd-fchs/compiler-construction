@@ -1,6 +1,0 @@
-class Main {
-
-   public int func1(Onknown param){
-     return 1;
-   }
-}

@@ -1,8 +1,0 @@
-class Test{
-  Test (int y){
-    int x;
-    int y;
-    int z;
-    string x;
-  }
-}

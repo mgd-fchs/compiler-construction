@@ -1,9 +1,0 @@
-class Known {
-
-}
-
-class Test {
-   private Unknown a;
-   private Known b;
-   private Known b;
-}
