@@ -184,7 +184,14 @@ public class TypeCheckerPrivateTest {
     @Test
     public void testPassMethodInvocation06() {
         ErrorHandler.INSTANCE.reset();
-        int result = typeChecker.checkTypes(path_pass + "method_invocation/method_params_05.jova", debug);
+        int result = typeChecker.checkTypes(path_pass + "method_invocation/method_params_06.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassMethodInvocation07() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "method_invocation/method_params_07.jova", debug);
         assertEquals(0, result);
     }
 

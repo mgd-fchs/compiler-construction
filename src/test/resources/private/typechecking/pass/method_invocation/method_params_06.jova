@@ -20,7 +20,7 @@ class Class1 {
     private Class5 c5;
 
     public int func() {
-        return c2.class_stuff(c2, c3, c4, nix);
+        return c2.class_stuff(c2, c3, c4, c5);
     }
 }
 
