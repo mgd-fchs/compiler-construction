@@ -1,0 +1,16 @@
+class Helper{
+    public int getZero(int a, string b, bool c) {
+        return undeclaredInt;
+    }
+}
+
+class Test {
+
+    public bool getTrue(bool c) {
+        return undeclaredBool;
+    }
+
+    public string getHello(bool c) {
+       return undeclaredString;
+    }
+}

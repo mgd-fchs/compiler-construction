@@ -1,0 +1,17 @@
+class Helper0{
+    Helper0(int a, int b) {
+    }
+}
+
+class Test0 {
+    private int func0(){
+        Helper0 a;
+        bool b;
+        int c;
+
+        a = new Helper0(c, undeclared);
+
+        return 0;
+    }
+
+}

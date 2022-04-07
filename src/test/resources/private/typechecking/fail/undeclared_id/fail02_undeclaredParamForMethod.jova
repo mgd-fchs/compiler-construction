@@ -1,0 +1,25 @@
+class Helper0{
+    public int getZero(int a, string b, bool c) {
+        return 0;
+    }
+}
+
+class Test1 {
+
+    public bool getTrue(bool c) {
+        return true;
+    }
+
+    private int func0(){
+        Helper0 a;
+        bool b;
+        int c;
+
+        a = new Helper0;
+        c = a.getZero(c, "", undeclared0);
+        b = getTrue(undeclared1);
+
+        return 0;
+    }
+
+}

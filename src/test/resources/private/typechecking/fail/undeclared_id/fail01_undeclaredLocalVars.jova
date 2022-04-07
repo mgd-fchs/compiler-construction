@@ -1,0 +1,18 @@
+class Helper0{
+}
+
+class Test1 {
+
+  private int func0(){
+    Helper0 a;
+    bool b;
+    int c;
+
+    b = a == undeclared0;
+    c = c * undeclared1;
+    undeclared2 = c * 2;
+
+    return 0;
+  }
+
+}

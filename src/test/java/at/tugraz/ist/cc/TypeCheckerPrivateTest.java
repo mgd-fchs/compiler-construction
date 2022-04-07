@@ -830,6 +830,14 @@ public class TypeCheckerPrivateTest {
     }
 
     @Test
+    public void testFailAssign05() {
+        // assign nix, assign incorrect class members
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "assign/fail05.jova", debug);
+        assertEquals(18, result);
+    }
+
+    @Test
     public void testFailDoubleDecl01() {
         // double decl of local variables
         ErrorHandler.INSTANCE.reset();
@@ -1028,5 +1036,68 @@ public class TypeCheckerPrivateTest {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_fail + "unknown/fail05_unknownClassAsReturnValue.jova", debug);
         assertEquals(1, result);
+    }
+
+    @Test
+    public void testUndeclared01() {
+        // undeclared local vars
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "undeclared_id/fail01_undeclaredLocalVars.jova", debug);
+        assertEquals(3, result);
+    }
+
+    @Test
+    public void testUndeclared02() {
+        // undeclared as param for method
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "undeclared_id/fail02_undeclaredParamForMethod.jova", debug);
+        assertEquals(2, result);
+    }
+
+    @Test
+    public void testUndeclared03() {
+        // undeclared as param for ctor
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "undeclared_id/fail03_undeclaredParamForCtor.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testUndeclared04() {
+        // undeclared as  return value
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "undeclared_id/fail04_undeclaredAsReturnValue.jova", debug);
+        assertEquals(3, result);
+    }
+
+    @Test
+    public void testConstructor01() {
+        // ctor wrong name
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "constructor/fail01.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testConstructor03() {
+        // unknown empty constructor which is not the default one
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "constructor/fail02.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testCtorFail03() {
+        // a lot of different wrong ctor calls
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "constructor/fail03.jova", debug);
+        assertEquals((5 - 1) + (9*3 - 1), result);
+    }
+
+    @Test
+    public void testCtorPass01() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "constructor/pass01.jova", debug);
+        assertEquals(0, result);
     }
 }
