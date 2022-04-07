@@ -21,7 +21,7 @@ class Finish {
   public int finishing() {
     Test test;
 
-    return test.t.t.e.x();
+    return test.t.t.e.testing();
   }
 
 }

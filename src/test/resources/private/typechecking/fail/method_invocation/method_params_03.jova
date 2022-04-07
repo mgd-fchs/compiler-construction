@@ -1,0 +1,20 @@
+class Class1 {
+    private int test1(int x){
+        return 1;
+    }
+
+    public int test2(int x) {
+        return test1(0, 0);
+    }
+
+    public int test3(int x) {
+        return test1(5, 5);
+    }
+
+    public int test4(int x) {
+        return test1("test", 2);
+    }
+}
+
+
+

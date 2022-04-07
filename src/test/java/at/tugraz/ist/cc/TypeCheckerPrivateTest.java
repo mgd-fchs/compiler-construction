@@ -99,6 +99,70 @@ public class TypeCheckerPrivateTest {
 
 
 
+    /** Method Invocation Tests **/
+    @Test
+    public void testFailMethodInvocation01() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "method_invocation/method_params_01.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testFailMethodInvocation02() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "method_invocation/method_params_02.jova", debug);
+        assertEquals(3, result);
+    }
+
+    @Test
+    public void testFailMethodInvocation03() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "method_invocation/method_params_03.jova", debug);
+        assertEquals(3, result);
+    }
+
+    @Test
+    public void testFailMethodInvocation04() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "method_invocation/method_params_04.jova", debug);
+        assertEquals(6, result);
+    }
+
+
+
+
+
+    @Test
+    public void testPassMethodInvocation01() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "method_invocation/method_params_01.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassMethodInvocation02() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "method_invocation/method_params_02.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassMethodInvocation03() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "method_invocation/method_params_03.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassMethodInvocation04() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "method_invocation/method_params_04.jova", debug);
+        assertEquals(0, result);
+    }
+
+
+
+
     // PASS: Equality operator
     @Test
     public void testPassEquals01() {

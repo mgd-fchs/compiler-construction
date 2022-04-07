@@ -1,5 +1,5 @@
 class Test{
-  private int pleaseTouchMe(int x){
+  private int testing(int x){
     return 69;
   }
 }
@@ -9,6 +9,6 @@ class Testing {
   private Test test;
 
   public int test() {
-        return test.pleaseTouchMe(this.x);
+        return test.testing(this.x);
     }
 }
