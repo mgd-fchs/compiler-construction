@@ -142,6 +142,13 @@ public class TypeCheckerPrivateTest {
         assertEquals(1, result);
     }
 
+    @Test
+    public void testFailMethodInvocation07() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "method_invocation/method_params_07.jova", debug);
+        assertEquals(2, result);
+    }
+
 
 
 
@@ -192,6 +199,20 @@ public class TypeCheckerPrivateTest {
     public void testPassMethodInvocation07() {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_pass + "method_invocation/method_params_07.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassMethodInvocation08() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "method_invocation/method_params_08.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassMethodInvocation09() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "method_invocation/method_params_09.jova", debug);
         assertEquals(0, result);
     }
 
@@ -359,6 +380,27 @@ public class TypeCheckerPrivateTest {
     public void testPassMember05() {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_pass + "member_access/member_05.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassMember06() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "member_access/member_06.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassMember07() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "member_access/member_07.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassMember08() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "member_access/member_08.jova", debug);
         assertEquals(0, result);
     }
 
