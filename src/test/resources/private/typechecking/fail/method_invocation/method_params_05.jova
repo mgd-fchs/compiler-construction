@@ -1,0 +1,38 @@
+class Class2 {
+    private int test1(int x){
+        return 1;
+    }
+
+    public int test2(bool x, string y) {
+        return test1(0);
+    }
+
+    public int test3(string x, bool y, Class2 c) {
+        return 0;
+    }
+
+}
+
+class Class1 {
+    private Class2 c;
+
+    public int test() {
+        return this.c.test1("true");
+    }
+
+    public int test2() {
+        return this.c.test1(true);
+    }
+
+    public int test3() {
+        return this.c.test2(true, 3);
+    }
+
+    public int test4() {
+        Class2 c;
+        return this.c.test3(c, 3, "asdf");
+    }
+}
+
+
+

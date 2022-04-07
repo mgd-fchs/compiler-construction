@@ -1,0 +1,28 @@
+class Class5 {
+}
+
+class Class4 {
+}
+
+class Class3 {
+}
+
+class Class2 {
+    public int class_stuff(Class2 c2, Class3 c3, Class4 c4, Class5 c5) {
+        return 55;
+    }
+}
+
+class Class1 {
+    private Class2 c2;
+    private Class3 c3;
+    private Class4 c4;
+    private Class5 c5;
+
+    public int func() {
+        return c2.class_stuff(c2, c3, c4, nix);
+    }
+}
+
+
+

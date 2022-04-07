@@ -128,6 +128,20 @@ public class TypeCheckerPrivateTest {
         assertEquals(6, result);
     }
 
+    @Test
+    public void testFailMethodInvocation05() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "method_invocation/method_params_05.jova", debug);
+        assertEquals(4, result);
+    }
+
+    @Test
+    public void testFailMethodInvocation06() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "method_invocation/method_params_06.jova", debug);
+        assertEquals(1, result);
+    }
+
 
 
 
@@ -157,6 +171,20 @@ public class TypeCheckerPrivateTest {
     public void testPassMethodInvocation04() {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_pass + "method_invocation/method_params_04.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassMethodInvocation05() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "method_invocation/method_params_05.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassMethodInvocation06() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "method_invocation/method_params_05.jova", debug);
         assertEquals(0, result);
     }
 
