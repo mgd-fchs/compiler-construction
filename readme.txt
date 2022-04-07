@@ -9,8 +9,11 @@ Magdalena Hinterkörner  (11807636)  m.hinterkoerner@student.tugraz.at
 
 Description of the Program:
 ---------------------------
-- ...
-
+- Implementation of a compiler for a simple object-oriented programming language called Jova.
+- Use of a nested symbol table to track and store created classes, objects, and variables.
+    - "src/main/java/at/tugraz/ist/cc/symbol_table"
+- The visitor class exploits the ANTLR-generated parse tree to traverse the program for typechecking.
+    - "src/main/java/at/tugraz/ist/cc/TypeCheckerJovaVisitorImpl.java"
 
 -------------------
 Remarks for task 1:
@@ -24,11 +27,13 @@ General remarks:
 
 Changes  made:
 --------------
-- ...
+- Implemented Lexer, Parser, and Typechecker according to the assignment description.
+- Implemented bonus task 1
+- Added private test class
 
 Known limitations:
 ------------------
-- ...
+-
 
 Implemented BONUS tasks:
 ------------------------
