@@ -1,0 +1,23 @@
+class Helper {
+    public bool b;
+}
+
+class A {
+
+  public int fortyTwo() {
+    return true;					// coerce bool to int
+  }
+  public int returnTrue() {
+    return true;                    // coerce bool to int
+  }
+
+  public Helper returnHelper() {
+    Helper a;
+    a = new Helper;
+    return a;
+  }
+
+  public int returnParam(Helper a) {
+      return this.returnHelper().b;   // coerce bool to int
+  }
+}

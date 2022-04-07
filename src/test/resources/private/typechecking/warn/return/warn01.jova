@@ -5,7 +5,7 @@ class Helper {
 class A {
 
   public int fortyTwo() {
-    return true;					// coerce bool to int
+    return 0;
   }
 
   public bool helloWorld() {

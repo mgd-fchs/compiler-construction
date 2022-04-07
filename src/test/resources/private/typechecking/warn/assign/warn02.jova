@@ -3,12 +3,12 @@ class Evaluation{
 	public int var;
 	public bool boo;
 	
-    public int somefun(){
+    public bool somefun(){
 		int a;
 		if (a!=var){
-			a = 1;
+			a = boo;			   // coerce bool to int
 		}
-        return 32;
+        return false;
     }
 
     Evaluation() {
@@ -16,7 +16,6 @@ class Evaluation{
 	  bool bar;
 	  
       foo = 42;
-      bar = somefun() + foo;     // coerce int to bool
     }
 
 }
@@ -29,11 +28,11 @@ class Cls {
 		return this.eval;
 	}
 	
-	private bool anotherfun(){
+	private int anotherfun(){
 		eval2 = this.getEval();
 		eval = nix;
-		this.eval.boo = this.eval.somefun(); // coerce int to bool
-		return true;
+		this.eval.var = this.eval.somefun(); // coerce bool to int
+		return 0;
 	}
 	
 }

@@ -491,9 +491,19 @@ public class TypeCheckerPrivateTest {
     // WARN: Return statements
     @Test
     public void testWarnReturn01() {
-        // if & while with nested logical expressions, incl. coercion
+        // coerce int to bool
+        // expect 2 warnings
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_warn + "return/warn01.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testWarnReturn02() {
+        // coerce bool to int
+        // expect 3 warnings
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_warn + "return/warn02.jova", debug);
         assertEquals(0, result);
     }
 
@@ -582,9 +592,19 @@ public class TypeCheckerPrivateTest {
     // WARN: Assignment
     @Test
     public void testWarnAssign01() {
-        // raise coercion warnings
+        // coerce int to bool
+        // expect 2 warnings
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_warn + "assign/warn01.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testWarnAssign02() {
+        // coerce bool to int
+        // expect 2 warnings
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_warn + "assign/warn02.jova", debug);
         assertEquals(0, result);
     }
 
