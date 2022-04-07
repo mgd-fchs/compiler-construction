@@ -267,13 +267,6 @@ public class TypeCheckerPrivateTest {
         assertEquals(8, result);
     }
 
-    @Test
-    public void testThisFail08() {
-        ErrorHandler.INSTANCE.reset();
-        int result = typeChecker.checkTypes(path_fail + "this/this_08_forParam.jova", debug);
-        assertEquals(4, result);
-    }
-
 
     @Test
     public void testPassThis01() {
