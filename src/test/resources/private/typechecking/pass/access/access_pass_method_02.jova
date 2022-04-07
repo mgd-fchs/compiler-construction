@@ -1,0 +1,14 @@
+class Test{
+  public int pleaseTouchMe(int x){
+    return 69;
+  }
+}
+
+class Testing {
+  private int x;
+  private Test test;
+
+  public int test() {
+        return test.pleaseTouchMe(this.x);
+    }
+}

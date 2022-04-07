@@ -1,0 +1,13 @@
+
+class Evaluation{
+  private int x;
+}
+
+class Finish {
+  public int finishing() {
+    Evaluation e;
+
+    return e.x;
+  }
+
+}

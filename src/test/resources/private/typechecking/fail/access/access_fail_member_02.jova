@@ -1,0 +1,25 @@
+
+class Evaluation{
+  private int x;
+}
+
+class Test3{
+  public Evaluation e;
+}
+
+class Test2{
+  public Test3 t;
+}
+
+class Test{
+  public Test2 t;
+}
+
+class Finish {
+  public int finishing() {
+    Test test;
+
+    return test.t.t.e.x;
+  }
+
+}

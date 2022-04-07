@@ -16,12 +16,88 @@ public class TypeCheckerPrivateTest {
     TypeChecker typeChecker = new TypeChecker();
     boolean debug = true;
 
+    /** Access Tests **/
     @Test
     public void testFailAccess01() {
         ErrorHandler.INSTANCE.reset();
-        int result = typeChecker.checkTypes(path_pass + "access/access_01.jova", debug);
+        int result = typeChecker.checkTypes(path_fail + "access/access_multitest_01.jova", debug);
         assertEquals(6, result);
     }
+
+    @Test
+    public void testFailAccess02() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "access/access_fail_member_01.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testFailAccess03() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "access/access_fail_member_02.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testFailAccess04() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "access/access_fail_method_01.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testFailAccess05() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "access/access_fail_method_02.jova", debug);
+        assertEquals(1, result);
+    }
+
+
+
+
+    @Test
+    public void testPassAccess01() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "access/access_pass_member_01.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassAccess02() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "access/access_pass_member_02.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassAccess03() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "access/access_pass_method_01.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassAccess04() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "access/access_pass_method_02.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassAccess05() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "access/access_pass_method_03.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassAccess06() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "access/access_pass_method_04.jova", debug);
+        assertEquals(0, result);
+    }
+
+
 
     // PASS: Equality operator
     @Test
