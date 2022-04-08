@@ -1,0 +1,13 @@
+class Cls{
+
+	public int func(){
+		float f;
+
+		// invalid assignments
+		f = 00.1;
+		f = 0.00;
+		f = 0.0.1;
+
+		return 0;
+	}
+}

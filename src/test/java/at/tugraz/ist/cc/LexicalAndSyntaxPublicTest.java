@@ -11,7 +11,7 @@ public class LexicalAndSyntaxPublicTest {
 
     private final String path_lexer = "src/test/resources/public/input/lexer/";
     private final String path_parser = "src/test/resources/public/input/parser/";
-    private final String path_bonus = "src/test/resources/public/input/parser/bonus/";
+    private final String path_bonus = "src/test/resources/private/parser/bonus/";
 
     LexicalAndSyntaxAnalyzer lexAndSyntax = new LexicalAndSyntaxAnalyzer();
     boolean debug = true;
