@@ -29,7 +29,6 @@ public class SymbolMethod extends SimpleCallable{
 
     public SymbolMethod(SymbolModifier accessSymbol, String name, SymbolVariable returnValue, List<SymbolVariable> params) {
         super(name, params, returnValue);
-        // TODO check if there are no params with same name
         this.accessSymbol = accessSymbol;
     }
 

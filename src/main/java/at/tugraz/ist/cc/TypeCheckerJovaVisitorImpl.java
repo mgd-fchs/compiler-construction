@@ -51,8 +51,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         try {
             visitChildren(ctx);
         } catch (Exception e) {
-            throw e;
-            // TODO: Catch this at the end
         } finally {
             SymbolTable.reset();
         }

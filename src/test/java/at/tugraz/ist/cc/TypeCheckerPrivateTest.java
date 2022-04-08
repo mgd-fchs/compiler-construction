@@ -149,6 +149,13 @@ public class TypeCheckerPrivateTest {
         assertEquals(2, result);
     }
 
+    @Test
+    public void testFailMethodInvocation08() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "method_invocation/method_params_08.jova", debug);
+        assertEquals(1, result);
+    }
+
 
 
 
@@ -213,6 +220,13 @@ public class TypeCheckerPrivateTest {
     public void testPassMethodInvocation09() {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_pass + "method_invocation/method_params_09.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassMethodInvocation10() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "method_invocation/method_params_10.jova", debug);
         assertEquals(0, result);
     }
 
@@ -1105,6 +1119,14 @@ public class TypeCheckerPrivateTest {
     }
 
     @Test
+    public void testUnknown06() {
+        // unknown class as return value
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_fail + "unknown/fail06_unknownClassAsCtor.jova", debug);
+        assertEquals(1, result);
+    }
+
+    @Test
     public void testUndeclared01() {
         // undeclared local vars
         ErrorHandler.INSTANCE.reset();
@@ -1164,6 +1186,13 @@ public class TypeCheckerPrivateTest {
     public void testCtorPass01() {
         ErrorHandler.INSTANCE.reset();
         int result = typeChecker.checkTypes(path_pass + "constructor/pass01.jova", debug);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testCtorPass02() {
+        ErrorHandler.INSTANCE.reset();
+        int result = typeChecker.checkTypes(path_pass + "constructor/pass02.jova", debug);
         assertEquals(0, result);
     }
 }

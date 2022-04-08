@@ -1,0 +1,44 @@
+class Helper0 {
+}
+
+class Helper1 {
+}
+
+class Helper2 {
+    Helper2(){
+    }
+
+    Helper2(int a, string b, bool c){
+    }
+
+    Helper2(Helper0 a){
+    }
+
+    Helper2(Helper0 a, Helper1 b){
+    }
+
+    Helper2(int a, string b, bool c, Helper0 d, Helper1 f){
+    }
+}
+
+
+class Test {
+    public int func() {
+        Helper2 c;
+
+        int v;
+        string w;
+        bool x;
+        Helper0 y;
+        Helper1 z;
+
+        c = new Helper2;
+        c = new Helper2();
+        c = new Helper2(v, w, x);
+        c = new Helper2(y, z);
+        c = new Helper2(v, w, x, y, z);
+
+
+        return 0;
+    }
+}

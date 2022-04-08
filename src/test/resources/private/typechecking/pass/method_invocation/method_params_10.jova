@@ -1,0 +1,32 @@
+class Testing2 {
+    public int x;
+
+    public bool getCondition(int x) {
+        bool cond;
+        if (x > 0) {
+            cond = true;
+        }
+        else {
+            cond = false;
+        }
+        return cond;
+    }
+}
+
+class Testing {
+  private int x;
+  private Testing t;
+  private Testing2 t2;
+
+  public int test2(int x, Testing t) {
+     return 0;
+  }
+
+  public int test1() {
+        return 55;
+    }
+
+  public int test() {
+        return test2((t2.getCondition(this.x)) ? this.test1() : t2.x, this);
+    }
+}

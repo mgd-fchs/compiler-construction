@@ -9,7 +9,6 @@ public class SymbolVariable {
     private final String name;
 
     public SymbolVariable(SymbolType type, Object actualType, String name) {
-        // TODO maybe change this kind of checks to asserts
         if (type == SymbolType.PRIMITIVE && !(actualType instanceof SymbolPrimitiveType) ||
                 type == SymbolType.CLASS && !(actualType instanceof  SymbolClass)) {
             System.exit(76);

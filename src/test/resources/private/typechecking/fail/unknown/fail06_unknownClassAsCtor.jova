@@ -1,0 +1,7 @@
+class Test {
+    public Unknown func() {
+        Test t;
+        t = new Unknown;
+        return nix;
+    }
+}

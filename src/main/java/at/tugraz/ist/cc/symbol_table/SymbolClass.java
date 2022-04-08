@@ -16,10 +16,8 @@ public class SymbolClass {
     private final Collection<SymbolMethod> methods;
     private final Collection<SymbolConstructor> constructors;
 
-    // TODO: maybe move the current things to the TypeCheckerJovaVisitorImpl or to a new singleton class?
     private SymbolType currentSymbolType;
     private SymbolPrimitiveType currentSymbolPrimitiveType;
-    // TODO refactor to SymbolClass object
     private String currentClassName;
     private Collection<String> currentIds;
     private SimpleCallable currentCallable;
@@ -92,8 +90,6 @@ public class SymbolClass {
             // should be non reachable!!!!
             System.exit(72);
         }
-        // TODO check if class is already there => name is not enough => function overloading
-        // TODO check if already exists
         SymbolMethod symbolMethod = null;
         int errorOccurred = 0;
         switch (currentSymbolType){
@@ -126,7 +122,6 @@ public class SymbolClass {
             return TypeCheckerJovaVisitorImpl.ERROR_DOUBLE_DECLARATION_METHOD;
         }
 
-        // TODO it might be the case that the output order of the errors is not right.
         if ( className.equals(SymbolClass.MAIN_CLASS_NAME) &&
                 (symbolMethod.getAccessSymbol() != SymbolModifier.PUBLIC ||
                         !symbolMethod.getName().equals(SymbolMethod.MAIN_METHOD_NAME) ||
@@ -251,21 +246,6 @@ public class SymbolClass {
 
     public String getClassName() {
         return className;
-    }
-
-
-    public Collection<SymbolMethod> getMatchingMethods(String method) {
-        Collection<SymbolMethod> tmp = SymbolMethod.IO_METHODS
-                .stream().filter(element -> element.getName().equals(method))
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        // TODO support print(int int int)
-        if (tmp.size() > 0) {
-            return tmp;
-        }
-
-        return methods.stream().filter(element -> element.getName().equals(method))
-                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public Collection<SymbolConstructor> getConstructors() {

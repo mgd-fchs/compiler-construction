@@ -22,12 +22,6 @@ class Testing {
     public int func2c() {
         return func1("true 69");
     }
-
-/*
-    public int func2d() {
-        return func1(nix);
-    }
-*/
 }
 
 
