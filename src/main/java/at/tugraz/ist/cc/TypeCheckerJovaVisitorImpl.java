@@ -32,8 +32,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     public static final int ERROR_UNKNOWN_CTOR = -90;
 
-
-
     private SymbolClass currentClass;
     private SymbolVariable currentVar;
     private final SymbolTable symbolTable;

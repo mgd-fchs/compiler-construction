@@ -3,7 +3,7 @@ class Main{
   private string msg;
   private int course_number;
   
-  public int setEvalMsg(string new_msg, int course_num)
+  public int main(string new_msg, int course_num)
   {
     msg = new_msg;
     course_number = course_num;

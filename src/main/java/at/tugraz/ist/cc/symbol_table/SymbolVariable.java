@@ -7,6 +7,8 @@ public class SymbolVariable {
     private final SymbolType type;
     private final Object actualType;
     private final String name;
+    private Object value;
+
 
     public SymbolVariable(SymbolType type, Object actualType, String name) {
         if (type == SymbolType.PRIMITIVE && !(actualType instanceof SymbolPrimitiveType) ||
@@ -17,6 +19,19 @@ public class SymbolVariable {
         this.type = type;
         this.actualType = actualType;
         this.name = name;
+        this.value = null;
+    }
+
+    public SymbolVariable(SymbolType type, Object actualType, String name, Object value) {
+        if (type == SymbolType.PRIMITIVE && !(actualType instanceof SymbolPrimitiveType) ||
+                type == SymbolType.CLASS && !(actualType instanceof  SymbolClass)) {
+            System.exit(76);
+        }
+
+        this.type = type;
+        this.actualType = actualType;
+        this.name = name;
+        this.value = value;
     }
 
     public SymbolType getType() {
@@ -63,4 +78,11 @@ public class SymbolVariable {
                 ((SymbolClass) actualType).getClassName(). equals(((SymbolClass) that.getActualType()).getClassName()));
     }
 
+    public Object getValue() {
+        return value;
+    }
+
+    public void setValue(Object value){
+        this.value = value;
+    }
 }

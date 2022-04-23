@@ -11,8 +11,10 @@ import org.antlr.v4.runtime.tree.ParseTree;
 public class CodeGenerator {
 
     public int createCode(String file_path, String out_path) {
-        LexicalAndSyntaxAnalyzer analyzer = new LexicalAndSyntaxAnalyzer();
+        TypeChecker typeChecker = new TypeChecker();
+        typeChecker.checkTypes(file_path, false);
 
+        LexicalAndSyntaxAnalyzer analyzer = new LexicalAndSyntaxAnalyzer();
         JovaParser parser = analyzer.createParser(analyzer.lexing(file_path, false));
         parser.reset();
         ParseTree parseTree = parser.program();
@@ -24,7 +26,7 @@ public class CodeGenerator {
 
         CodeGeneratorVisitor codeVisitor = new CodeGeneratorVisitor();
         codeVisitor.visit(parseTree);
-
+        // TODO: @Richard Write-function
         return 0;
     }
 
