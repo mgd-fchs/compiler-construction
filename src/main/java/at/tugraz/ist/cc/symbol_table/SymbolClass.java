@@ -14,7 +14,7 @@ public class SymbolClass {
     private final String className;
     private final Collection<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> members;
     private final Collection<SymbolMethod> methods;
-    private final Collection<SymbolConstructor> constructors;
+    private final List<SymbolConstructor> constructors;
 
     private SymbolType currentSymbolType;
     private SymbolPrimitiveType currentSymbolPrimitiveType;
@@ -248,7 +248,7 @@ public class SymbolClass {
         return className;
     }
 
-    public Collection<SymbolConstructor> getConstructors() {
+    public List<SymbolConstructor> getConstructors() {
         return constructors;
     }
 
@@ -292,6 +292,10 @@ public class SymbolClass {
 
     public SimpleCallable getCurrentCallable() {
         return currentCallable;
+    }
+
+    public void setCurrentCallable(SimpleCallable callable){
+        this.currentCallable = callable;
     }
 
     public SymbolType getCurrentSymbolType() {

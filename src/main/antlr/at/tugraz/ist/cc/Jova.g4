@@ -119,7 +119,7 @@ expr : prim=primary_expr
      | <assoc=right> when=expr question=QUESTIONMARK then=expr colon=COLON el=expr
      ;
 
-unary_expr : (NOT | ADDOP) primary_expr;
+unary_expr : (op=NOT | op=ADDOP) primary_expr;
 
 primary_expr : literal
              | id_expr
