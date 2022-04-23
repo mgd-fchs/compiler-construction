@@ -22,8 +22,8 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
         try {
             visitChildren(ctx);
         } catch (Exception e) {
-        } finally {
-            SymbolTable.reset();
+            // TODO remove:
+            e.printStackTrace();
         }
         return 0;
     }
