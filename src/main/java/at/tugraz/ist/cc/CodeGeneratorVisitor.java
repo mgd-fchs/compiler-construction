@@ -1,6 +1,10 @@
 package at.tugraz.ist.cc;
 
 import at.tugraz.ist.cc.error.ErrorHandler;
+import at.tugraz.ist.cc.instructions.AssignInstruction;
+import at.tugraz.ist.cc.instructions.BinaryInstruction;
+import at.tugraz.ist.cc.instructions.OperatorTypes;
+import at.tugraz.ist.cc.instructions.UnaryInstruction;
 import at.tugraz.ist.cc.symbol_table.*;
 
 public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{

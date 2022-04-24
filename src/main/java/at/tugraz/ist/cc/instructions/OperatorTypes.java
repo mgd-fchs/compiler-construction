@@ -1,4 +1,4 @@
-package at.tugraz.ist.cc.symbol_table;
+package at.tugraz.ist.cc.instructions;
 
 public enum OperatorTypes {
     ADD("+"), SUB("-"), MUL("*"), DIV("/"), MOD("%"), GREATER(">"), SMALLER("<"),

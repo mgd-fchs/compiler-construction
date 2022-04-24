@@ -1,4 +1,6 @@
-package at.tugraz.ist.cc.symbol_table;
+package at.tugraz.ist.cc.instructions;
+
+import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
 public class UnaryInstruction {
     private SymbolVariable parameter;
