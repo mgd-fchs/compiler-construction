@@ -145,6 +145,6 @@ control_stmt : if_stmt
              | while_stmt
              ;
 
-if_stmt : KEY_IF '(' expr ')' compound_stmt (KEY_ELSE compound_stmt)?;
+if_stmt : KEY_IF '(' expr ')' if_inst=compound_stmt (KEY_ELSE else_inst=compound_stmt)?;
 
 while_stmt : KEY_WHILE '(' expr ')' compound_stmt;

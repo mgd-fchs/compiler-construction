@@ -1,0 +1,20 @@
+
+class Test {
+    public int func() {
+      bool myvar;
+      int f;
+      if(true)
+          {
+            f = print("myvar");
+
+            if (false){
+                f = print("somethingelse");
+            }
+          }
+          else
+          {
+            f = print("myvar");
+          }
+        return f;
+    }
+}

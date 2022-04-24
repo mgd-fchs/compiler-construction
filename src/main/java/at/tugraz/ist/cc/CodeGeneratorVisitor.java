@@ -16,11 +16,13 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
     private SymbolClass currentClass;
     private final SymbolTable symbolTable;
     private Integer currentConstructorIndex;
+    private Integer currentLabelIndex;
 
     public CodeGeneratorVisitor() {
         symbolTable = SymbolTable.getInstance();
         currentClass = null;
         currentConstructorIndex = 0;
+        currentLabelIndex = 0;
     }
 
     @Override
@@ -62,6 +64,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
     public Integer visitCtor(JovaParser.CtorContext ctx) {
         currentClass.setCurrentCallable(currentClass.getConstructors().get(currentConstructorIndex));
         visitCtor_body(ctx.ctor_body());
+        currentConstructorIndex += 1;
         return OK;
     }
 
@@ -150,7 +153,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
             addInstruction(newInstruction);
         }
 
-        visitChildren(ctx);
+      //  visitChildren(ctx);
         return OK;
     }
 
@@ -211,7 +214,6 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
             visitExpr(expr);
             currentClass.addArgument(currentClass.currentSymbolVariable);
         }
-
         return OK;
     }
 
@@ -257,8 +259,6 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
         classObjectAlloc = correspondingClass.get();
         currentClass.currentSymbolVariable = new SymbolVariable(SymbolType.CLASS, classObjectAlloc, "");
-
-        // TODO @Magda: Do we need to cover any other cases here?
 
         visitChildren(ctx);
         return OK;
@@ -315,7 +315,38 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitIf_stmt(JovaParser.If_stmtContext ctx) {
-        visitChildren(ctx);
+        /* Idea:
+            * Add an ifInstruction which only knows the currentLabelIndex (i) and whether or not an else block exists.
+            * Traverse the expression as usual (this should add instructions for binary/unary expressions).
+            * Set label for the if-block (i)
+            * Traverse the compound statement (instructions from the if-block will be added to the list).
+            * [Optional when else-block exists] Set label for the else-block (i+1)
+            * [Optional] Traverse compound statement (instructions from the else-block are added).
+        * This should work for nested if-statements as well but not sure if it's a good idea in general.
+        */
+        if (ctx.else_inst != null){
+            addInstruction(new IfInstruction(currentLabelIndex, true));
+        } else {
+            addInstruction(new IfInstruction(currentLabelIndex, false));
+        }
+
+        visitExpr(ctx.expr());
+
+        LabelInstruction ifBlockLabel = new LabelInstruction(currentLabelIndex);
+        currentLabelIndex += 1;
+        addInstruction(ifBlockLabel);
+
+        if (ctx.else_inst != null){
+            LabelInstruction elseBlockLabel = new LabelInstruction(currentLabelIndex);
+            currentLabelIndex += 1;
+
+            visit(ctx.if_inst); // instructions for if-block are created within the compound statement
+            addInstruction(elseBlockLabel);
+            visit(ctx.else_inst);
+        } else {
+            visit(ctx.if_inst); // instructions for if-block are created within the compound statement
+        }
+
         return OK;
     }
 
