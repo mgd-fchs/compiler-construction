@@ -161,7 +161,6 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitMethod_invocation(JovaParser.Method_invocationContext ctx) {
-        // TODO @Magda: Handle print/read
         SymbolClass classOfMethodInvocation = (SymbolClass) currentClass.currentSymbolVariable.getActualType();
 
         currentClass.setArgList(new ArrayList<>());
@@ -208,6 +207,11 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitArg_list(JovaParser.Arg_listContext ctx) {
+        for (JovaParser.ExprContext expr : ctx.expr()) {
+            visitExpr(expr);
+            currentClass.addArgument(currentClass.currentSymbolVariable);
+        }
+
         return OK;
     }
 

@@ -20,4 +20,11 @@ public class CodeGeneratorPrivateTest {
         int result = codeGenerator.createCode(path_pass + "pass01.jova", path_out + "pass01.j");
         assertEquals(0, result);
     }
+
+    @Test
+    public void testPass02() {
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass02.jova", path_out + "pass02.j");
+        assertEquals(0, result);
+    }
 }

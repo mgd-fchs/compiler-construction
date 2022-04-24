@@ -1,0 +1,6 @@
+class Evaluation{
+  public int init()
+  {
+    return print("Please dont forget to evaluate this course!\n");
+  }
+}
