@@ -1,11 +1,12 @@
 package at.tugraz.ist.cc;
 
 import at.tugraz.ist.cc.error.ErrorHandler;
-import at.tugraz.ist.cc.instructions.AssignInstruction;
-import at.tugraz.ist.cc.instructions.BinaryInstruction;
-import at.tugraz.ist.cc.instructions.OperatorTypes;
-import at.tugraz.ist.cc.instructions.UnaryInstruction;
+import at.tugraz.ist.cc.instructions.*;
 import at.tugraz.ist.cc.symbol_table.*;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
 
 public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
     public static final int OK = 0;
@@ -70,55 +71,67 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitMember_decl(JovaParser.Member_declContext ctx) {
+
+        visitChildren(ctx);
         return OK;
     }
 
     @Override
     public Integer visitId_list(JovaParser.Id_listContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 
     @Override public Integer visitMethod_decl(JovaParser.Method_declContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 
     @Override
     public Integer visitMethod_head(JovaParser.Method_headContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 
     @Override
     public Integer visitParams(JovaParser.ParamsContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 
     @Override
     public Integer visitParam_list(JovaParser.Param_listContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 
     @Override
     public Integer visitMethod_body(JovaParser.Method_bodyContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 
     @Override
     public Integer visitStmt(JovaParser.StmtContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 
     @Override
     public Integer visitCompound_stmt(JovaParser.Compound_stmtContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 
     @Override
     public Integer visitDeclaration(JovaParser.DeclarationContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 
     @Override
     public Integer visitRet_stmt(JovaParser.Ret_stmtContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 
@@ -129,8 +142,14 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
         if (ctx.ass != null){
             visitExpr(ctx.expr());
             AssignInstruction newInstruction = new AssignInstruction(previousSymbolVariable, currentClass.currentSymbolVariable);
-            currentClass.getCurrentCallable().instructions.add(newInstruction);
+            addInstruction(newInstruction);
+        } else if (ctx.alloc != null){
+            visitObject_alloc(ctx.object_alloc());
+            AllocInstruction newInstruction = new AllocInstruction(currentClass.currentSymbolVariable);
+            addInstruction(newInstruction);
         }
+
+        visitChildren(ctx);
         return OK;
     }
 
@@ -183,7 +202,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
             SymbolVariable rightVariable = currentClass.currentSymbolVariable;
 
             BinaryInstruction newInstruction = new BinaryInstruction(leftVariable, rightVariable, OperatorTypes.valueOf(ctx.op.toString()));
-            currentClass.getCurrentCallable().instructions.add(newInstruction);
+            addInstruction(newInstruction);
         } else {
             visitPrimary_expr(ctx.primary_expr());
         }
@@ -195,7 +214,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
     public Integer visitUnary_expr(JovaParser.Unary_exprContext ctx) {
         visitChildren(ctx);
         UnaryInstruction newInstruction = new UnaryInstruction(currentClass.currentSymbolVariable, OperatorTypes.valueOf(ctx.op.toString()));
-        currentClass.getCurrentCallable().instructions.add(newInstruction);
+        addInstruction(newInstruction);
         return OK;
     }
 
@@ -207,6 +226,17 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitObject_alloc(JovaParser.Object_allocContext ctx) {
+        String className = ctx.CLASS_TYPE().toString();
+
+        Optional<SymbolClass> correspondingClass = symbolTable.getClassByName(className, ctx);
+        SymbolClass classObjectAlloc;
+
+        classObjectAlloc = correspondingClass.get();
+        currentClass.currentSymbolVariable = new SymbolVariable(SymbolType.CLASS, classObjectAlloc, "");
+
+        // TODO @Magda: Do we need to cover any other cases here?
+
+        visitChildren(ctx);
         return OK;
     }
 
@@ -268,4 +298,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
         return OK;
     }
 
+    public void addInstruction(Object newInstruction){
+        currentClass.getCurrentCallable().instructions.add(newInstruction);
+    }
 }
