@@ -320,8 +320,9 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
             * Traverse the expression as usual (this should add instructions for binary/unary expressions).
             * Set label for the if-block (i)
             * Traverse the compound statement (instructions from the if-block will be added to the list).
-            * [Optional when else-block exists] Set label for the else-block (i+1)
+            * [Optional if else-block exists] Set label for the else-block (i+1)
             * [Optional] Traverse compound statement (instructions from the else-block are added).
+        * We can then use the if-instruction + expression to write the condition and jump to labels i or i+1 respectively.
         * This should work for nested if-statements as well but not sure if it's a good idea in general.
         */
         if (ctx.else_inst != null){
