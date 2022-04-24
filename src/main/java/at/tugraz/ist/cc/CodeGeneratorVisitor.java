@@ -6,6 +6,7 @@ import at.tugraz.ist.cc.symbol_table.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
@@ -42,6 +43,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitType(JovaParser.TypeContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 
@@ -71,7 +73,6 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitMember_decl(JovaParser.Member_declContext ctx) {
-
         visitChildren(ctx);
         return OK;
     }
@@ -160,6 +161,25 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitMethod_invocation(JovaParser.Method_invocationContext ctx) {
+        // TODO @Magda: Handle print/read
+        SymbolClass classOfMethodInvocation = (SymbolClass) currentClass.currentSymbolVariable.getActualType();
+
+        currentClass.setArgList(new ArrayList<>());
+
+        if (ctx.arg_list() != null) {
+            visitArg_list(ctx.arg_list());
+        }
+
+        String methodName = ctx.ID().toString();
+        SymbolMethod foundMethod =
+                classOfMethodInvocation.getMatchingMethod(methodName, currentClass.getCurrentArgList()).get();
+
+        MethodInvocationInstruction newInstruction = new MethodInvocationInstruction(classOfMethodInvocation, foundMethod);
+        addInstruction(newInstruction);
+
+        currentClass.currentSymbolVariable = foundMethod.getReturnValue();
+
+        visitChildren(ctx);
         return OK;
     }
 
@@ -285,16 +305,19 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitControl_stmt(JovaParser.Control_stmtContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 
     @Override
     public Integer visitIf_stmt(JovaParser.If_stmtContext ctx) {
-       return OK;
+        visitChildren(ctx);
+        return OK;
     }
 
     @Override
     public Integer visitWhile_stmt(JovaParser.While_stmtContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 

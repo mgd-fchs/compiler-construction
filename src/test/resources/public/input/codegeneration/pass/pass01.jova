@@ -5,6 +5,10 @@ class Helper1 {
 }
 
 class Test {
+    public int testfun(){
+        return 5;
+    }
+
     public int func() {
         Helper1 b;
         Helper1 c;
@@ -16,6 +20,8 @@ class Test {
         v = 2;
         b = new Helper1;
         b = new Helper1(v);
+
+        v = testfun();
 
         return 0;
     }
