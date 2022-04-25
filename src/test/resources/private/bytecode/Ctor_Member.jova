@@ -1,0 +1,31 @@
+class SomeClass0
+{
+}
+
+class SomeClass1
+{
+    private int privateIntMember;
+    private bool privateBoolMember;
+    private string privateStringMember;
+    private SomeClass0 privateClassMember;
+
+    SomeClass1()
+    {
+    }
+
+    SomeClass1(int a, bool b, string c, SomeClass0 d)
+    {
+    }
+}
+
+class SomeClass2
+{
+}
+
+class SomeClass3
+{
+}
+
+class Main
+{
+}
