@@ -1,0 +1,12 @@
+
+class Test {
+    public bool func() {
+      bool myvar;
+      int f;
+      int g;
+
+      g = true ? f : 0;
+
+      return myvar;
+    }
+}

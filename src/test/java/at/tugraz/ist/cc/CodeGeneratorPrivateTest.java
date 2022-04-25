@@ -30,8 +30,25 @@ public class CodeGeneratorPrivateTest {
 
     @Test
     public void testPass03() {
+        // test if-statement instruction generation
         ErrorHandler.INSTANCE.reset();
         int result = codeGenerator.createCode(path_pass + "pass03.jova", path_out + "pass03.j");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPass04() {
+        // test while-statement instruction generation
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass04.jova", path_out + "pass04.j");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPass05() {
+        // test ternary instruction generation
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass05.jova", path_out + "pass05.j");
         assertEquals(0, result);
     }
 }

@@ -1,0 +1,22 @@
+
+class Test {
+    public bool func() {
+      bool myvar;
+      int f;
+      int g;
+
+      while(!true)
+          {
+            f = print("myvar");
+
+            if (false){
+                f = print("somethingelse");
+
+                while(myvar && true){
+                    g = 5;
+                }
+            }
+          }
+        return myvar;
+    }
+}
