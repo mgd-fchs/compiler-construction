@@ -1,0 +1,27 @@
+class SomeClass0
+{
+}
+
+class SomeClass1
+{
+    private int privateIntMember;
+    private bool privateBoolMember;
+    private string privateStringMember;
+    private SomeClass0 privateClassMember;
+    public int publicIntMember;
+    public bool publicBoolMember;
+    public string publicStringMember;
+    public SomeClass0 publicClassMember;
+}
+
+class SomeClass2
+{
+}
+
+class SomeClass3
+{
+}
+
+class Main
+{
+}
