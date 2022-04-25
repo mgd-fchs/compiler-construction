@@ -219,6 +219,8 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitExpr(JovaParser.ExprContext ctx) {
+        List<Object> backupInstructions = currentClass.getCurrentCallable().instructions;
+
         if (ctx.op != null) {
             // case: operation, check operand types
             visit(ctx.left);
@@ -227,10 +229,19 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
             visit(ctx.right);
             SymbolVariable rightVariable = currentClass.currentSymbolVariable;
 
-            BinaryInstruction newInstruction = new BinaryInstruction(leftVariable, rightVariable, OperatorTypes.valueOf(ctx.op.toString()));
+            BinaryInstruction newInstruction = new BinaryInstruction(leftVariable, rightVariable, OperatorTypes.getOp(ctx.op.getText()));
+            currentClass.getCurrentCallable().instructions = backupInstructions;
             addInstruction(newInstruction);
         } else {
+            currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
             visitPrimary_expr(ctx.primary_expr());
+
+            if (currentClass.getCurrentCallable().instructions.isEmpty()){
+                currentClass.getCurrentCallable().instructions = backupInstructions;
+            } else {
+                backupInstructions.addAll(currentClass.getCurrentCallable().instructions);
+                currentClass.getCurrentCallable().instructions = backupInstructions;
+            }
         }
 
         return OK;
@@ -239,7 +250,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
     @Override
     public Integer visitUnary_expr(JovaParser.Unary_exprContext ctx) {
         visitChildren(ctx);
-        UnaryInstruction newInstruction = new UnaryInstruction(currentClass.currentSymbolVariable, OperatorTypes.valueOf(ctx.op.toString()));
+        UnaryInstruction newInstruction = new UnaryInstruction(currentClass.currentSymbolVariable, OperatorTypes.getOp(ctx.op.getText()));
         addInstruction(newInstruction);
         return OK;
     }
@@ -284,7 +295,9 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
             } else {
                 boolValue = 0;
             }
-            currentClass.currentSymbolVariable = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "", boolValue);
+            SymbolVariable newVar = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "", boolValue);
+            addInstruction(new UnaryInstruction(newVar, null));
+            currentClass.currentSymbolVariable = newVar;
             return OK;
         } else if (ctx.STRING_LIT() != null){
             currentClass.currentSymbolVariable = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.STRING, "",
@@ -315,38 +328,27 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitIf_stmt(JovaParser.If_stmtContext ctx) {
-        /* Idea:
-            * Add an ifInstruction which only knows the currentLabelIndex (i) and whether or not an else block exists.
-            * Traverse the expression as usual (this should add instructions for binary/unary expressions).
-            * Set label for the if-block (i)
-            * Traverse the compound statement (instructions from the if-block will be added to the list).
-            * [Optional if else-block exists] Set label for the else-block (i+1)
-            * [Optional] Traverse compound statement (instructions from the else-block are added).
-        * We can then use the if-instruction + expression to write the condition and jump to labels i or i+1 respectively.
-        * This should work for nested if-statements as well but not sure if it's a good idea in general.
-        */
-        if (ctx.else_inst != null){
-            addInstruction(new IfInstruction(currentLabelIndex, true));
-        } else {
-            addInstruction(new IfInstruction(currentLabelIndex, false));
-        }
+
+        List <Object> backupInstructions = currentClass.getCurrentCallable().instructions;
+
+        currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
 
         visitExpr(ctx.expr());
+        Object conditionalExpression = currentClass.getCurrentCallable().instructions.get(currentClass.getCurrentCallable().instructions.size()-1);
+        currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
 
-        LabelInstruction ifBlockLabel = new LabelInstruction(currentLabelIndex);
-        currentLabelIndex += 1;
-        addInstruction(ifBlockLabel);
+        visit(ctx.if_inst);
+        List <Object> ifInstructions = currentClass.getCurrentCallable().instructions;
+        List <Object> elseInstructions = new ArrayList<Object>();
 
         if (ctx.else_inst != null){
-            LabelInstruction elseBlockLabel = new LabelInstruction(currentLabelIndex);
-            currentLabelIndex += 1;
-
-            visit(ctx.if_inst); // instructions for if-block are created within the compound statement
-            addInstruction(elseBlockLabel);
+            currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
             visit(ctx.else_inst);
-        } else {
-            visit(ctx.if_inst); // instructions for if-block are created within the compound statement
+            elseInstructions = currentClass.getCurrentCallable().instructions;
         }
+
+        currentClass.getCurrentCallable().instructions = backupInstructions;
+        addInstruction(new IfInstruction(conditionalExpression, ifInstructions, elseInstructions));
 
         return OK;
     }

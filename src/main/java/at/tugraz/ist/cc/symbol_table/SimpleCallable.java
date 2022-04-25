@@ -10,7 +10,7 @@ public abstract class SimpleCallable {
     protected final List<SymbolVariable> params;
     protected final List<SymbolVariable> localVariables;
     protected final SymbolVariable returnValue;
-    public final List<Object> instructions;
+    public List<Object> instructions;
 
     public SimpleCallable(String name, List<SymbolVariable> params, SymbolVariable returnValue) {
         this.name = name;

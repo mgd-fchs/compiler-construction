@@ -3,7 +3,9 @@ class Test {
     public int func() {
       bool myvar;
       int f;
-      if(true)
+      f = 7;
+
+      if(!true)
           {
             f = print("myvar");
 
