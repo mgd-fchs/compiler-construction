@@ -5,7 +5,6 @@ import at.tugraz.ist.cc.instructions.*;
 import at.tugraz.ist.cc.symbol_table.*;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -232,6 +231,28 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
             BinaryInstruction newInstruction = new BinaryInstruction(leftVariable, rightVariable, OperatorTypes.getOp(ctx.op.getText()));
             currentClass.getCurrentCallable().instructions = backupInstructions;
             addInstruction(newInstruction);
+        } else if (ctx.when != null){
+
+            currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
+
+            visitExpr(ctx.when);
+            Object conditionalExpression = currentClass.getCurrentCallable().instructions.get(currentClass.getCurrentCallable().instructions.size()-1);
+            currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
+
+            visit(ctx.then);
+            List <Object> ifInstructions = currentClass.getCurrentCallable().instructions;
+            List <Object> elseInstructions = new ArrayList<Object>();
+
+            if (ctx.el != null){
+                currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
+                visit(ctx.el);
+                elseInstructions = currentClass.getCurrentCallable().instructions;
+            }
+
+            currentClass.getCurrentCallable().instructions = backupInstructions;
+            addInstruction(new ConditionalInstruction(conditionalExpression, ifInstructions, elseInstructions));
+
+            return OK;
         } else {
             currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
             visitPrimary_expr(ctx.primary_expr());
@@ -345,17 +366,32 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
             currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
             visit(ctx.else_inst);
             elseInstructions = currentClass.getCurrentCallable().instructions;
+        } else {
+            elseInstructions = null;
         }
 
         currentClass.getCurrentCallable().instructions = backupInstructions;
-        addInstruction(new IfInstruction(conditionalExpression, ifInstructions, elseInstructions));
+        addInstruction(new ConditionalInstruction(conditionalExpression, ifInstructions, elseInstructions));
 
         return OK;
     }
 
     @Override
     public Integer visitWhile_stmt(JovaParser.While_stmtContext ctx) {
-        visitChildren(ctx);
+        List <Object> backupInstructions = currentClass.getCurrentCallable().instructions;
+
+        currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
+
+        visitExpr(ctx.expr());
+        Object conditionalExpression = currentClass.getCurrentCallable().instructions.get(currentClass.getCurrentCallable().instructions.size()-1);
+        currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
+
+        visit(ctx.compound_stmt());
+        List <Object> ifInstructions = currentClass.getCurrentCallable().instructions;
+
+        currentClass.getCurrentCallable().instructions = backupInstructions;
+        addInstruction(new ConditionalInstruction(conditionalExpression, ifInstructions, null));
+
         return OK;
     }
 
