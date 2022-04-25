@@ -32,6 +32,13 @@ public class ClassWriter implements AutoCloseable {
     public void write() {
         writeClassHeader();
 
+
+        if (symbolClass.getClassName().equals(SymbolClass.MAIN_CLASS_NAME)) {
+            symbolClass.getMethods().stream().findFirst().ifPresent(symbolMethod -> {
+                writeMainMethod(symbolMethod);
+            });
+        }
+
         symbolClass.getMembers().forEach(member -> writeMember(member.getKey(), member.getValue()));
         writer.println("");
 
@@ -94,15 +101,30 @@ public class ClassWriter implements AutoCloseable {
         int stack_limit = 1; // TODO
         int local_limit = 1; // TODO
         writer.printf("" +
-                        ".method %s <init>(%s)V\n" +
+                        ".method %s %s(%s)V\n" +
                         ".limit stack %d\n" +
                         ".limit locals %d\n",
-                symbolMethod.getAccessSymbol().toString(), parameter, stack_limit, local_limit);
+                symbolMethod.getAccessSymbol().toString(), symbolMethod.getName(), parameter, stack_limit, local_limit);
 
         writeBodyInstructions(null);
 
         writer.printf("" +
                 "  aload_0\n" + // TODO right return value
+                "  return\n" +
+                ".end method\n\n");
+    }
+
+    private void writeMainMethod(SymbolMethod symbolMethod) {
+        int stack_limit = 1; // TODO
+        int local_limit = 1; // TODO
+        writer.printf("" +
+                ".method public static main([Ljava/lang/String;)V\n" +
+                ".limit stack %d\n" +
+                ".limit locals %d\n", stack_limit, local_limit);
+
+        writeBodyInstructions(null);
+
+        writer.printf("" +
                 "  return\n" +
                 ".end method\n\n");
     }
@@ -140,5 +162,51 @@ public class ClassWriter implements AutoCloseable {
         StringBuilder stringBuilder = new StringBuilder();
         params.forEach(param -> stringBuilder.append(getTypeAsString(param)).append(";"));
         return stringBuilder.toString();
+    }
+
+    private void printInt(int localArrayIndex) {
+        writer.printf("" +
+                "  getstatic java/lang/System/out Ljava/io/PrintStream;\n" +
+                "  iload %s\n" +
+                "  invokevirtual java/io/PrintStream/print(I)V\n" +
+                "  ldc 0\n", localArrayIndex);
+    }
+
+    private void printString(int localArrayIndex) {
+        writer.printf("" +
+                "  getstatic java/lang/System/out Ljava/io/PrintStream;\n" +
+                "  aload %s\n" +
+                "  invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V\n" +
+                "  ldc 0\n", localArrayIndex);
+    }
+
+    private void printBool(int localArrayIndex) {
+        writer.printf("" +
+                "  getstatic java/lang/System/out Ljava/io/PrintStream;\n" +
+                "  iload %s\n" +    // TODO: maybe iload is not right for bool
+                "  invokevirtual java/io/PrintStream/print(Z)V\n" +
+                "  ldc 0\n", localArrayIndex);
+    }
+
+    private void readInt(int localArrayIndex) {
+        // https://docs.oracle.com/javase/7/docs/api/java/util/Scanner.html
+        // https://docs.oracle.com/javase/7/docs/api/java/io/InputStream.html
+        writer.printf("" +
+                "  new java/util/Scanner\n" +
+                "  dup\n" +
+                "  getstatic java/lang/System/in Ljava/io/InputStream;\n" +
+                "  invokespecial java/util/Scanner/<init>(Ljava/io/InputStream;)V\n" +
+                "  iload %s\n" +
+                "  invokevirtual java/util/Scanner/nextInt()I\n", localArrayIndex);
+    }
+
+    private void readString(int localArrayIndex) {
+        writer.printf("" +
+                "  new java/util/Scanner\n" +
+                "  dup\n" +
+                "  getstatic java/lang/System/in Ljava/io/InputStream;\n" +
+                "  invokespecial java/util/Scanner/<init>(Ljava/io/InputStream;)V\n" +
+                "  iload %s\n" +
+                "  invokevirtual java/util/Scanner/nextLine()Ljava/lang/String;\n", localArrayIndex);
     }
 }
