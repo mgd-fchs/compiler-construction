@@ -10,12 +10,16 @@ import org.antlr.v4.runtime.tree.ParseTree;
  */
 public class TypeChecker {
 
+    private ParseTree parseTree;
+
+
+
     public int checkTypes(String file_path, boolean debug) {
         LexicalAndSyntaxAnalyzer analyzer = new LexicalAndSyntaxAnalyzer();
 
         JovaParser parser = analyzer.createParser(analyzer.lexing(file_path, debug));
         parser.reset();
-        ParseTree parseTree = parser.program();
+        parseTree = parser.program();
 
         if (ErrorHandler.INSTANCE.getNumParseErrors() != 0) {
             if (debug)

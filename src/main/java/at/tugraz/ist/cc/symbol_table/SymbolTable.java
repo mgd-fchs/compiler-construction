@@ -55,4 +55,9 @@ public class SymbolTable {
 
         return found;
     }
+
+    public Collection<SymbolClass> getClasses() {
+        return classes;
+    }
+
 }

@@ -310,6 +310,11 @@ public class SymbolClass {
         return currentClassName;
     }
 
+    public Collection<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> getMembers() {
+        return members;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -330,5 +335,13 @@ public class SymbolClass {
         }
 
         return foundMethod;
+    }
+
+    public boolean hasNoEmptyConstructor() {
+        return constructors
+                .stream()
+                .filter(symbolConstructor -> symbolConstructor.getParams().size() == 0)
+                .findAny()
+                .isEmpty();
     }
 }
