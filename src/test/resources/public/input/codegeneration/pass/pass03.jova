@@ -1,6 +1,6 @@
 
 class Test {
-    public int func() {
+    public bool func() {
       bool myvar;
       int f;
       f = 7;
@@ -17,6 +17,6 @@ class Test {
           {
             f = print("myvar");
           }
-        return f;
+        return myvar;
     }
 }

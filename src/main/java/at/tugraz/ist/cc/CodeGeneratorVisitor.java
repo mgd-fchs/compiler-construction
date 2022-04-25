@@ -134,7 +134,9 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitRet_stmt(JovaParser.Ret_stmtContext ctx) {
-        visitChildren(ctx);
+        visitExpr(ctx.expr());
+        ReturnInstruction newInstruction = new ReturnInstruction(currentClass.currentSymbolVariable);
+        addInstruction(newInstruction);
         return OK;
     }
 
@@ -232,7 +234,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
             currentClass.getCurrentCallable().instructions = backupInstructions;
             addInstruction(newInstruction);
         } else if (ctx.when != null){
-
+            // case: ternary operator
             currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
 
             visitExpr(ctx.when);
@@ -252,7 +254,6 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
             currentClass.getCurrentCallable().instructions = backupInstructions;
             addInstruction(new ConditionalInstruction(conditionalExpression, ifInstructions, elseInstructions));
 
-            return OK;
         } else {
             currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
             visitPrimary_expr(ctx.primary_expr());
