@@ -1,7 +1,13 @@
 package at.tugraz.ist.cc;
 
 import at.tugraz.ist.cc.error.ErrorHandler;
+import at.tugraz.ist.cc.instructions.*;
 import at.tugraz.ist.cc.symbol_table.*;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
     public static final int OK = 0;
@@ -10,11 +16,13 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
     private SymbolClass currentClass;
     private final SymbolTable symbolTable;
     private Integer currentConstructorIndex;
+    private Integer currentLabelIndex;
 
     public CodeGeneratorVisitor() {
         symbolTable = SymbolTable.getInstance();
         currentClass = null;
         currentConstructorIndex = 0;
+        currentLabelIndex = 0;
     }
 
     @Override
@@ -37,6 +45,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitType(JovaParser.TypeContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 
@@ -55,6 +64,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
     public Integer visitCtor(JovaParser.CtorContext ctx) {
         currentClass.setCurrentCallable(currentClass.getConstructors().get(currentConstructorIndex));
         visitCtor_body(ctx.ctor_body());
+        currentConstructorIndex += 1;
         return OK;
     }
 
@@ -66,55 +76,66 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitMember_decl(JovaParser.Member_declContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 
     @Override
     public Integer visitId_list(JovaParser.Id_listContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 
     @Override public Integer visitMethod_decl(JovaParser.Method_declContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 
     @Override
     public Integer visitMethod_head(JovaParser.Method_headContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 
     @Override
     public Integer visitParams(JovaParser.ParamsContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 
     @Override
     public Integer visitParam_list(JovaParser.Param_listContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 
     @Override
     public Integer visitMethod_body(JovaParser.Method_bodyContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 
     @Override
     public Integer visitStmt(JovaParser.StmtContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 
     @Override
     public Integer visitCompound_stmt(JovaParser.Compound_stmtContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 
     @Override
     public Integer visitDeclaration(JovaParser.DeclarationContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 
     @Override
     public Integer visitRet_stmt(JovaParser.Ret_stmtContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 
@@ -125,8 +146,14 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
         if (ctx.ass != null){
             visitExpr(ctx.expr());
             AssignInstruction newInstruction = new AssignInstruction(previousSymbolVariable, currentClass.currentSymbolVariable);
-            currentClass.getCurrentCallable().instructions.add(newInstruction);
+            addInstruction(newInstruction);
+        } else if (ctx.alloc != null){
+            visitObject_alloc(ctx.object_alloc());
+            AllocInstruction newInstruction = new AllocInstruction(currentClass.currentSymbolVariable);
+            addInstruction(newInstruction);
         }
+
+      //  visitChildren(ctx);
         return OK;
     }
 
@@ -137,6 +164,24 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitMethod_invocation(JovaParser.Method_invocationContext ctx) {
+        SymbolClass classOfMethodInvocation = (SymbolClass) currentClass.currentSymbolVariable.getActualType();
+
+        currentClass.setArgList(new ArrayList<>());
+
+        if (ctx.arg_list() != null) {
+            visitArg_list(ctx.arg_list());
+        }
+
+        String methodName = ctx.ID().toString();
+        SymbolMethod foundMethod =
+                classOfMethodInvocation.getMatchingMethod(methodName, currentClass.getCurrentArgList()).get();
+
+        MethodInvocationInstruction newInstruction = new MethodInvocationInstruction(classOfMethodInvocation, foundMethod);
+        addInstruction(newInstruction);
+
+        currentClass.currentSymbolVariable = foundMethod.getReturnValue();
+
+        visitChildren(ctx);
         return OK;
     }
 
@@ -165,6 +210,10 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitArg_list(JovaParser.Arg_listContext ctx) {
+        for (JovaParser.ExprContext expr : ctx.expr()) {
+            visitExpr(expr);
+            currentClass.addArgument(currentClass.currentSymbolVariable);
+        }
         return OK;
     }
 
@@ -179,7 +228,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
             SymbolVariable rightVariable = currentClass.currentSymbolVariable;
 
             BinaryInstruction newInstruction = new BinaryInstruction(leftVariable, rightVariable, OperatorTypes.valueOf(ctx.op.toString()));
-            currentClass.getCurrentCallable().instructions.add(newInstruction);
+            addInstruction(newInstruction);
         } else {
             visitPrimary_expr(ctx.primary_expr());
         }
@@ -191,7 +240,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
     public Integer visitUnary_expr(JovaParser.Unary_exprContext ctx) {
         visitChildren(ctx);
         UnaryInstruction newInstruction = new UnaryInstruction(currentClass.currentSymbolVariable, OperatorTypes.valueOf(ctx.op.toString()));
-        currentClass.getCurrentCallable().instructions.add(newInstruction);
+        addInstruction(newInstruction);
         return OK;
     }
 
@@ -203,6 +252,15 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitObject_alloc(JovaParser.Object_allocContext ctx) {
+        String className = ctx.CLASS_TYPE().toString();
+
+        Optional<SymbolClass> correspondingClass = symbolTable.getClassByName(className, ctx);
+        SymbolClass classObjectAlloc;
+
+        classObjectAlloc = correspondingClass.get();
+        currentClass.currentSymbolVariable = new SymbolVariable(SymbolType.CLASS, classObjectAlloc, "");
+
+        visitChildren(ctx);
         return OK;
     }
 
@@ -251,17 +309,55 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitControl_stmt(JovaParser.Control_stmtContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 
     @Override
     public Integer visitIf_stmt(JovaParser.If_stmtContext ctx) {
-       return OK;
+        /* Idea:
+            * Add an ifInstruction which only knows the currentLabelIndex (i) and whether or not an else block exists.
+            * Traverse the expression as usual (this should add instructions for binary/unary expressions).
+            * Set label for the if-block (i)
+            * Traverse the compound statement (instructions from the if-block will be added to the list).
+            * [Optional if else-block exists] Set label for the else-block (i+1)
+            * [Optional] Traverse compound statement (instructions from the else-block are added).
+        * We can then use the if-instruction + expression to write the condition and jump to labels i or i+1 respectively.
+        * This should work for nested if-statements as well but not sure if it's a good idea in general.
+        */
+        if (ctx.else_inst != null){
+            addInstruction(new IfInstruction(currentLabelIndex, true));
+        } else {
+            addInstruction(new IfInstruction(currentLabelIndex, false));
+        }
+
+        visitExpr(ctx.expr());
+
+        LabelInstruction ifBlockLabel = new LabelInstruction(currentLabelIndex);
+        currentLabelIndex += 1;
+        addInstruction(ifBlockLabel);
+
+        if (ctx.else_inst != null){
+            LabelInstruction elseBlockLabel = new LabelInstruction(currentLabelIndex);
+            currentLabelIndex += 1;
+
+            visit(ctx.if_inst); // instructions for if-block are created within the compound statement
+            addInstruction(elseBlockLabel);
+            visit(ctx.else_inst);
+        } else {
+            visit(ctx.if_inst); // instructions for if-block are created within the compound statement
+        }
+
+        return OK;
     }
 
     @Override
     public Integer visitWhile_stmt(JovaParser.While_stmtContext ctx) {
+        visitChildren(ctx);
         return OK;
     }
 
+    public void addInstruction(Object newInstruction){
+        currentClass.getCurrentCallable().instructions.add(newInstruction);
+    }
 }
