@@ -134,8 +134,10 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitRet_stmt(JovaParser.Ret_stmtContext ctx) {
+        List<Object> backupInstructions = currentClass.getCurrentCallable().getInstructions();
         visitExpr(ctx.expr());
         ReturnInstruction newInstruction = new ReturnInstruction(currentClass.currentSymbolVariable);
+        currentClass.getCurrentCallable().instructions = backupInstructions;
         addInstruction(newInstruction);
         return OK;
     }
@@ -206,6 +208,8 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
                 visitMember_access(expr);
             }
         }
+        // TODO @Magda: Handle this better -> unary instruction does not need to be created in every case
+        addInstruction(new UnaryInstruction(currentClass.currentSymbolVariable, null));
         return OK;
     }
 
@@ -220,7 +224,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitExpr(JovaParser.ExprContext ctx) {
-        List<Object> backupInstructions = currentClass.getCurrentCallable().instructions;
+        List<Object> backupInstructions = currentClass.getCurrentCallable().getInstructions();
 
         if (ctx.op != null) {
             // case: operation, check operand types
@@ -318,6 +322,8 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
                 boolValue = 0;
             }
             SymbolVariable newVar = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "", boolValue);
+
+            // TODO @Magda: Handle this better -> unary instruction does not need to be created in every case
             addInstruction(new UnaryInstruction(newVar, null));
             currentClass.currentSymbolVariable = newVar;
             return OK;

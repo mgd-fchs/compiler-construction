@@ -115,6 +115,10 @@ public abstract class SimpleCallable {
         return returnValue;
     }
 
+    public List<Object> getInstructions(){
+        return new ArrayList<Object>(List.copyOf(instructions));
+    }
+
 
     /**
      * returns true if the objects are the same or if the names of the methods and also

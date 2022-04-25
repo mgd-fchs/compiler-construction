@@ -5,7 +5,7 @@ class Test {
       int f;
       int g;
 
-      while(!true)
+      while(!myvar)
           {
             f = print("myvar");
 
