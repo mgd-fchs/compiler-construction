@@ -37,11 +37,6 @@ public abstract class SimpleCallable {
         localArrayMapping.put(symbolVariable, localArrayIndex++);
     }
 
-    public void addTempVariable(SymbolVariable symbolVariable) {
-        tempVariable.add(symbolVariable);
-        localArrayMapping.put(symbolVariable, localArrayIndex++);
-    }
-
     private int getLocalArrayIndexBySymbolVariable(SymbolVariable symbolVariable) {
         return localArrayMapping.get(symbolVariable);
     }
@@ -134,7 +129,7 @@ public abstract class SimpleCallable {
     }
 
     public SymbolVariable getReturnValue() {
-        return returnValue;
+        return new SymbolVariable(returnValue);
     }
 
     public List<BaseInstruction> getInstructions() {
@@ -170,5 +165,12 @@ public abstract class SimpleCallable {
 
         // only reachable if all params where equal
         return true;
+    }
+
+    public SymbolVariable getNewTempSymbolVariable(SymbolVariable result) {
+        SymbolVariable deepCopy = new SymbolVariable(result, "tmp_" + (localArrayIndex), true);
+        tempVariable.add(deepCopy);
+        localArrayMapping.put(deepCopy, localArrayIndex++);
+        return deepCopy;
     }
 }
