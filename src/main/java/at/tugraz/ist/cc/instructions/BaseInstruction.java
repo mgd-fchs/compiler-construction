@@ -6,8 +6,8 @@ import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 import java.util.Optional;
 
 public abstract class BaseInstruction {
-    private final SimpleCallable associatedCallable;
-    private final SymbolVariable result;
+    protected final SimpleCallable associatedCallable;
+    protected final SymbolVariable result;
 
     public BaseInstruction(SimpleCallable associatedCallable, Optional<SymbolVariable> result) {
         this.associatedCallable = associatedCallable;

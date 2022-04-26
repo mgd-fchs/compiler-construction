@@ -37,7 +37,7 @@ public abstract class SimpleCallable {
         localArrayMapping.put(symbolVariable, localArrayIndex++);
     }
 
-    private int getLocalArrayIndexBySymbolVariable(SymbolVariable symbolVariable) {
+    public int getLocalArrayIndexBySymbolVariable(SymbolVariable symbolVariable) {
         return localArrayMapping.get(symbolVariable);
     }
 

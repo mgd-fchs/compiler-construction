@@ -171,6 +171,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
 
     @Override
     public Integer visitMethod_invocation(JovaParser.Method_invocationContext ctx) {
+        // TODO what if the method is from inside the own class (withouth this keyword)
         SymbolClass classOfMethodInvocation = (SymbolClass) currentClass.currentSymbolVariable.getActualType();
 
         currentClass.setArgList(new ArrayList<>());
@@ -183,7 +184,9 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
         SymbolMethod foundMethod =
                 classOfMethodInvocation.getMatchingMethod(methodName, currentClass.getCurrentArgList()).orElseThrow();
 
-        MethodInvocationInstruction newInstruction = new MethodInvocationInstruction(currentClass.getCurrentCallable(), classOfMethodInvocation, foundMethod);
+        MethodInvocationInstruction newInstruction = new MethodInvocationInstruction(currentClass.getCurrentCallable(),
+                currentClass.currentSymbolVariable /* TODO has this currentClass.currentSymbolVariable the right ref??? */
+                , foundMethod, Collections.EMPTY_LIST); // TODO Parmas
         addInstruction(newInstruction);
 
         currentClass.currentSymbolVariable = foundMethod.getReturnValue();
@@ -266,12 +269,8 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
             currentClass.getCurrentCallable().instructions = new ArrayList<>();
             visitPrimary_expr(ctx.primary_expr());
 
-            if (currentClass.getCurrentCallable().instructions.isEmpty()) {
-                currentClass.getCurrentCallable().instructions = backupInstructions;
-            } else {
-                backupInstructions.addAll(currentClass.getCurrentCallable().instructions);
-                currentClass.getCurrentCallable().instructions = backupInstructions;
-            }
+            backupInstructions.addAll(currentClass.getCurrentCallable().instructions);
+            currentClass.getCurrentCallable().instructions = backupInstructions;
         }
 
         return OK;

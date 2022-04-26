@@ -6,8 +6,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum OperatorTypes {
-    ADD("+"), SUB("-"), MUL("*"), DIV("/"), MOD("%"), GREATER(">"), SMALLER("<"),
-    GREATER_EQUAL(">="), SMALLER_EQUAL("<="), EQUAL("=="), UNEQUAL("!="), AND("&&"), OR("||"),
+    ADD("+"), SUB("-"),
+    MUL("*"), DIV("/"), MOD("%"),
+    GREATER(">"), SMALLER("<"), GREATER_EQUAL(">="),
+    SMALLER_EQUAL("<="), EQUAL("=="), UNEQUAL("!="),
+    AND("&&"), OR("||"),
     NOT("!");
 
     private String value;
