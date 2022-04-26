@@ -9,19 +9,40 @@ public abstract class SimpleCallable {
     protected final String name;
     protected final List<SymbolVariable> params;
     protected final List<SymbolVariable> localVariables;
+    protected final List<SymbolVariable> tempVariable;
     protected final SymbolVariable returnValue;
     public List<Object> instructions;
+    private final Map<Integer, SymbolVariable> localArrayMapping;
+    private int localArrayIndex;
 
     public SimpleCallable(String name, List<SymbolVariable> params, SymbolVariable returnValue) {
         this.name = name;
-        this.params = params;
         this.returnValue = returnValue;
+
+        localArrayIndex = 1; // starting at zero, because the pos 0 will be used for this
+        this.localArrayMapping = new HashMap<>();
+        this.params = params;
+        // adding param mapping for params
+        this.params.forEach(param -> localArrayMapping.put(localArrayIndex++, param));
+
+
         this.localVariables = new ArrayList<>();
+        this.tempVariable = new ArrayList<>();
         this.instructions = new ArrayList<>();
     }
 
     public void addVariable(SymbolVariable symbolVariable) {
         localVariables.add(symbolVariable);
+        localArrayMapping.put(localArrayIndex++, symbolVariable);
+    }
+
+    public void addTempVariable(SymbolVariable symbolVariable) {
+        tempVariable.add(symbolVariable);
+        localArrayMapping.put(localArrayIndex++, symbolVariable);
+    }
+
+    private int getLocalArrayIndexBySymbolVariable() {
+        return 0;
     }
 
     public int checkParamDoubleDeclaration(JovaParser.Param_listContext ctx) {
@@ -82,7 +103,7 @@ public abstract class SimpleCallable {
         return name;
     }
 
-    public Object getLocalVariableType(String id){
+    public Object getLocalVariableType(String id) {
         Optional<SymbolVariable> found = localVariables.stream().filter(element -> element.getName().equals(id)).findFirst();
         return found.get().getActualType();
     }
@@ -103,9 +124,9 @@ public abstract class SimpleCallable {
         return null;
     }
 
-    public SymbolVariable getLocalVariableById(String id){
+    public SymbolVariable getLocalVariableById(String id) {
         Optional<SymbolVariable> found = localVariables.stream().filter(element -> element.getName().equals(id)).findFirst();
-        if(found.isEmpty()){
+        if (found.isEmpty()) {
             return null;
         }
         return found.get();
@@ -115,7 +136,7 @@ public abstract class SimpleCallable {
         return returnValue;
     }
 
-    public List<Object> getInstructions(){
+    public List<Object> getInstructions() {
         return new ArrayList<Object>(List.copyOf(instructions));
     }
 
@@ -124,6 +145,7 @@ public abstract class SimpleCallable {
      * returns true if the objects are the same or if the names of the methods and also
      * the parameter order and types are the same. the return value of the method is not
      * taken into account
+     *
      * @param o
      * @return
      */
@@ -138,9 +160,9 @@ public abstract class SimpleCallable {
 
         for (int i = 0; i < params.size(); ++i) {
             SymbolVariable thisParam = params.get(i);
-            SymbolVariable thatParam= that.params.get(i);
+            SymbolVariable thatParam = that.params.get(i);
 
-            if (!thisParam.equalTypeAndActualType(thatParam)){
+            if (!thisParam.equalTypeAndActualType(thatParam)) {
                 return false;
             }
         }
