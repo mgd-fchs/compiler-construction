@@ -2,11 +2,14 @@ package at.tugraz.ist.cc;
 
 
 import at.tugraz.ist.cc.error.ErrorHandler;
+import at.tugraz.ist.cc.symbol_table.SymbolClass;
+import at.tugraz.ist.cc.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.tree.ParseTree;
+
+import java.util.Collection;
 
 /**
  * @author wehopeu
- *
  */
 public class CodeGenerator {
 
@@ -27,8 +30,16 @@ public class CodeGenerator {
 
         CodeGeneratorVisitor codeVisitor = new CodeGeneratorVisitor();
         codeVisitor.visit(parseTree);
-        // TODO: @Richard Write-function
+
+        Collection<SymbolClass> symbolClasses = SymbolTable.getInstance().getClasses();
+        symbolClasses.forEach(symbolClass -> {
+            try (ClassWriter codeWriter = new ClassWriter(out_path, symbolClass)) {
+                codeWriter.write();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
         return 0;
     }
-
 }
