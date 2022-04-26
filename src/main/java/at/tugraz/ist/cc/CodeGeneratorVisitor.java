@@ -147,6 +147,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
 
     @Override
     public Integer visitAssign_stmt(JovaParser.Assign_stmtContext ctx) {
+        // TODO: if I am not wrong we have to difference between local variable and member for this or any other class
         SymbolVariable previousSymbolVariable = currentClass.getCurrentScopeVariable(ctx.id_expr().ID().toString());
 
         if (ctx.ass != null) {
