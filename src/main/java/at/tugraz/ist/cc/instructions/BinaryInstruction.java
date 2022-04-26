@@ -2,7 +2,7 @@ package at.tugraz.ist.cc.instructions;
 
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
-public class BinaryInstruction {
+public class BinaryInstruction extends BaseInstruction {
     private SymbolVariable leftParam;
     private SymbolVariable rightParam;
     private OperatorTypes operator;
@@ -11,5 +11,11 @@ public class BinaryInstruction {
         this.leftParam = leftParameter;
         this.rightParam = rightParameter;
         this.operator = operator;
+    }
+
+    @Override
+    public String buildAssembly() {
+        // TODO
+        return null;
     }
 }

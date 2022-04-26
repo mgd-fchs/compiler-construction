@@ -15,7 +15,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
     private SymbolClass currentClass;
     private final SymbolTable symbolTable;
     private Integer currentConstructorIndex;
-    private Integer currentLabelIndex;
+    private final Integer currentLabelIndex;
 
     public CodeGeneratorVisitor() {
         symbolTable = SymbolTable.getInstance();
@@ -50,7 +50,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitClass_head(JovaParser.Class_headContext ctx) {
-        currentClass = symbolTable.getClassByName(ctx.CLASS_TYPE().toString(), ctx).get();
+        currentClass = symbolTable.getClassByName(ctx.CLASS_TYPE().toString(), ctx).orElseThrow();
         return OK;
     }
 
@@ -134,7 +134,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitRet_stmt(JovaParser.Ret_stmtContext ctx) {
-        List<Object> backupInstructions = currentClass.getCurrentCallable().getInstructions();
+        List<BaseInstruction> backupInstructions = currentClass.getCurrentCallable().getInstructions();
         visitExpr(ctx.expr());
         ReturnInstruction newInstruction = new ReturnInstruction(currentClass.currentSymbolVariable);
         currentClass.getCurrentCallable().instructions = backupInstructions;
@@ -177,7 +177,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
         String methodName = ctx.ID().toString();
         SymbolMethod foundMethod =
-                classOfMethodInvocation.getMatchingMethod(methodName, currentClass.getCurrentArgList()).get();
+                classOfMethodInvocation.getMatchingMethod(methodName, currentClass.getCurrentArgList()).orElseThrow();
 
         MethodInvocationInstruction newInstruction = new MethodInvocationInstruction(classOfMethodInvocation, foundMethod);
         addInstruction(newInstruction);
@@ -224,7 +224,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitExpr(JovaParser.ExprContext ctx) {
-        List<Object> backupInstructions = currentClass.getCurrentCallable().getInstructions();
+        List<BaseInstruction> backupInstructions = currentClass.getCurrentCallable().getInstructions();
 
         if (ctx.op != null) {
             // case: operation, check operand types
@@ -239,18 +239,18 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
             addInstruction(newInstruction);
         } else if (ctx.when != null){
             // case: ternary operator
-            currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
+            currentClass.getCurrentCallable().instructions = new ArrayList<>();
 
             visitExpr(ctx.when);
             Object conditionalExpression = currentClass.getCurrentCallable().instructions.get(currentClass.getCurrentCallable().instructions.size()-1);
-            currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
+            currentClass.getCurrentCallable().instructions = new ArrayList<>();
 
             visit(ctx.then);
-            List <Object> ifInstructions = currentClass.getCurrentCallable().instructions;
-            List <Object> elseInstructions = new ArrayList<Object>();
+            List <BaseInstruction> ifInstructions = currentClass.getCurrentCallable().instructions;
+            List <BaseInstruction> elseInstructions = new ArrayList<>();
 
             if (ctx.el != null){
-                currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
+                currentClass.getCurrentCallable().instructions = new ArrayList<>();
                 visit(ctx.el);
                 elseInstructions = currentClass.getCurrentCallable().instructions;
             }
@@ -259,7 +259,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
             addInstruction(new ConditionalInstruction(conditionalExpression, ifInstructions, elseInstructions));
 
         } else {
-            currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
+            currentClass.getCurrentCallable().instructions = new ArrayList<>();
             visitPrimary_expr(ctx.primary_expr());
 
             if (currentClass.getCurrentCallable().instructions.isEmpty()){
@@ -294,7 +294,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
         Optional<SymbolClass> correspondingClass = symbolTable.getClassByName(className, ctx);
         SymbolClass classObjectAlloc;
 
-        classObjectAlloc = correspondingClass.get();
+        classObjectAlloc = correspondingClass.orElseThrow();
         currentClass.currentSymbolVariable = new SymbolVariable(SymbolType.CLASS, classObjectAlloc, "");
 
         visitChildren(ctx);
@@ -315,8 +315,8 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
     @Override
     public Integer visitLiteral(JovaParser.LiteralContext ctx) {
         if (ctx.BOOL_LIT() != null){
-            Integer boolValue;
-            if (ctx.BOOL_LIT().toString() == "true"){
+            int boolValue;
+            if (ctx.BOOL_LIT().toString().equals("true")){
                 boolValue = 1;
             } else {
                 boolValue = 0;
@@ -357,20 +357,20 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
     @Override
     public Integer visitIf_stmt(JovaParser.If_stmtContext ctx) {
 
-        List <Object> backupInstructions = currentClass.getCurrentCallable().instructions;
+        List <BaseInstruction> backupInstructions = currentClass.getCurrentCallable().instructions;
 
-        currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
+        currentClass.getCurrentCallable().instructions = new ArrayList<>();
 
         visitExpr(ctx.expr());
-        Object conditionalExpression = currentClass.getCurrentCallable().instructions.get(currentClass.getCurrentCallable().instructions.size()-1);
-        currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
+        BaseInstruction conditionalExpression = currentClass.getCurrentCallable().instructions.get(currentClass.getCurrentCallable().instructions.size()-1);
+        currentClass.getCurrentCallable().instructions = new ArrayList<>();
 
         visit(ctx.if_inst);
-        List <Object> ifInstructions = currentClass.getCurrentCallable().instructions;
-        List <Object> elseInstructions = new ArrayList<Object>();
+        List <BaseInstruction> ifInstructions = currentClass.getCurrentCallable().instructions;
+        List <BaseInstruction> elseInstructions = new ArrayList<>();
 
         if (ctx.else_inst != null){
-            currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
+            currentClass.getCurrentCallable().instructions = new ArrayList<>();
             visit(ctx.else_inst);
             elseInstructions = currentClass.getCurrentCallable().instructions;
         } else {
@@ -385,16 +385,16 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitWhile_stmt(JovaParser.While_stmtContext ctx) {
-        List <Object> backupInstructions = currentClass.getCurrentCallable().instructions;
+        List <BaseInstruction> backupInstructions = currentClass.getCurrentCallable().instructions;
 
-        currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
+        currentClass.getCurrentCallable().instructions = new ArrayList<>();
 
         visitExpr(ctx.expr());
         Object conditionalExpression = currentClass.getCurrentCallable().instructions.get(currentClass.getCurrentCallable().instructions.size()-1);
-        currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
+        currentClass.getCurrentCallable().instructions = new ArrayList<>();
 
         visit(ctx.compound_stmt());
-        List <Object> ifInstructions = currentClass.getCurrentCallable().instructions;
+        List <BaseInstruction> ifInstructions = currentClass.getCurrentCallable().instructions;
 
         currentClass.getCurrentCallable().instructions = backupInstructions;
         addInstruction(new ConditionalInstruction(conditionalExpression, ifInstructions, null));
@@ -402,7 +402,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
         return OK;
     }
 
-    public void addInstruction(Object newInstruction){
+    public void addInstruction(BaseInstruction newInstruction){
         currentClass.getCurrentCallable().instructions.add(newInstruction);
     }
 }

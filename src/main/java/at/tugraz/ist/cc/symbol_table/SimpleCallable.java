@@ -2,6 +2,7 @@ package at.tugraz.ist.cc.symbol_table;
 
 import at.tugraz.ist.cc.JovaParser;
 import at.tugraz.ist.cc.error.ErrorHandler;
+import at.tugraz.ist.cc.instructions.BaseInstruction;
 
 import java.util.*;
 
@@ -11,8 +12,8 @@ public abstract class SimpleCallable {
     protected final List<SymbolVariable> localVariables;
     protected final List<SymbolVariable> tempVariable;
     protected final SymbolVariable returnValue;
-    public List<Object> instructions;
-    private final Map<Integer, SymbolVariable> localArrayMapping;
+    public List<BaseInstruction> instructions;
+    private final Map<SymbolVariable, Integer> localArrayMapping;
     private int localArrayIndex;
 
     public SimpleCallable(String name, List<SymbolVariable> params, SymbolVariable returnValue) {
@@ -23,7 +24,7 @@ public abstract class SimpleCallable {
         this.localArrayMapping = new HashMap<>();
         this.params = params;
         // adding param mapping for params
-        this.params.forEach(param -> localArrayMapping.put(localArrayIndex++, param));
+        this.params.forEach(param -> localArrayMapping.put(param, localArrayIndex++));
 
 
         this.localVariables = new ArrayList<>();
@@ -33,16 +34,16 @@ public abstract class SimpleCallable {
 
     public void addVariable(SymbolVariable symbolVariable) {
         localVariables.add(symbolVariable);
-        localArrayMapping.put(localArrayIndex++, symbolVariable);
+        localArrayMapping.put(symbolVariable, localArrayIndex++);
     }
 
     public void addTempVariable(SymbolVariable symbolVariable) {
         tempVariable.add(symbolVariable);
-        localArrayMapping.put(localArrayIndex++, symbolVariable);
+        localArrayMapping.put(symbolVariable, localArrayIndex++);
     }
 
-    private int getLocalArrayIndexBySymbolVariable() {
-        return 0;
+    private int getLocalArrayIndexBySymbolVariable(SymbolVariable symbolVariable) {
+        return localArrayMapping.get(symbolVariable);
     }
 
     public int checkParamDoubleDeclaration(JovaParser.Param_listContext ctx) {
@@ -136,8 +137,8 @@ public abstract class SimpleCallable {
         return returnValue;
     }
 
-    public List<Object> getInstructions() {
-        return new ArrayList<Object>(List.copyOf(instructions));
+    public List<BaseInstruction> getInstructions() {
+        return new ArrayList<>(List.copyOf(instructions));
     }
 
 
