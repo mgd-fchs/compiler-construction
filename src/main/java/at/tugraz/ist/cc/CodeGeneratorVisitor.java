@@ -5,17 +5,18 @@ import at.tugraz.ist.cc.instructions.*;
 import at.tugraz.ist.cc.symbol_table.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
+public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
     public static final int OK = 0;
     public static final int ERROR_GENERAL = -1;
 
     private SymbolClass currentClass;
     private final SymbolTable symbolTable;
     private Integer currentConstructorIndex;
-    private Integer currentLabelIndex;
+    private final Integer currentLabelIndex;
 
     public CodeGeneratorVisitor() {
         symbolTable = SymbolTable.getInstance();
@@ -25,7 +26,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
     }
 
     @Override
-    public Integer visitProgram(JovaParser.ProgramContext ctx){
+    public Integer visitProgram(JovaParser.ProgramContext ctx) {
         try {
             visitChildren(ctx);
         } catch (Exception e) {
@@ -36,7 +37,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
     }
 
     @Override
-    public Integer visitClass_decl(JovaParser.Class_declContext ctx){
+    public Integer visitClass_decl(JovaParser.Class_declContext ctx) {
         visitClass_head(ctx.class_head());
         visitClass_body(ctx.class_body());
         return OK;
@@ -50,13 +51,14 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitClass_head(JovaParser.Class_headContext ctx) {
-        currentClass = symbolTable.getClassByName(ctx.CLASS_TYPE().toString(), ctx).get();
+        currentClass = symbolTable.getClassByName(ctx.CLASS_TYPE().toString(), ctx).orElseThrow();
         return OK;
     }
 
-    @Override public Integer visitClass_body(JovaParser.Class_bodyContext ctx) {
+    @Override
+    public Integer visitClass_body(JovaParser.Class_bodyContext ctx) {
         visitChildren(ctx);
-        return  OK;
+        return OK;
     }
 
     @Override
@@ -85,7 +87,8 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
         return OK;
     }
 
-    @Override public Integer visitMethod_decl(JovaParser.Method_declContext ctx) {
+    @Override
+    public Integer visitMethod_decl(JovaParser.Method_declContext ctx) {
         visitChildren(ctx);
         return OK;
     }
@@ -134,9 +137,9 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitRet_stmt(JovaParser.Ret_stmtContext ctx) {
-        List<Object> backupInstructions = currentClass.getCurrentCallable().getInstructions();
+        List<BaseInstruction> backupInstructions = currentClass.getCurrentCallable().getInstructions();
         visitExpr(ctx.expr());
-        ReturnInstruction newInstruction = new ReturnInstruction(currentClass.currentSymbolVariable);
+        ReturnInstruction newInstruction = new ReturnInstruction(currentClass.getCurrentCallable(), currentClass.currentSymbolVariable);
         currentClass.getCurrentCallable().instructions = backupInstructions;
         addInstruction(newInstruction);
         return OK;
@@ -146,17 +149,18 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
     public Integer visitAssign_stmt(JovaParser.Assign_stmtContext ctx) {
         SymbolVariable previousSymbolVariable = currentClass.getCurrentScopeVariable(ctx.id_expr().ID().toString());
 
-        if (ctx.ass != null){
+        if (ctx.ass != null) {
             visitExpr(ctx.expr());
-            AssignInstruction newInstruction = new AssignInstruction(previousSymbolVariable, currentClass.currentSymbolVariable);
+            AssignInstruction newInstruction = new AssignInstruction(currentClass.getCurrentCallable(), previousSymbolVariable, currentClass.currentSymbolVariable);
             addInstruction(newInstruction);
-        } else if (ctx.alloc != null){
+        } else if (ctx.alloc != null) {
             visitObject_alloc(ctx.object_alloc());
-            AllocInstruction newInstruction = new AllocInstruction(currentClass.currentSymbolVariable);
+            AllocInstruction newInstruction = new AllocInstruction(currentClass.getCurrentCallable(),
+                    currentClass.currentSymbolVariable, Collections.EMPTY_LIST); // TODO add right params
             addInstruction(newInstruction);
         }
 
-      //  visitChildren(ctx);
+        //  visitChildren(ctx);
         return OK;
     }
 
@@ -177,9 +181,9 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
         String methodName = ctx.ID().toString();
         SymbolMethod foundMethod =
-                classOfMethodInvocation.getMatchingMethod(methodName, currentClass.getCurrentArgList()).get();
+                classOfMethodInvocation.getMatchingMethod(methodName, currentClass.getCurrentArgList()).orElseThrow();
 
-        MethodInvocationInstruction newInstruction = new MethodInvocationInstruction(classOfMethodInvocation, foundMethod);
+        MethodInvocationInstruction newInstruction = new MethodInvocationInstruction(currentClass.getCurrentCallable(), classOfMethodInvocation, foundMethod);
         addInstruction(newInstruction);
 
         currentClass.currentSymbolVariable = foundMethod.getReturnValue();
@@ -209,7 +213,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
             }
         }
         // TODO @Magda: Handle this better -> unary instruction does not need to be created in every case
-        addInstruction(new UnaryInstruction(currentClass.currentSymbolVariable, null));
+        addInstruction(new UnaryInstruction(currentClass.getCurrentCallable(), currentClass.currentSymbolVariable, null));
         return OK;
     }
 
@@ -224,7 +228,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitExpr(JovaParser.ExprContext ctx) {
-        List<Object> backupInstructions = currentClass.getCurrentCallable().getInstructions();
+        List<BaseInstruction> backupInstructions = currentClass.getCurrentCallable().getInstructions();
 
         if (ctx.op != null) {
             // case: operation, check operand types
@@ -234,35 +238,35 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
             visit(ctx.right);
             SymbolVariable rightVariable = currentClass.currentSymbolVariable;
 
-            BinaryInstruction newInstruction = new BinaryInstruction(leftVariable, rightVariable, OperatorTypes.getOp(ctx.op.getText()));
+            BinaryInstruction newInstruction = new BinaryInstruction(currentClass.getCurrentCallable(), leftVariable, rightVariable, OperatorTypes.getOp(ctx.op.getText()));
             currentClass.getCurrentCallable().instructions = backupInstructions;
             addInstruction(newInstruction);
-        } else if (ctx.when != null){
+        } else if (ctx.when != null) {
             // case: ternary operator
-            currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
+            currentClass.getCurrentCallable().instructions = new ArrayList<>();
 
             visitExpr(ctx.when);
-            Object conditionalExpression = currentClass.getCurrentCallable().instructions.get(currentClass.getCurrentCallable().instructions.size()-1);
-            currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
+            Object conditionalExpression = currentClass.getCurrentCallable().instructions.get(currentClass.getCurrentCallable().instructions.size() - 1);
+            currentClass.getCurrentCallable().instructions = new ArrayList<>();
 
             visit(ctx.then);
-            List <Object> ifInstructions = currentClass.getCurrentCallable().instructions;
-            List <Object> elseInstructions = new ArrayList<Object>();
+            List<BaseInstruction> ifInstructions = currentClass.getCurrentCallable().instructions;
+            List<BaseInstruction> elseInstructions = new ArrayList<>();
 
-            if (ctx.el != null){
-                currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
+            if (ctx.el != null) {
+                currentClass.getCurrentCallable().instructions = new ArrayList<>();
                 visit(ctx.el);
                 elseInstructions = currentClass.getCurrentCallable().instructions;
             }
 
             currentClass.getCurrentCallable().instructions = backupInstructions;
-            addInstruction(new ConditionalInstruction(conditionalExpression, ifInstructions, elseInstructions));
+            addInstruction(new ConditionalInstruction(currentClass.getCurrentCallable(), conditionalExpression, ifInstructions, elseInstructions));
 
         } else {
-            currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
+            currentClass.getCurrentCallable().instructions = new ArrayList<>();
             visitPrimary_expr(ctx.primary_expr());
 
-            if (currentClass.getCurrentCallable().instructions.isEmpty()){
+            if (currentClass.getCurrentCallable().instructions.isEmpty()) {
                 currentClass.getCurrentCallable().instructions = backupInstructions;
             } else {
                 backupInstructions.addAll(currentClass.getCurrentCallable().instructions);
@@ -276,7 +280,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
     @Override
     public Integer visitUnary_expr(JovaParser.Unary_exprContext ctx) {
         visitChildren(ctx);
-        UnaryInstruction newInstruction = new UnaryInstruction(currentClass.currentSymbolVariable, OperatorTypes.getOp(ctx.op.getText()));
+        UnaryInstruction newInstruction = new UnaryInstruction(currentClass.getCurrentCallable(), currentClass.currentSymbolVariable, OperatorTypes.getOp(ctx.op.getText()));
         addInstruction(newInstruction);
         return OK;
     }
@@ -294,7 +298,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
         Optional<SymbolClass> correspondingClass = symbolTable.getClassByName(className, ctx);
         SymbolClass classObjectAlloc;
 
-        classObjectAlloc = correspondingClass.get();
+        classObjectAlloc = correspondingClass.orElseThrow();
         currentClass.currentSymbolVariable = new SymbolVariable(SymbolType.CLASS, classObjectAlloc, "");
 
         visitChildren(ctx);
@@ -314,9 +318,9 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitLiteral(JovaParser.LiteralContext ctx) {
-        if (ctx.BOOL_LIT() != null){
-            Integer boolValue;
-            if (ctx.BOOL_LIT().toString() == "true"){
+        if (ctx.BOOL_LIT() != null) {
+            int boolValue;
+            if (ctx.BOOL_LIT().toString().equals("true")) {
                 boolValue = 1;
             } else {
                 boolValue = 0;
@@ -324,10 +328,10 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
             SymbolVariable newVar = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "", boolValue);
 
             // TODO @Magda: Handle this better -> unary instruction does not need to be created in every case
-            addInstruction(new UnaryInstruction(newVar, null));
+            addInstruction(new UnaryInstruction(currentClass.getCurrentCallable(), newVar, null));
             currentClass.currentSymbolVariable = newVar;
             return OK;
-        } else if (ctx.STRING_LIT() != null){
+        } else if (ctx.STRING_LIT() != null) {
             currentClass.currentSymbolVariable = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.STRING, "",
                     ctx.STRING_LIT().toString());
             return OK;
@@ -341,7 +345,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
         } else if (ctx.FLOAT_LIT() != null){
             currentClass.currentSymbolVariable = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.FLOAT, "");
             return OK;*/
-        } else if (ctx.KEY_NIX() != null){
+        } else if (ctx.KEY_NIX() != null) {
             currentClass.currentSymbolVariable = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.NIX, "", null);
             return OK;
         }
@@ -357,20 +361,20 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
     @Override
     public Integer visitIf_stmt(JovaParser.If_stmtContext ctx) {
 
-        List <Object> backupInstructions = currentClass.getCurrentCallable().instructions;
+        List<BaseInstruction> backupInstructions = currentClass.getCurrentCallable().instructions;
 
-        currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
+        currentClass.getCurrentCallable().instructions = new ArrayList<>();
 
         visitExpr(ctx.expr());
-        Object conditionalExpression = currentClass.getCurrentCallable().instructions.get(currentClass.getCurrentCallable().instructions.size()-1);
-        currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
+        BaseInstruction conditionalExpression = currentClass.getCurrentCallable().instructions.get(currentClass.getCurrentCallable().instructions.size() - 1);
+        currentClass.getCurrentCallable().instructions = new ArrayList<>();
 
         visit(ctx.if_inst);
-        List <Object> ifInstructions = currentClass.getCurrentCallable().instructions;
-        List <Object> elseInstructions = new ArrayList<Object>();
+        List<BaseInstruction> ifInstructions = currentClass.getCurrentCallable().instructions;
+        List<BaseInstruction> elseInstructions = new ArrayList<>();
 
-        if (ctx.else_inst != null){
-            currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
+        if (ctx.else_inst != null) {
+            currentClass.getCurrentCallable().instructions = new ArrayList<>();
             visit(ctx.else_inst);
             elseInstructions = currentClass.getCurrentCallable().instructions;
         } else {
@@ -378,31 +382,31 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer>{
         }
 
         currentClass.getCurrentCallable().instructions = backupInstructions;
-        addInstruction(new ConditionalInstruction(conditionalExpression, ifInstructions, elseInstructions));
+        addInstruction(new ConditionalInstruction(currentClass.getCurrentCallable(), conditionalExpression, ifInstructions, elseInstructions));
 
         return OK;
     }
 
     @Override
     public Integer visitWhile_stmt(JovaParser.While_stmtContext ctx) {
-        List <Object> backupInstructions = currentClass.getCurrentCallable().instructions;
+        List<BaseInstruction> backupInstructions = currentClass.getCurrentCallable().instructions;
 
-        currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
+        currentClass.getCurrentCallable().instructions = new ArrayList<>();
 
         visitExpr(ctx.expr());
-        Object conditionalExpression = currentClass.getCurrentCallable().instructions.get(currentClass.getCurrentCallable().instructions.size()-1);
-        currentClass.getCurrentCallable().instructions = new ArrayList<Object>();
+        Object conditionalExpression = currentClass.getCurrentCallable().instructions.get(currentClass.getCurrentCallable().instructions.size() - 1);
+        currentClass.getCurrentCallable().instructions = new ArrayList<>();
 
         visit(ctx.compound_stmt());
-        List <Object> ifInstructions = currentClass.getCurrentCallable().instructions;
+        List<BaseInstruction> ifInstructions = currentClass.getCurrentCallable().instructions;
 
         currentClass.getCurrentCallable().instructions = backupInstructions;
-        addInstruction(new ConditionalInstruction(conditionalExpression, ifInstructions, null));
+        addInstruction(new ConditionalInstruction(currentClass.getCurrentCallable(), conditionalExpression, ifInstructions, null));
 
         return OK;
     }
 
-    public void addInstruction(Object newInstruction){
+    public void addInstruction(BaseInstruction newInstruction) {
         currentClass.getCurrentCallable().instructions.add(newInstruction);
     }
 }
