@@ -32,10 +32,10 @@ public class ClassWriter implements AutoCloseable {
     public void write() {
         writeClassHeader();
 
-
         if (symbolClass.getClassName().equals(SymbolClass.MAIN_CLASS_NAME)) {
             symbolClass.getMethods().stream().findFirst().ifPresent(symbolMethod -> {
                 writeMainMethod(symbolMethod);
+                return;
             });
         }
 
@@ -196,8 +196,8 @@ public class ClassWriter implements AutoCloseable {
                 "  dup\n" +
                 "  getstatic java/lang/System/in Ljava/io/InputStream;\n" +
                 "  invokespecial java/util/Scanner/<init>(Ljava/io/InputStream;)V\n" +
-                "  iload %s\n" +
-                "  invokevirtual java/util/Scanner/nextInt()I\n", localArrayIndex);
+                "  invokevirtual java/util/Scanner/nextInt()I\n" +
+                "  istore %s", localArrayIndex);
     }
 
     private void readString(int localArrayIndex) {
@@ -206,7 +206,7 @@ public class ClassWriter implements AutoCloseable {
                 "  dup\n" +
                 "  getstatic java/lang/System/in Ljava/io/InputStream;\n" +
                 "  invokespecial java/util/Scanner/<init>(Ljava/io/InputStream;)V\n" +
-                "  iload %s\n" +
-                "  invokevirtual java/util/Scanner/nextLine()Ljava/lang/String;\n", localArrayIndex);
+                "  invokevirtual java/util/Scanner/nextLine()Ljava/lang/String;\n" +
+                "  astore %s", localArrayIndex);
     }
 }
