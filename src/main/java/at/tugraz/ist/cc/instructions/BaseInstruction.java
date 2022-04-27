@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public abstract class BaseInstruction {
     protected final SimpleCallable associatedCallable;
-    protected final SymbolVariable result;
+    protected SymbolVariable result;
 
     public BaseInstruction(SimpleCallable associatedCallable, Optional<SymbolVariable> result) {
         this.associatedCallable = associatedCallable;

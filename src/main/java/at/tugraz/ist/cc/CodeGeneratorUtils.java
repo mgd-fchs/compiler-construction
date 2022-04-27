@@ -1,6 +1,6 @@
 package at.tugraz.ist.cc;
 
-import at.tugraz.ist.cc.instructions.OperatorTypes;
+import at.tugraz.ist.cc.instructions.*;
 import at.tugraz.ist.cc.symbol_table.SimpleCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolPrimitiveType;
 import at.tugraz.ist.cc.symbol_table.SymbolType;
@@ -8,6 +8,7 @@ import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
 import java.util.Collection;
 
+import static at.tugraz.ist.cc.symbol_table.SymbolType.CLASS;
 import static at.tugraz.ist.cc.symbol_table.SymbolType.PRIMITIVE;
 
 public class CodeGeneratorUtils {
@@ -52,23 +53,23 @@ public class CodeGeneratorUtils {
             case MOD:
                 return "irem";
             case GREATER:
-                return "";               // TODO
+                return "if_icmpgt";
             case SMALLER:
-                return "";              // TODO
+                return "if_icmplt";
             case GREATER_EQUAL:
-                return "";              // TODO
+                return "if_icmpge";
             case SMALLER_EQUAL:
-                return "";              // TODO
+                return "if_icmple";
             case EQUAL:
-                return "";              // TODO
+                return "if_icmpeq";
             case UNEQUAL:
-                return "";              // TODO
+                return "if_icmpne";
             case OR:
-                return "ior";
+//                return "ior";
             case AND:
-                return "iand";
+//                return "iand";
             case NOT:
-                return "";                // TODO
+                return "";
             default:
                 throw new RuntimeException();
         }
@@ -145,5 +146,38 @@ public class CodeGeneratorUtils {
                 "  invokespecial java/util/Scanner/<init>(Ljava/io/InputStream;)V\n" +
                 "  invokevirtual java/util/Scanner/nextLine()Ljava/lang/String;\n" +
                 "  astore %s", localArrayIndex);
+    }
+
+    public static BaseInstruction createBinaryInstruction(SimpleCallable callable, OperatorTypes op,
+                                                     SymbolVariable left, SymbolVariable right) {
+        switch (op) {
+            case ADD:
+            case SUB:
+            case MUL:
+            case DIV:
+            case MOD:
+                if (right == null) {
+                    // unary
+                    return new ArithmeticUnaryInstruction(callable, left, op);
+                }
+                return new ArithmeticBinaryInstruction(callable, left, right, op);
+            case GREATER:
+            case SMALLER:
+            case GREATER_EQUAL:
+            case SMALLER_EQUAL:
+                return new RelationalBinaryInstruction(callable, left, right, op);
+            case EQUAL:
+            case UNEQUAL:
+                return (left.getType() == CLASS) ?
+                        new ClassComparisonBinaryInstruction(callable, left, right, op) :
+                        new RelationalBinaryInstruction(callable, left, right, op);
+            case OR:
+            case AND:
+                return new LogicalBinaryInstruction(callable, left, right, op);
+            case NOT:
+                return new LogicalUnaryInstruction(callable, left, op);
+            default:
+                throw new RuntimeException();
+        }
     }
 }

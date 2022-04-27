@@ -14,11 +14,15 @@ public abstract class SimpleCallable {
     protected final SymbolVariable returnValue;
     public List<BaseInstruction> instructions;
     private final Map<SymbolVariable, Integer> localArrayMapping;
+
+    public final SymbolClass associatedSymbolClass;
     private int localArrayIndex;
 
-    public SimpleCallable(String name, List<SymbolVariable> params, SymbolVariable returnValue) {
+    public SimpleCallable(String name, List<SymbolVariable> params,
+                          SymbolVariable returnValue, SymbolClass associatedSymbolClass) {
         this.name = name;
         this.returnValue = returnValue;
+        this.associatedSymbolClass = associatedSymbolClass;
 
         localArrayIndex = 1; // starting at zero, because the pos 0 will be used for this
         this.localArrayMapping = new HashMap<>();

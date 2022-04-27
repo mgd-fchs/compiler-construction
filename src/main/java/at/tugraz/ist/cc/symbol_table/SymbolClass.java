@@ -25,6 +25,8 @@ public class SymbolClass {
     private List<SymbolVariable> currentArgList;
     public SymbolVariable currentSymbolVariable;
 
+    private long labelForJumpCount;
+
     public SymbolClass(String name) {
         className = name;
         this.members = new ArrayList<>();
@@ -35,6 +37,11 @@ public class SymbolClass {
 
         // needs to be 0 to signal that no method-invocation is currently checked
         currentArgList = null;
+        labelForJumpCount = 0;
+    }
+
+    public long getNextLabelCount(){
+        return labelForJumpCount++;
     }
 
     public void  buildCurrentMembers(SymbolModifier modifier, JovaParser.Member_declContext ctx){
@@ -95,11 +102,13 @@ public class SymbolClass {
         switch (currentSymbolType){
             case CLASS:
                 Optional<SymbolClass> foundClass = SymbolTable.getInstance().getClassByName(currentClassName, ctx);
-                symbolMethod = new SymbolMethod(modifier, name, new SymbolVariable(SymbolType.CLASS, foundClass.get(), "returnValue"), currentParams);
+                symbolMethod = new SymbolMethod(modifier, name,
+                        new SymbolVariable(SymbolType.CLASS, foundClass.get(), "returnValue"), currentParams, this);
                 break;
 
             case PRIMITIVE:
-                symbolMethod = new SymbolMethod(modifier, name, new SymbolVariable(SymbolType.PRIMITIVE, currentSymbolPrimitiveType, "returnValue") , currentParams);
+                symbolMethod = new SymbolMethod(modifier, name,
+                        new SymbolVariable(SymbolType.PRIMITIVE, currentSymbolPrimitiveType, "returnValue") , currentParams, this);
                 break;
 
             default:

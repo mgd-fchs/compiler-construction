@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public abstract class UnaryInstruction extends BaseInstruction {
     protected SymbolVariable parameter;
-    private OperatorTypes operator;
+    protected OperatorTypes operator;
 
     public UnaryInstruction(SimpleCallable associatedCallable, SymbolVariable result,
                             SymbolVariable parameter, OperatorTypes operator) {

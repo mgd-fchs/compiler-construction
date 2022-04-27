@@ -6,6 +6,6 @@ public class SymbolConstructor extends  SimpleCallable{
 
     public SymbolConstructor(SymbolClass symbolClass, List<SymbolVariable> params) {
         super(symbolClass.getClassName(), params, new SymbolVariable(
-                SymbolType.CLASS, symbolClass, ""));
+                SymbolType.CLASS, symbolClass, ""), symbolClass);
     }
 }

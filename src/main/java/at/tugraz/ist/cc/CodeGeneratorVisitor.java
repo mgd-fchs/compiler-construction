@@ -217,7 +217,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
             }
         }
         // TODO @Magda: Handle this better -> unary instruction does not need to be created in every case
-        addInstruction(new UnaryInstruction(currentClass.getCurrentCallable(), currentClass.currentSymbolVariable, null));
+        // TODOD: addInstruction(new UnaryInstruction(currentClass.getCurrentCallable(), currentClass.currentSymbolVariable, null));
         return OK;
     }
 
@@ -242,9 +242,12 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
             visit(ctx.right);
             SymbolVariable rightVariable = currentClass.currentSymbolVariable;
 
-            BinaryInstruction newInstruction = new BinaryInstruction(currentClass.getCurrentCallable(), leftVariable, rightVariable, OperatorTypes.getOp(ctx.op.getText()));
+            BaseInstruction newInstruction = CodeGeneratorUtils.createBinaryInstruction(
+                    currentClass.getCurrentCallable(), OperatorTypes.getOp(ctx.op.getText()),
+                    leftVariable, rightVariable);
             currentClass.getCurrentCallable().instructions = backupInstructions;
             addInstruction(newInstruction);
+
         } else if (ctx.when != null) {
             // case: ternary operator
             currentClass.getCurrentCallable().instructions = new ArrayList<>();
@@ -280,7 +283,9 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
     @Override
     public Integer visitUnary_expr(JovaParser.Unary_exprContext ctx) {
         visitChildren(ctx);
-        UnaryInstruction newInstruction = new UnaryInstruction(currentClass.getCurrentCallable(), currentClass.currentSymbolVariable, OperatorTypes.getOp(ctx.op.getText()));
+        BaseInstruction newInstruction = CodeGeneratorUtils.createBinaryInstruction(
+                currentClass.getCurrentCallable(), OperatorTypes.getOp(ctx.op.getText()),
+                currentClass.currentSymbolVariable, null);
         addInstruction(newInstruction);
         return OK;
     }
@@ -328,7 +333,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
             SymbolVariable newVar = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "", boolValue);
 
             // TODO @Magda: Handle this better -> unary instruction does not need to be created in every case
-            addInstruction(new UnaryInstruction(currentClass.getCurrentCallable(), newVar, null));
+            // TODO; addInstruction(new UnaryInstruction(currentClass.getCurrentCallable(), newVar, null));
             currentClass.currentSymbolVariable = newVar;
             return OK;
         } else if (ctx.STRING_LIT() != null) {
