@@ -10,7 +10,9 @@ public class ConditionalInstruction extends BaseInstruction{
     public final List<BaseInstruction> elseInstructions;
     public final Object conditional; // TODO change to base instruction
 
-    public ConditionalInstruction(SimpleCallable associatedCallable, Object conditional, List<BaseInstruction> ifInstructions, List<BaseInstruction> elseInstructions) {
+    public ConditionalInstruction(SimpleCallable associatedCallable,
+                                  Object conditional, List<BaseInstruction> ifInstructions,
+                                  List<BaseInstruction> elseInstructions) {
         super(associatedCallable, Optional.empty());
         this.ifInstructions = ifInstructions;
         this.elseInstructions = elseInstructions;

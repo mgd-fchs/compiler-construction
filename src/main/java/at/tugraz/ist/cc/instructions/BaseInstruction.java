@@ -18,6 +18,10 @@ public abstract class BaseInstruction {
         }
     }
 
+    public SymbolVariable getResult(){
+        return result;
+    }
+
     /**
      * This function should be implemented so that the result of the instruction is
      * saved into the local array. The index for SymbolVariables can be found via the

@@ -7,20 +7,14 @@ import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
 import java.util.Optional;
 
-public class UnaryInstruction extends BaseInstruction {
-    private SymbolVariable parameter;
+public abstract class UnaryInstruction extends BaseInstruction {
+    protected SymbolVariable parameter;
     private OperatorTypes operator;
 
-    public UnaryInstruction(SimpleCallable associatedCallable, SymbolVariable parameter, OperatorTypes operator) {
-        super(associatedCallable, Optional.of(new SymbolVariable(SymbolType.PRIMITIVE,
-                (operator.equals(OperatorTypes.NOT)) ? SymbolPrimitiveType.INT : SymbolPrimitiveType.BOOL)));
+    public UnaryInstruction(SimpleCallable associatedCallable, SymbolVariable result,
+                            SymbolVariable parameter, OperatorTypes operator) {
+        super(associatedCallable, Optional.of(result));
         this.parameter = parameter;
         this.operator = operator;
-    }
-
-    @Override
-    public String buildAssemblyString() {
-        // TODO
-        return null;
     }
 }
