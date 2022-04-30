@@ -1,0 +1,18 @@
+class Another {
+    public bool b;
+}
+
+class Test {
+    public int t;
+
+    public bool func() {
+      Another an_class;
+      bool myvar;
+      an_class = new Another;
+
+      myvar = an_class.b;
+      this.t = 5;
+      t = 4;
+      return myvar;
+    }
+}

@@ -17,7 +17,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
     private Integer currentConstructorIndex;
     private Integer currentMethodIndex;
     private final Integer currentLabelIndex;
-    private MemberAccess currentMemberAccess;
+    private MemberAccessInstruction currentMemberAccessInstruction;
 
     public CodeGeneratorVisitor() {
         symbolTable = SymbolTable.getInstance();
@@ -25,7 +25,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
         currentConstructorIndex = 0;
         currentLabelIndex = 0;
         currentMethodIndex = 0;
-        currentMemberAccess = null;
+        currentMemberAccessInstruction = null;
     }
 
     @Override
@@ -154,6 +154,8 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
     public Integer visitAssign_stmt(JovaParser.Assign_stmtContext ctx) {
         visitId_expr(ctx.id_expr());
         SymbolVariable lhsVar = currentClass.currentSymbolVariable;
+
+
         if (ctx.ass != null) {
             visitExpr(ctx.expr());
             AssignLocalInstruction newInstruction = new AssignLocalInstruction(currentClass.getCurrentCallable(), lhsVar, currentClass.currentSymbolVariable);
@@ -170,33 +172,36 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
 
     @Override
     public Integer visitMember_access(JovaParser.Member_accessContext ctx) {
-        if (currentMemberAccess == null){
+       /* if (currentMemberAccessInstruction == null){
             if (ctx.method_invocation() != null){
                 SymbolVariable classSymbolVar = currentClass.currentSymbolVariable;
                 visitMethod_invocation(ctx.method_invocation());
-                currentMemberAccess = new MemberAccess(classSymbolVar, currentClass.currentSymbolVariable);
+                currentMemberAccessInstruction = new MemberAccessInstruction(currentClass.getCurrentCallable(), classSymbolVar, currentClass.currentSymbolVariable);
             } else {
-                currentMemberAccess = new MemberAccess(currentClass.currentSymbolVariable,
+                currentMemberAccessInstruction = new MemberAccessInstruction(currentClass.getCurrentCallable(), currentClass.currentSymbolVariable,
                         new SymbolVariable(currentClass.currentSymbolVariable, ctx.ID().toString(), false));
             }
-        } else {
-            SymbolVariable memberRef = currentMemberAccess.memberRef;
+        } else {*/
+            SymbolVariable memberRef = currentClass.currentSymbolVariable;
 
             if (ctx.method_invocation() != null){
                 visitMethod_invocation(ctx.method_invocation());
-                currentMemberAccess = new MemberAccess(memberRef, currentClass.currentSymbolVariable);
+                // currentMemberAccess = new MemberAccess(memberRef, currentClass.currentSymbolVariable);
             } else {
-                currentMemberAccess = new MemberAccess(memberRef,
-                        new SymbolVariable(currentClass.currentSymbolVariable, ctx.ID().toString(), false));
+                currentMemberAccessInstruction = new MemberAccessInstruction(currentClass.getCurrentCallable(), memberRef,
+                        ((SymbolClass) memberRef.getActualType()).getMemberIfExists(ctx.ID().toString()).orElseThrow().getValue());
+
+                currentClass.currentSymbolVariable = currentMemberAccessInstruction.getResult();
+                addInstruction(currentMemberAccessInstruction);
             }
-        }
+        //}
 
         return OK;
     }
 
     @Override
     public Integer visitMethod_invocation(JovaParser.Method_invocationContext ctx) {
-        // TODO what if the method is from inside the own class (withouth this keyword)
+        // TODO what if the method is from inside the own class (without this keyword)
         SymbolClass classOfMethodInvocation = (SymbolClass) currentClass.currentSymbolVariable.getActualType();
 
         currentClass.setArgList(new ArrayList<>());
@@ -211,7 +216,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
 
         MethodInvocationInstruction newInstruction = new MethodInvocationInstruction(currentClass.getCurrentCallable(),
                 currentClass.currentSymbolVariable /* TODO has this currentClass.currentSymbolVariable the right ref??? */
-                , foundMethod, Collections.EMPTY_LIST); // TODO Parmas
+                , foundMethod, Collections.EMPTY_LIST); // TODO Params
         addInstruction(newInstruction);
 
         currentClass.currentSymbolVariable = foundMethod.getReturnValue();
@@ -230,17 +235,23 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
 
             if (localVar == null){
                 currentClass.currentSymbolVariable = currentClass.getCurrentScopeVariable(ctx.ID().toString());
-                currentMemberAccess = new MemberAccess(new SymbolVariable(currentClass, true), currentClass.currentSymbolVariable);
+                currentMemberAccessInstruction = new MemberAccessInstruction(currentClass.getCurrentCallable(),
+                        new SymbolVariable(currentClass, true), currentClass.currentSymbolVariable);
+                addInstruction(currentMemberAccessInstruction);
+                currentClass.currentSymbolVariable = currentMemberAccessInstruction.getResult();
+            } else {
+                currentClass.currentSymbolVariable = localVar;
             }
 
         } else if (ctx.method_invocation() != null) {
             visitMethod_invocation(ctx.method_invocation());
         }
         if (ctx.member_access() != null) {
+
             for (JovaParser.Member_accessContext expr : ctx.member_access()) {
                 visitMember_access(expr);
             }
-            currentMemberAccess = null;
+            currentMemberAccessInstruction = null;
         }
         return OK;
     }
