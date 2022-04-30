@@ -5,7 +5,7 @@ class Test {
       int f;
       int g;
 
-      g = true ? f : 0;
+      g = true&&false ? f : 0;
 
       return myvar;
     }

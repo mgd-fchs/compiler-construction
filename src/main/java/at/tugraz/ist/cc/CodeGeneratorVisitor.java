@@ -3,6 +3,7 @@ package at.tugraz.ist.cc;
 import at.tugraz.ist.cc.instructions.*;
 import at.tugraz.ist.cc.symbol_table.*;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,6 +20,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
     private final Integer currentLabelIndex;
     private Boolean assignMember;
     private MemberAccessInstruction currentMemberAccessInstruction;
+    private BaseInstruction primitiveInstruction;
 
     public CodeGeneratorVisitor() {
         symbolTable = SymbolTable.getInstance();
@@ -175,9 +177,14 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
                 addInstruction(newInstruction);
             }
         } else if (ctx.alloc != null) {
+            List<SymbolVariable> backupArgList = currentClass.getCurrentArgList();
+            currentClass.setArgList(new ArrayList<>());
+
             visitObject_alloc(ctx.object_alloc());
             newInstruction = new AllocInstruction(currentClass.getCurrentCallable(),
-                    currentClass.currentSymbolVariable, Collections.EMPTY_LIST); // TODO add right params
+                    currentClass.currentSymbolVariable, currentClass.getCurrentArgList());
+
+            currentClass.setArgList(backupArgList);
 
             if (lastInstruction != null){
                 lastInstruction.setPutValue(newInstruction.getResult());
@@ -240,7 +247,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
     @Override
     public Integer visitId_expr(JovaParser.Id_exprContext ctx) {
 
-        currentClass.currentSymbolVariable = new SymbolVariable(SymbolType.CLASS, currentClass, "");
+        currentClass.currentSymbolVariable = new SymbolVariable(currentClass, true);
 
         if (ctx.ID() != null) {
             SymbolVariable localVar = currentClass.getLocalVariable(ctx.ID().toString());
@@ -303,19 +310,35 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
         } else if (ctx.when != null) {
             // case: ternary operator
             List<BaseInstruction> backupInstructions = currentClass.getCurrentCallable().instructions;
-
-            visitExpr(ctx.when);
-            Object conditionalExpression = currentClass.getCurrentCallable().instructions.get(currentClass.getCurrentCallable().instructions.size() - 1);
             currentClass.getCurrentCallable().instructions = new ArrayList<>();
 
+            visitExpr(ctx.when);
+            List<BaseInstruction> conditionalExpression = currentClass.getCurrentCallable().instructions;
+
+            if(conditionalExpression.isEmpty()){
+                LogicalUnaryInstruction conditional = new LogicalUnaryInstruction(currentClass.getCurrentCallable(),
+                        currentClass.currentSymbolVariable, null);
+                conditionalExpression.add(conditional);
+            }
+
+            currentClass.getCurrentCallable().instructions = new ArrayList<>();
             visit(ctx.then);
             List<BaseInstruction> ifInstructions = currentClass.getCurrentCallable().instructions;
-            List<BaseInstruction> elseInstructions = new ArrayList<>();
 
-            if (ctx.el != null) {
-                currentClass.getCurrentCallable().instructions = new ArrayList<>();
-                visit(ctx.el);
-                elseInstructions = currentClass.getCurrentCallable().instructions;
+            if(ifInstructions.isEmpty()){
+                LogicalUnaryInstruction literal = new LogicalUnaryInstruction(currentClass.getCurrentCallable(),
+                        currentClass.currentSymbolVariable, null);
+                ifInstructions.add(literal);
+            }
+
+            currentClass.getCurrentCallable().instructions = new ArrayList<>();
+            visit(ctx.el);
+            List<BaseInstruction> elseInstructions = currentClass.getCurrentCallable().instructions;
+
+            if(elseInstructions.isEmpty()){
+                LogicalUnaryInstruction literal = new LogicalUnaryInstruction(currentClass.getCurrentCallable(),
+                        currentClass.currentSymbolVariable, null);
+                elseInstructions.add(literal);
             }
 
             currentClass.getCurrentCallable().instructions = backupInstructions;
@@ -417,7 +440,14 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
         currentClass.getCurrentCallable().instructions = new ArrayList<>();
 
         visitExpr(ctx.expr());
-        BaseInstruction conditionalExpression = currentClass.getCurrentCallable().instructions.get(currentClass.getCurrentCallable().instructions.size() - 1);
+        List<BaseInstruction> conditionalExpression = currentClass.getCurrentCallable().instructions;
+        if(conditionalExpression.isEmpty()){
+            // TODO @Richard: Neurosen
+            LogicalUnaryInstruction conditional = new LogicalUnaryInstruction(currentClass.getCurrentCallable(),
+                    currentClass.currentSymbolVariable, null);
+            conditionalExpression.add(conditional);
+        }
+
         currentClass.getCurrentCallable().instructions = new ArrayList<>();
 
         visit(ctx.if_inst);
@@ -445,7 +475,15 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
         currentClass.getCurrentCallable().instructions = new ArrayList<>();
 
         visitExpr(ctx.expr());
-        Object conditionalExpression = currentClass.getCurrentCallable().instructions.get(currentClass.getCurrentCallable().instructions.size() - 1);
+        List<BaseInstruction> conditionalExpression = currentClass.getCurrentCallable().instructions;
+
+        if(conditionalExpression.isEmpty()){
+            // TODO @Richard: Neurosen
+            LogicalUnaryInstruction conditional = new LogicalUnaryInstruction(currentClass.getCurrentCallable(),
+                    currentClass.currentSymbolVariable, null);
+            conditionalExpression.add(conditional);
+        }
+
         currentClass.getCurrentCallable().instructions = new ArrayList<>();
 
         visit(ctx.compound_stmt());

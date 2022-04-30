@@ -25,10 +25,6 @@ class Test {
 
       an_class = new Another;
 
-      //a = an_class.anotherfun(an_class.somefun());
-      a = this.func2();
-      a = func2();
-
-      return c;
+      return c+b+an_class.somefun();
     }
 }
