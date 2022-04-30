@@ -67,4 +67,12 @@ public class CodeGeneratorPrivateTest {
         int result = codeGenerator.createCode(path_pass + "pass07.jova", path_out + "pass07.j");
         assertEquals(0, result);
     }
+
+    @Test
+    public void testPass08() {
+        // method invocation
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass08.jova", path_out + "pass08.j");
+        assertEquals(0, result);
+    }
 }

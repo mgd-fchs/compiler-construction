@@ -1,0 +1,28 @@
+class Another {
+    public bool b;
+    public Another another;
+
+    public int somefun(){
+        return 5;
+    }
+
+    public bool anotherfun(int f){
+        return b;
+    }
+}
+
+class Test {
+    public int t;
+
+    public int func() {
+      bool a;
+      int b, c, d;
+      Another an_class;
+
+      an_class = new Another;
+
+      a = an_class.anotherfun(an_class.somefun());
+
+      return c;
+    }
+}

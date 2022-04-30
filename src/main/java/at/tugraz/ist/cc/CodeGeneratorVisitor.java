@@ -190,16 +190,6 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
 
     @Override
     public Integer visitMember_access(JovaParser.Member_accessContext ctx) {
-       /* if (currentMemberAccessInstruction == null){
-            if (ctx.method_invocation() != null){
-                SymbolVariable classSymbolVar = currentClass.currentSymbolVariable;
-                visitMethod_invocation(ctx.method_invocation());
-                currentMemberAccessInstruction = new MemberAccessInstruction(currentClass.getCurrentCallable(), classSymbolVar, currentClass.currentSymbolVariable);
-            } else {
-                currentMemberAccessInstruction = new MemberAccessInstruction(currentClass.getCurrentCallable(), currentClass.currentSymbolVariable,
-                        new SymbolVariable(currentClass.currentSymbolVariable, ctx.ID().toString(), false));
-            }
-        } else {*/
             SymbolVariable memberRef = currentClass.currentSymbolVariable;
 
             if (ctx.method_invocation() != null){
@@ -213,7 +203,6 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
                 addInstruction(currentMemberAccessInstruction);
                 assignMember = true;
             }
-        //}
 
         return OK;
     }
@@ -222,22 +211,26 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
     public Integer visitMethod_invocation(JovaParser.Method_invocationContext ctx) {
         // TODO what if the method is from inside the own class (without this keyword)
         SymbolClass classOfMethodInvocation = (SymbolClass) currentClass.currentSymbolVariable.getActualType();
+        SymbolVariable backupVar = currentClass.currentSymbolVariable;
+        currentClass.currentSymbolVariable = null;
 
+        List<SymbolVariable> backupArgList = currentClass.getCurrentArgList();
         currentClass.setArgList(new ArrayList<>());
 
         if (ctx.arg_list() != null) {
             visitArg_list(ctx.arg_list());
         }
 
+        currentClass.currentSymbolVariable = backupVar;
         String methodName = ctx.ID().toString();
         SymbolMethod foundMethod =
                 classOfMethodInvocation.getMatchingMethod(methodName, currentClass.getCurrentArgList()).orElseThrow();
 
         MethodInvocationInstruction newInstruction = new MethodInvocationInstruction(currentClass.getCurrentCallable(),
-                currentClass.currentSymbolVariable /* TODO has this currentClass.currentSymbolVariable the right ref??? */
-                , foundMethod, Collections.EMPTY_LIST); // TODO Params
+                currentClass.currentSymbolVariable, foundMethod, currentClass.getCurrentArgList());
         addInstruction(newInstruction);
 
+        currentClass.setArgList(backupArgList);
         currentClass.currentSymbolVariable = newInstruction.getResult();
         assignMember = false;
         visitChildren(ctx);
@@ -278,10 +271,12 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
 
     @Override
     public Integer visitArg_list(JovaParser.Arg_listContext ctx) {
+
         for (JovaParser.ExprContext expr : ctx.expr()) {
             visitExpr(expr);
             currentClass.addArgument(currentClass.currentSymbolVariable);
         }
+
         return OK;
     }
 
@@ -307,7 +302,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
 
         } else if (ctx.when != null) {
             // case: ternary operator
-            currentClass.getCurrentCallable().instructions = new ArrayList<>();
+            List<BaseInstruction> backupInstructions = currentClass.getCurrentCallable().instructions;
 
             visitExpr(ctx.when);
             Object conditionalExpression = currentClass.getCurrentCallable().instructions.get(currentClass.getCurrentCallable().instructions.size() - 1);
@@ -323,15 +318,11 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
                 elseInstructions = currentClass.getCurrentCallable().instructions;
             }
 
-            //currentClass.getCurrentCallable().instructions = backupInstructions;
+            currentClass.getCurrentCallable().instructions = backupInstructions;
             addInstruction(new ConditionalInstruction(currentClass.getCurrentCallable(), conditionalExpression, ifInstructions, elseInstructions));
 
         } else {
-            //currentClass.getCurrentCallable().instructions = new ArrayList<>();
             visitPrimary_expr(ctx.primary_expr());
-
-            //backupInstructions.addAll(currentClass.getCurrentCallable().instructions);
-            //currentClass.getCurrentCallable().instructions = backupInstructions;
         }
 
         return OK;
