@@ -146,10 +146,8 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
 
     @Override
     public Integer visitRet_stmt(JovaParser.Ret_stmtContext ctx) {
-        List<BaseInstruction> backupInstructions = currentClass.getCurrentCallable().getInstructions();
         visitExpr(ctx.expr());
         ReturnInstruction newInstruction = new ReturnInstruction(currentClass.getCurrentCallable(), currentClass.currentSymbolVariable);
-        currentClass.getCurrentCallable().instructions = backupInstructions;
         addInstruction(newInstruction);
         return OK;
     }
@@ -289,7 +287,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
 
     @Override
     public Integer visitExpr(JovaParser.ExprContext ctx) {
-        List<BaseInstruction> backupInstructions = currentClass.getCurrentCallable().getInstructions();
+      //  List<BaseInstruction> backupInstructions = currentClass.getCurrentCallable().getInstructions();
 
         if (ctx.op != null) {
             // case: operation, check operand types
@@ -302,7 +300,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
             BaseInstruction newInstruction = CodeGeneratorUtils.createBinaryInstruction(
                     currentClass.getCurrentCallable(), OperatorTypes.getOp(ctx.op.getText()),
                     leftVariable, rightVariable);
-            currentClass.getCurrentCallable().instructions = backupInstructions;
+            //currentClass.getCurrentCallable().instructions = backupInstructions;
 
             currentClass.currentSymbolVariable = newInstruction.getResult();
             addInstruction(newInstruction);
@@ -325,15 +323,15 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
                 elseInstructions = currentClass.getCurrentCallable().instructions;
             }
 
-            currentClass.getCurrentCallable().instructions = backupInstructions;
+            //currentClass.getCurrentCallable().instructions = backupInstructions;
             addInstruction(new ConditionalInstruction(currentClass.getCurrentCallable(), conditionalExpression, ifInstructions, elseInstructions));
 
         } else {
-            currentClass.getCurrentCallable().instructions = new ArrayList<>();
+            //currentClass.getCurrentCallable().instructions = new ArrayList<>();
             visitPrimary_expr(ctx.primary_expr());
 
-            backupInstructions.addAll(currentClass.getCurrentCallable().instructions);
-            currentClass.getCurrentCallable().instructions = backupInstructions;
+            //backupInstructions.addAll(currentClass.getCurrentCallable().instructions);
+            //currentClass.getCurrentCallable().instructions = backupInstructions;
         }
 
         return OK;

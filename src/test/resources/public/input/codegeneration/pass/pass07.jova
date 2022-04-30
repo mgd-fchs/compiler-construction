@@ -1,0 +1,16 @@
+class Another {
+    public bool b;
+    public Another another;
+}
+
+class Test {
+    public int t;
+
+    public int func() {
+      int a, b, c, d;
+
+      a = (b + c * d)/c;
+
+      return a;
+    }
+}
