@@ -17,6 +17,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
     private Integer currentConstructorIndex;
     private Integer currentMethodIndex;
     private final Integer currentLabelIndex;
+    private Boolean assignMember;
     private MemberAccessInstruction currentMemberAccessInstruction;
 
     public CodeGeneratorVisitor() {
@@ -26,6 +27,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
         currentLabelIndex = 0;
         currentMethodIndex = 0;
         currentMemberAccessInstruction = null;
+        assignMember = false;
     }
 
     @Override
@@ -154,21 +156,37 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
 
     @Override
     public Integer visitAssign_stmt(JovaParser.Assign_stmtContext ctx) {
+        assignMember = false;
         visitId_expr(ctx.id_expr());
         SymbolVariable lhsVar = currentClass.currentSymbolVariable;
 
+        List<BaseInstruction> instructions = currentClass.getCurrentCallable().instructions;
+        BaseInstruction newInstruction = null;
+        MemberAccessInstruction lastInstruction = null;
 
+        if (assignMember){
+            lastInstruction = (MemberAccessInstruction) instructions.get(instructions.size()-1);
+        }
         if (ctx.ass != null) {
             visitExpr(ctx.expr());
-            AssignLocalInstruction newInstruction = new AssignLocalInstruction(currentClass.getCurrentCallable(), lhsVar, currentClass.currentSymbolVariable);
-            addInstruction(newInstruction);
+            newInstruction = new AssignLocalInstruction(currentClass.getCurrentCallable(), lhsVar, currentClass.currentSymbolVariable);
+
+            if (lastInstruction != null){
+                lastInstruction.setPutValue(currentClass.currentSymbolVariable);
+            } else {
+                addInstruction(newInstruction);
+            }
         } else if (ctx.alloc != null) {
             visitObject_alloc(ctx.object_alloc());
-            AllocInstruction newInstruction = new AllocInstruction(currentClass.getCurrentCallable(),
+            newInstruction = new AllocInstruction(currentClass.getCurrentCallable(),
                     currentClass.currentSymbolVariable, Collections.EMPTY_LIST); // TODO add right params
+
+            if (lastInstruction != null){
+                lastInstruction.setPutValue(newInstruction.getResult());
+            }
             addInstruction(newInstruction);
         }
-        // visitChildren(ctx);
+
         return OK;
     }
 
@@ -195,6 +213,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
 
                 currentClass.currentSymbolVariable = currentMemberAccessInstruction.getResult();
                 addInstruction(currentMemberAccessInstruction);
+                assignMember = true;
             }
         //}
 
@@ -222,7 +241,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
         addInstruction(newInstruction);
 
         currentClass.currentSymbolVariable = newInstruction.getResult();
-
+        assignMember = false;
         visitChildren(ctx);
         return OK;
     }
@@ -241,6 +260,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
                         new SymbolVariable(currentClass, true), currentClass.currentSymbolVariable);
                 addInstruction(currentMemberAccessInstruction);
                 currentClass.currentSymbolVariable = currentMemberAccessInstruction.getResult();
+                assignMember = true;
             } else {
                 currentClass.currentSymbolVariable = localVar;
             }

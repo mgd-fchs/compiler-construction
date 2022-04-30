@@ -37,7 +37,6 @@ public class MethodInvocationInstruction extends BaseInstruction {
                 .append("           ; loading the obj-ref for the method call\n")
                 // load params
                 .append(CodeGeneratorUtils.getLoadingParametersString(params, associatedCallable))
-                .append("   invokespecial ")
                 .append(String.format("" +
                                 "   invokespecial %s/%s(%s)V         ; calls the constructor and pops a obj-ref from stack\n"
                                 , classRef.getName(), invokedMethod.getName(), CodeGeneratorUtils.getParameterTypesAsString(params)
