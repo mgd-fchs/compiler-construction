@@ -1,6 +1,5 @@
 package at.tugraz.ist.cc;
 
-import at.tugraz.ist.cc.error.ErrorHandler;
 import at.tugraz.ist.cc.instructions.*;
 import at.tugraz.ist.cc.symbol_table.*;
 
@@ -16,13 +15,17 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
     private SymbolClass currentClass;
     private final SymbolTable symbolTable;
     private Integer currentConstructorIndex;
+    private Integer currentMethodIndex;
     private final Integer currentLabelIndex;
+    private MemberAccess currentMemberAccess;
 
     public CodeGeneratorVisitor() {
         symbolTable = SymbolTable.getInstance();
         currentClass = null;
         currentConstructorIndex = 0;
         currentLabelIndex = 0;
+        currentMethodIndex = 0;
+        currentMemberAccess = null;
     }
 
     @Override
@@ -89,7 +92,9 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
 
     @Override
     public Integer visitMethod_decl(JovaParser.Method_declContext ctx) {
+        currentClass.setCurrentCallable(currentClass.getMethods().get(currentMethodIndex));
         visitChildren(ctx);
+        currentMethodIndex += 1;
         return OK;
     }
 
@@ -147,12 +152,11 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
 
     @Override
     public Integer visitAssign_stmt(JovaParser.Assign_stmtContext ctx) {
-        // TODO: if I am not wrong we have to difference between local variable and member for this or any other class
-        SymbolVariable previousSymbolVariable = currentClass.getCurrentScopeVariable(ctx.id_expr().ID().toString());
-
+        visitId_expr(ctx.id_expr());
+        SymbolVariable lhsVar = currentClass.currentSymbolVariable;
         if (ctx.ass != null) {
             visitExpr(ctx.expr());
-            AssignInstruction newInstruction = new AssignInstruction(currentClass.getCurrentCallable(), previousSymbolVariable, currentClass.currentSymbolVariable);
+            AssignLocalInstruction newInstruction = new AssignLocalInstruction(currentClass.getCurrentCallable(), lhsVar, currentClass.currentSymbolVariable);
             addInstruction(newInstruction);
         } else if (ctx.alloc != null) {
             visitObject_alloc(ctx.object_alloc());
@@ -160,13 +164,33 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
                     currentClass.currentSymbolVariable, Collections.EMPTY_LIST); // TODO add right params
             addInstruction(newInstruction);
         }
-
-        //  visitChildren(ctx);
+        // visitChildren(ctx);
         return OK;
     }
 
     @Override
     public Integer visitMember_access(JovaParser.Member_accessContext ctx) {
+        if (currentMemberAccess == null){
+            if (ctx.method_invocation() != null){
+                SymbolVariable classSymbolVar = currentClass.currentSymbolVariable;
+                visitMethod_invocation(ctx.method_invocation());
+                currentMemberAccess = new MemberAccess(classSymbolVar, currentClass.currentSymbolVariable);
+            } else {
+                currentMemberAccess = new MemberAccess(currentClass.currentSymbolVariable,
+                        new SymbolVariable(currentClass.currentSymbolVariable, ctx.ID().toString(), false));
+            }
+        } else {
+            SymbolVariable memberRef = currentMemberAccess.memberRef;
+
+            if (ctx.method_invocation() != null){
+                visitMethod_invocation(ctx.method_invocation());
+                currentMemberAccess = new MemberAccess(memberRef, currentClass.currentSymbolVariable);
+            } else {
+                currentMemberAccess = new MemberAccess(memberRef,
+                        new SymbolVariable(currentClass.currentSymbolVariable, ctx.ID().toString(), false));
+            }
+        }
+
         return OK;
     }
 
@@ -198,26 +222,26 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
 
     @Override
     public Integer visitId_expr(JovaParser.Id_exprContext ctx) {
+
         currentClass.currentSymbolVariable = new SymbolVariable(SymbolType.CLASS, currentClass, "");
 
-        if (ctx.KEY_THIS() != null) {
-            currentClass.currentSymbolVariable = new SymbolVariable(SymbolType.CLASS, currentClass, "");
-        } else if (ctx.ID() != null) {
-            currentClass.currentSymbolVariable = currentClass.getCurrentScopeVariable(ctx.ID().toString());
-            if (currentClass.currentSymbolVariable == null) {
-                ErrorHandler.INSTANCE.addUndefIdError(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.ID().toString());
+        if (ctx.ID() != null) {
+            SymbolVariable localVar = currentClass.getLocalVariable(ctx.ID().toString());
+
+            if (localVar == null){
+                currentClass.currentSymbolVariable = currentClass.getCurrentScopeVariable(ctx.ID().toString());
+                currentMemberAccess = new MemberAccess(new SymbolVariable(currentClass, true), currentClass.currentSymbolVariable);
             }
+
         } else if (ctx.method_invocation() != null) {
             visitMethod_invocation(ctx.method_invocation());
         }
-
         if (ctx.member_access() != null) {
             for (JovaParser.Member_accessContext expr : ctx.member_access()) {
                 visitMember_access(expr);
             }
+            currentMemberAccess = null;
         }
-        // TODO @Magda: Handle this better -> unary instruction does not need to be created in every case
-        // TODOD: addInstruction(new UnaryInstruction(currentClass.getCurrentCallable(), currentClass.currentSymbolVariable, null));
         return OK;
     }
 
@@ -246,6 +270,8 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
                     currentClass.getCurrentCallable(), OperatorTypes.getOp(ctx.op.getText()),
                     leftVariable, rightVariable);
             currentClass.getCurrentCallable().instructions = backupInstructions;
+
+            currentClass.currentSymbolVariable = newInstruction.getResult();
             addInstruction(newInstruction);
 
         } else if (ctx.when != null) {
@@ -332,8 +358,6 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
             }
             SymbolVariable newVar = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "", boolValue);
 
-            // TODO @Magda: Handle this better -> unary instruction does not need to be created in every case
-            // TODO; addInstruction(new UnaryInstruction(currentClass.getCurrentCallable(), newVar, null));
             currentClass.currentSymbolVariable = newVar;
             return OK;
         } else if (ctx.STRING_LIT() != null) {

@@ -322,7 +322,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
                 ErrorHandler.INSTANCE.addDoesNotHaveFieldError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
                         currentClass.currentSymbolVariable.getTypeAsString(), id);
             } else if (ctx.method_invocation() != null) {
-                // pls dont judge me for this code
+
                 id = ctx.method_invocation().ID().toString();
                 String[] params = new String[0];
 

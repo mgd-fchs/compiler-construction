@@ -13,7 +13,7 @@ public class SymbolClass {
     public static final String MAIN_CLASS_NAME = "Main";
     private final String className;
     private final Collection<AbstractMap.SimpleEntry<SymbolModifier, SymbolVariable>> members;
-    private final Collection<SymbolMethod> methods;
+    private final List<SymbolMethod> methods;
     private final List<SymbolConstructor> constructors;
 
     private SymbolType currentSymbolType;
@@ -283,11 +283,11 @@ public class SymbolClass {
         return members.stream().filter(element -> element.getValue().getName().equals(name)).findFirst();
     }
 
-    public Collection<SymbolMethod> getMethods() {
+    public List<SymbolMethod> getMethods() {
         return methods;
     }
 
-    private SymbolVariable getLocalVariable(String name) {
+    public SymbolVariable getLocalVariable(String name) {
         return currentCallable.getMethodVariable(name);
     }
 

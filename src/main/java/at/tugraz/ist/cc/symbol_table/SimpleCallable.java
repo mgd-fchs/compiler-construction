@@ -42,6 +42,9 @@ public abstract class SimpleCallable {
     }
 
     public int getLocalArrayIndexBySymbolVariable(SymbolVariable symbolVariable) {
+        if (symbolVariable.isThisClass){
+            return 0;
+        }
         return localArrayMapping.get(symbolVariable);
     }
 
@@ -146,7 +149,7 @@ public abstract class SimpleCallable {
      * the parameter order and types are the same. the return value of the method is not
      * taken into account
      *
-     * @param o
+     * @param
      * @return
      */
     @Override
