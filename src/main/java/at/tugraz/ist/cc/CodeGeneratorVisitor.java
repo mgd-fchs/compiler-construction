@@ -43,6 +43,8 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
     public Integer visitClass_decl(JovaParser.Class_declContext ctx) {
         visitClass_head(ctx.class_head());
         visitClass_body(ctx.class_body());
+        currentMethodIndex = 0;
+        currentConstructorIndex = 0;
         return OK;
     }
 
@@ -219,7 +221,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
                 , foundMethod, Collections.EMPTY_LIST); // TODO Params
         addInstruction(newInstruction);
 
-        currentClass.currentSymbolVariable = foundMethod.getReturnValue();
+        currentClass.currentSymbolVariable = newInstruction.getResult();
 
         visitChildren(ctx);
         return OK;

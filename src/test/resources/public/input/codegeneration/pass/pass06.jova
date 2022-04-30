@@ -1,5 +1,14 @@
 class Another {
     public bool b;
+    public Another another;
+
+    public Another func2(){
+        return another;
+    }
+
+    public bool funcbool(){
+        return b;
+    }
 }
 
 class Test {
@@ -10,7 +19,8 @@ class Test {
       bool myvar;
       an_class = new Another;
 
-      myvar = an_class.b;
+      myvar = an_class.another.func2().funcbool();
+
       this.t = 5;
       t = 4;
       return myvar;
