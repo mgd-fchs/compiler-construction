@@ -233,7 +233,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
         currentClass.setArgList(backupArgList);
         currentClass.currentSymbolVariable = newInstruction.getResult();
         assignMember = false;
-        visitChildren(ctx);
+        //visitChildren(ctx);
         return OK;
     }
 
