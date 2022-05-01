@@ -13,8 +13,7 @@ public class AllocInstruction extends BaseInstruction {
 
     public AllocInstruction(SimpleCallable associatedCallable,
                             SymbolVariable classType, Collection<SymbolVariable> params) {
-        super(associatedCallable, Optional.of(classType)); // TODO instructor
-//        this.result = lhsVar;
+        super(associatedCallable, Optional.of(classType));
         this.actualType = classType;
         this.params = params;
     }

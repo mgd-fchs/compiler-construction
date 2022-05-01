@@ -49,7 +49,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         try {
             visitChildren(ctx);
         } catch (Exception e) {
-            // TODO remove:
+            // TODO remove: remove at the end
             e.printStackTrace();
         }
 

@@ -180,4 +180,8 @@ public abstract class SimpleCallable {
         localArrayMapping.put(deepCopy, localArrayIndex++);
         return deepCopy;
     }
+
+    public int getLocalArraySize() {
+        return localArrayIndex;
+    }
 }

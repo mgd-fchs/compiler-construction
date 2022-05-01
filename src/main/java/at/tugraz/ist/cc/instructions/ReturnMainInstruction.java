@@ -10,13 +10,12 @@ public class ReturnMainInstruction extends BaseInstruction {
     private SymbolVariable returnValue;
 
     public ReturnMainInstruction(ReturnInstruction instruction) {
-        super(instruction.associatedCallable, Optional.empty()); // TODO release the old tmp
+        super(instruction.associatedCallable, Optional.empty());
         this.returnValue = instruction.getReturnValue();
     }
 
     @Override
     public String buildAssemblyString() {
-        // TODO:
         if (returnValue.getValue() != null && (Integer) returnValue.getValue() == 0) {
             return "";
         }

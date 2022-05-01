@@ -16,7 +16,6 @@ public class MethodInvocationInstruction extends BaseInstruction {
 
     private final List<SymbolVariable> params;
 
-    // TODO: print/read -> only differentiate in write-funtion since jasmin command is "invokevirtual" in any case?
     public MethodInvocationInstruction(SimpleCallable associatedCallable, SymbolVariable classRef,
                                        SimpleCallable invokedMethod, List<SymbolVariable> params) {
         super(associatedCallable, Optional.of(invokedMethod.getReturnValue()));

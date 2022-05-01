@@ -32,7 +32,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
         try {
             visitChildren(ctx);
         } catch (Exception e) {
-            // TODO remove:
+            // TODO remove: at the end
             e.printStackTrace();
         }
         return 0;
