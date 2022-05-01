@@ -336,7 +336,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
             }
 
             currentClass.getCurrentCallable().instructions = backupInstructions;
-            addInstruction(new ConditionalInstruction(currentClass.getCurrentCallable(), conditionalExpression, ifInstructions, elseInstructions));
+            addInstruction(new TernaryInstruction(currentClass.getCurrentCallable(), conditionalExpression, ifInstructions, elseInstructions));
 
         } else {
             visitPrimary_expr(ctx.primary_expr());
@@ -458,7 +458,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
         }
 
         currentClass.getCurrentCallable().instructions = backupInstructions;
-        addInstruction(new ConditionalInstruction(currentClass.getCurrentCallable(), conditionalExpression, ifInstructions, elseInstructions));
+        addInstruction(new IfInstruction(currentClass.getCurrentCallable(), conditionalExpression, ifInstructions, elseInstructions));
 
         return OK;
     }
@@ -485,7 +485,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
         List<BaseInstruction> ifInstructions = currentClass.getCurrentCallable().instructions;
 
         currentClass.getCurrentCallable().instructions = backupInstructions;
-        addInstruction(new ConditionalInstruction(currentClass.getCurrentCallable(), conditionalExpression, ifInstructions, null));
+        addInstruction(new WhileInstruction(currentClass.getCurrentCallable(), conditionalExpression, ifInstructions));
 
         return OK;
     }

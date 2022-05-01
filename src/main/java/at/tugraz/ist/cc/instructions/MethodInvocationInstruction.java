@@ -25,24 +25,20 @@ public class MethodInvocationInstruction extends BaseInstruction {
 
     @Override
     public String buildAssemblyString() {
-        int classRefLocalArrayIndex = associatedCallable.getLocalArrayIndexBySymbolVariable(classRef);
-        int resultLocalArrayIndex = associatedCallable.getLocalArrayIndexBySymbolVariable(classRef);
-
         StringBuilder builder = new StringBuilder();
 
-        builder
-                // load obj-ref
-                .append("    aload ")
-                .append(classRefLocalArrayIndex)
-                .append("           ; loading the obj-ref for the method call\n")
-                // load params
-                .append(CodeGeneratorUtils.getLoadingParametersString(params, associatedCallable))
-                .append(String.format("" +
-                                "   invokespecial %s/%s(%s)V         ; calls the constructor and pops a obj-ref from stack\n"
-                                , classRef.getName(), invokedMethod.getName(), CodeGeneratorUtils.getParameterTypesAsString(params)
-                        ))
-                .append((invokedMethod.getReturnValue().getType() == SymbolType.CLASS) ? "    astore " : "    istore ")
-                .append(resultLocalArrayIndex);
+        builder.append(pushVariableOntoStack(classRef));
+        params.forEach(param -> builder.append(pushVariableOntoStack(param)));
+        builder.append("    invokespecial ")
+                .append(classRef.getName())
+                .append("/")
+                .append(invokedMethod.getName())
+                .append("(")
+                .append(CodeGeneratorUtils.getParameterTypesAsString(params))
+                .append(")")
+                .append(CodeGeneratorUtils.getTypeAsAssemblyString(invokedMethod.getReturnValue()))
+                .append("\n")
+                .append(popVariableFromStack(result));
 
         return builder.toString();
     }

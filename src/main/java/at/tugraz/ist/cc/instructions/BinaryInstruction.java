@@ -15,7 +15,7 @@ public abstract class BinaryInstruction extends BaseInstruction {
 
     public BinaryInstruction(SimpleCallable associatedCallable, SymbolVariable result,
                              SymbolVariable leftParameter, SymbolVariable rightParameter, OperatorTypes operator) {
-        super(associatedCallable, Optional.of(result)); // TODO automatic casting ??
+        super(associatedCallable, Optional.of(result));
         this.leftParam = leftParameter;
         this.rightParam = rightParameter;
         this.operator = operator;

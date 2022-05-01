@@ -40,8 +40,8 @@ public class SymbolClass {
         labelForJumpCount = 0;
     }
 
-    public long getNextLabelCount(){
-        return labelForJumpCount++;
+    public String getNextLabelCount(){
+        return "L_" + labelForJumpCount++;
     }
 
     public void  buildCurrentMembers(SymbolModifier modifier, JovaParser.Member_declContext ctx){

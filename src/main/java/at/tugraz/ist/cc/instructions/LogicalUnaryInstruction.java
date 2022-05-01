@@ -17,19 +17,19 @@ public class LogicalUnaryInstruction extends UnaryInstruction {
             return "";
         }
 
-        long trueLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
-        long endLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
+        String trueLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
+        String endLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
 
         StringBuilder builder = new StringBuilder();
         builder.append(pushVariableOntoStack(parameter));
-        builder.append("   ifeq ").append(trueLabel).append("\n");
-        builder.append("   ldc 0").append("\n");
+        builder.append("    ifeq ").append(trueLabel).append("\n");
+        builder.append("    ldc 0").append("\n");
         builder.append(popVariableFromStack(result));
-        builder.append("   goto ").append(endLabel).append("\n");
-        builder.append("   ").append(trueLabel).append(":").append("\n");
-        builder.append("   ldc 1").append("\n");
+        builder.append("    goto ").append(endLabel).append("\n");
+        builder.append(trueLabel).append(":").append("\n");
+        builder.append("    ldc 1").append("\n");
         builder.append(popVariableFromStack(result));
-        builder.append("   ").append(endLabel).append(":").append("\n\n");
+        builder.append(endLabel).append(":").append("\n\n");
 
         return builder.toString();
     }

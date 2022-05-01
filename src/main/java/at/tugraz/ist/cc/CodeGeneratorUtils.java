@@ -20,7 +20,7 @@ public class CodeGeneratorUtils {
                 case BOOL:
                     return "Z";
                 case STRING:
-                    return "Ljava/lang/String";
+                    return "Ljava/lang/String;";
                 case NIX:
                 case FLOAT:
                 case CHAR:
@@ -30,13 +30,13 @@ public class CodeGeneratorUtils {
                     throw new RuntimeException();
             }
         } else {
-            return symbolVariable.getTypeAsString();
+            return symbolVariable.getTypeAsString() + ";";
         }
     }
 
     public static String getParameterTypesAsString(Collection<SymbolVariable> params) {
         StringBuilder stringBuilder = new StringBuilder();
-        params.forEach(param -> stringBuilder.append(getTypeAsAssemblyString(param)).append(";"));
+        params.forEach(param -> stringBuilder.append(getTypeAsAssemblyString(param)));
         return stringBuilder.toString();
     }
 

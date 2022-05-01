@@ -26,8 +26,8 @@ public class RelationalBinaryInstruction extends BinaryInstruction {
          **/
 
         StringBuilder builder = new StringBuilder();
-        long endLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
-        long trueLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
+        String endLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
+        String trueLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
 
         builder
                 .append(pushVariableOntoStack(leftParam))

@@ -21,14 +21,15 @@ public class ClassComparisonBinaryInstruction extends BinaryInstruction {
          * if_acmpne succeeds if and only if value1 ≠ value2
          */
 
-        long endLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
-        long trueLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
+        String endLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
+        String trueLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
         StringBuilder builder = new StringBuilder();
 
         builder
                 .append(pushVariableOntoStack(leftParam))
                 .append(pushVariableOntoStack(rightParam))
-                .append("    ").append( (operator.equals(OperatorTypes.EQUAL)) ? "if_acmpeq" : "if_acmpne").append(" ").append(trueLabel).append("\n")
+                .append("    ").append( (operator.equals(OperatorTypes.EQUAL)) ? "if_acmpeq" : "if_acmpne").append(" ")
+                .append(trueLabel).append("\n")
                 .append("   ldc 0\n")
                 .append(popVariableFromStack(result))
                 .append("   goto ").append(endLabel).append("\n")
