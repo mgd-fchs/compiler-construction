@@ -122,4 +122,13 @@ public class CodeGeneratorPrivateTest {
         assertEquals(0, result);
     }
 
+
+    @Test
+    public void read() {
+        // return statements
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "read.jova", path_out + "read");
+        assertEquals(0, result);
+    }
+
 }

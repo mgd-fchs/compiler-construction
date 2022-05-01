@@ -1,0 +1,23 @@
+class Main {
+
+  public int main() {
+    string inputString;
+    int inputInt;
+    int ret;
+
+    ret = print("Give String: ");
+    inputString = readString();
+    ret = print("String was: ");
+    ret = print(inputString);
+    ret = print("\n");
+
+    ret = print("Give int: ");
+    inputInt = readInt();
+    ret = print("int was: ");
+    ret = print(inputInt);
+    ret = print("\n\n");
+
+
+    return 0;
+  }
+}
