@@ -182,7 +182,9 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
             ((MemberAccessInstruction) lastInstruction).setPutValue(rhs_var);
         } else {
             // setting global
-            BaseInstruction assignLocalInstruction = new AssignLocalInstruction(currentClass.getCurrentCallable(), rhs_var, currentClass.currentSymbolVariable);
+            BaseInstruction assignLocalInstruction = new AssignLocalInstruction(currentClass.getCurrentCallable(),
+                    currentClass.currentSymbolVariable, rhs_var);
+            addInstruction(assignLocalInstruction);
         }
 
 /*

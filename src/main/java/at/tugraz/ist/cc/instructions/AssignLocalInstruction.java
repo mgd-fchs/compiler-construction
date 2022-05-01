@@ -6,20 +6,20 @@ import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 import java.util.Optional;
 
 public class AssignLocalInstruction extends BaseInstruction {
-    private SymbolVariable paramName;
-    private SymbolVariable value;
+    private SymbolVariable lhs;
+    private SymbolVariable rhs;
 
-    public AssignLocalInstruction(SimpleCallable associatedCallable, SymbolVariable paramName, SymbolVariable value) {
+    public AssignLocalInstruction(SimpleCallable associatedCallable, SymbolVariable lhs, SymbolVariable rhs) {
         super(associatedCallable, Optional.empty());
-        this.paramName = paramName;
-        this.value = value;
+        this.lhs = lhs;
+        this.rhs = rhs;
     }
 
     @Override
     public String buildAssemblyString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(pushVariableOntoStack(value))
-                .append(popVariableFromStack(paramName))
+        builder.append(pushVariableOntoStack(rhs))
+                .append(popVariableFromStack(lhs))
                 .append("\n\n");
 
         return builder.toString();
