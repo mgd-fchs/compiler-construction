@@ -82,11 +82,11 @@ public class ClassWriter implements AutoCloseable {
         int stack_limit = 100; // TODO
         int local_limit = 100; // TODO
         writer.printf("" +
-                        ".method %s %s(%s)V\n" +
+                        ".method %s %s(%s)%s\n" +
                         ".limit stack %d\n" +
                         ".limit locals %d\n",
                 symbolMethod.getAccessSymbol().toString(), symbolMethod.getName(),
-                parameter, stack_limit, local_limit);
+                parameter, CodeGeneratorUtils.getTypeAsAssemblyString(symbolMethod.getReturnValue()),stack_limit, local_limit);
 
         symbolMethod.instructions.forEach(baseInstruction ->
                 writer.print(baseInstruction.buildAssemblyString()));
