@@ -180,7 +180,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
 
             visitObject_alloc(ctx.object_alloc());
             newInstruction = new AllocInstruction(currentClass.getCurrentCallable(),
-                    currentClass.currentSymbolVariable, currentClass.getCurrentArgList());
+                    currentClass.currentSymbolVariable, lhsVar, currentClass.getCurrentArgList());
 
             currentClass.setArgList(backupArgList);
 

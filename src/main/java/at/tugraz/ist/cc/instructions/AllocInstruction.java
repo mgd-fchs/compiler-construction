@@ -12,8 +12,9 @@ public class AllocInstruction extends BaseInstruction {
     private final Collection<SymbolVariable> params;
 
     public AllocInstruction(SimpleCallable associatedCallable,
-                            SymbolVariable classType, Collection<SymbolVariable> params) {
-        super(associatedCallable, Optional.of(classType));
+                            SymbolVariable classType, SymbolVariable lhsVar, Collection<SymbolVariable> params) {
+        super(associatedCallable, Optional.empty());
+        this.result = lhsVar;
         this.actualType = classType;
         this.params = params;
     }
