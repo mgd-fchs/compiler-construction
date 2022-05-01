@@ -12,7 +12,7 @@ public abstract class SimpleCallable {
     protected final List<SymbolVariable> localVariables;
     protected final List<SymbolVariable> tempVariable;
     protected final SymbolVariable returnValue;
-    public List<BaseInstruction> instructions;
+    public LinkedList<BaseInstruction> instructions;
     private final Map<SymbolVariable, Integer> localArrayMapping;
 
     public final SymbolClass associatedSymbolClass;
@@ -33,7 +33,7 @@ public abstract class SimpleCallable {
 
         this.localVariables = new ArrayList<>();
         this.tempVariable = new ArrayList<>();
-        this.instructions = new ArrayList<>();
+        this.instructions = new LinkedList<>();
     }
 
     public void addVariable(SymbolVariable symbolVariable) {

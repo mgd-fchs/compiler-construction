@@ -4,6 +4,7 @@ import at.tugraz.ist.cc.instructions.*;
 import at.tugraz.ist.cc.symbol_table.*;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -154,22 +155,53 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
 
     @Override
     public Integer visitAssign_stmt(JovaParser.Assign_stmtContext ctx) {
-        assignMember = false;
+        SymbolVariable rhs_var;
+
+        if (ctx.ass != null) {
+            visitExpr(ctx.expr());
+            rhs_var = currentClass.currentSymbolVariable;
+
+        } else if (ctx.alloc != null) {
+            List<SymbolVariable> backupArgList = currentClass.getCurrentArgList(); // TODO to we need to save this?
+            currentClass.setArgList(new ArrayList<>());
+
+            visitObject_alloc(ctx.object_alloc());
+            rhs_var = currentClass.currentSymbolVariable;
+
+            currentClass.setArgList(backupArgList);
+        } else {
+            throw new RuntimeException();
+        }
+
         visitId_expr(ctx.id_expr());
+
+        BaseInstruction lastInstruction = currentClass.getCurrentCallable().instructions.getLast();
+
+        if (lastInstruction instanceof MemberAccessInstruction) {
+            // setting member
+            ((MemberAccessInstruction) lastInstruction).setPutValue(rhs_var);
+        } else {
+            // setting global
+            BaseInstruction assignLocalInstruction = new AssignLocalInstruction(currentClass.getCurrentCallable(), rhs_var, currentClass.currentSymbolVariable);
+        }
+
+/*
+        assignMember = false;
+
         SymbolVariable lhsVar = currentClass.currentSymbolVariable;
 
         List<BaseInstruction> instructions = currentClass.getCurrentCallable().instructions;
         BaseInstruction newInstruction = null;
         MemberAccessInstruction lastInstruction = null;
 
-        if (assignMember){
-            lastInstruction = (MemberAccessInstruction) instructions.get(instructions.size()-1);
+        if (assignMember) {
+            lastInstruction = (MemberAccessInstruction) instructions.get(instructions.size() - 1);
         }
         if (ctx.ass != null) {
             visitExpr(ctx.expr());
             newInstruction = new AssignLocalInstruction(currentClass.getCurrentCallable(), lhsVar, currentClass.currentSymbolVariable);
 
-            if (lastInstruction != null){
+            if (lastInstruction != null) {
                 lastInstruction.setPutValue(currentClass.currentSymbolVariable);
             } else {
                 addInstruction(newInstruction);
@@ -184,29 +216,29 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
 
             currentClass.setArgList(backupArgList);
 
-            if (lastInstruction != null){
+            if (lastInstruction != null) {
                 lastInstruction.setPutValue(newInstruction.getResult());
             }
             addInstruction(newInstruction);
         }
-
+*/
         return OK;
     }
 
     @Override
     public Integer visitMember_access(JovaParser.Member_accessContext ctx) {
-            SymbolVariable memberRef = currentClass.currentSymbolVariable;
+        SymbolVariable memberRef = currentClass.currentSymbolVariable;
 
-            if (ctx.method_invocation() != null){
-                visitMethod_invocation(ctx.method_invocation());
-                // currentMemberAccess = new MemberAccess(memberRef, currentClass.currentSymbolVariable);
-            } else {
-                currentMemberAccessInstruction = new MemberAccessInstruction(currentClass.getCurrentCallable(), memberRef,
-                        ((SymbolClass) memberRef.getActualType()).getMemberIfExists(ctx.ID().toString()).orElseThrow().getValue());
+        if (ctx.method_invocation() != null) {
+            visitMethod_invocation(ctx.method_invocation());
+            // currentMemberAccess = new MemberAccess(memberRef, currentClass.currentSymbolVariable);
+        } else {
+            currentMemberAccessInstruction = new MemberAccessInstruction(currentClass.getCurrentCallable(), memberRef,
+                    ((SymbolClass) memberRef.getActualType()).getMemberIfExists(ctx.ID().toString()).orElseThrow().getValue());
 
-                addInstruction(currentMemberAccessInstruction);
-                assignMember = true;
-            }
+            addInstruction(currentMemberAccessInstruction);
+            assignMember = true;
+        }
 
         return OK;
     }
@@ -248,7 +280,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
         if (ctx.ID() != null) {
             SymbolVariable localVar = currentClass.getLocalVariable(ctx.ID().toString());
 
-            if (localVar == null){
+            if (localVar == null) {
                 currentClass.currentSymbolVariable = currentClass.getCurrentScopeVariable(ctx.ID().toString());
                 currentMemberAccessInstruction = new MemberAccessInstruction(currentClass.getCurrentCallable(),
                         new SymbolVariable(currentClass, true), currentClass.currentSymbolVariable);
@@ -285,7 +317,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
 
     @Override
     public Integer visitExpr(JovaParser.ExprContext ctx) {
-      //  List<BaseInstruction> backupInstructions = currentClass.getCurrentCallable().getInstructions();
+        //  List<BaseInstruction> backupInstructions = currentClass.getCurrentCallable().getInstructions();
 
         if (ctx.op != null) {
             // case: operation, check operand types
@@ -303,33 +335,33 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
 
         } else if (ctx.when != null) {
             // case: ternary operator
-            List<BaseInstruction> backupInstructions = currentClass.getCurrentCallable().instructions;
-            currentClass.getCurrentCallable().instructions = new ArrayList<>();
+            LinkedList<BaseInstruction> backupInstructions = currentClass.getCurrentCallable().instructions;
+            currentClass.getCurrentCallable().instructions = new LinkedList<>();
 
             visitExpr(ctx.when);
-            List<BaseInstruction> conditionalExpression = currentClass.getCurrentCallable().instructions;
+            LinkedList<BaseInstruction> conditionalExpression = currentClass.getCurrentCallable().instructions;
 
-            if(conditionalExpression.isEmpty()){
+            if (conditionalExpression.isEmpty()) {
                 LogicalUnaryInstruction conditional = new LogicalUnaryInstruction(currentClass.getCurrentCallable(),
                         currentClass.currentSymbolVariable, null);
                 conditionalExpression.add(conditional);
             }
 
-            currentClass.getCurrentCallable().instructions = new ArrayList<>();
+            currentClass.getCurrentCallable().instructions = new LinkedList<>();
             visit(ctx.then);
-            List<BaseInstruction> ifInstructions = currentClass.getCurrentCallable().instructions;
+            LinkedList<BaseInstruction> ifInstructions = currentClass.getCurrentCallable().instructions;
 
-            if(ifInstructions.isEmpty()){
+            if (ifInstructions.isEmpty()) {
                 LogicalUnaryInstruction literal = new LogicalUnaryInstruction(currentClass.getCurrentCallable(),
                         currentClass.currentSymbolVariable, null);
                 ifInstructions.add(literal);
             }
 
-            currentClass.getCurrentCallable().instructions = new ArrayList<>();
+            currentClass.getCurrentCallable().instructions = new LinkedList<>();
             visit(ctx.el);
             List<BaseInstruction> elseInstructions = currentClass.getCurrentCallable().instructions;
 
-            if(elseInstructions.isEmpty()){
+            if (elseInstructions.isEmpty()) {
                 LogicalUnaryInstruction literal = new LogicalUnaryInstruction(currentClass.getCurrentCallable(),
                         currentClass.currentSymbolVariable, null);
                 elseInstructions.add(literal);
@@ -373,6 +405,11 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
         currentClass.currentSymbolVariable = new SymbolVariable(SymbolType.CLASS, classObjectAlloc, "");
 
         visitChildren(ctx);
+
+        BaseInstruction alloc = new AllocInstruction(currentClass.getCurrentCallable(),
+                currentClass.currentSymbolVariable, currentClass.getCurrentArgList());
+
+        addInstruction(alloc);
         return OK;
     }
 
@@ -430,27 +467,27 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
     @Override
     public Integer visitIf_stmt(JovaParser.If_stmtContext ctx) {
 
-        List<BaseInstruction> backupInstructions = currentClass.getCurrentCallable().instructions;
+        LinkedList<BaseInstruction> backupInstructions = currentClass.getCurrentCallable().instructions;
 
-        currentClass.getCurrentCallable().instructions = new ArrayList<>();
+        currentClass.getCurrentCallable().instructions = new LinkedList<>();
 
         visitExpr(ctx.expr());
         List<BaseInstruction> conditionalExpression = currentClass.getCurrentCallable().instructions;
-        if(conditionalExpression.isEmpty()){
+        if (conditionalExpression.isEmpty()) {
             // TODO @Richard: Neurosen
             LogicalUnaryInstruction conditional = new LogicalUnaryInstruction(currentClass.getCurrentCallable(),
                     currentClass.currentSymbolVariable, null);
             conditionalExpression.add(conditional);
         }
 
-        currentClass.getCurrentCallable().instructions = new ArrayList<>();
+        currentClass.getCurrentCallable().instructions = new LinkedList<>();
 
         visit(ctx.if_inst);
         List<BaseInstruction> ifInstructions = currentClass.getCurrentCallable().instructions;
         List<BaseInstruction> elseInstructions = new ArrayList<>();
 
         if (ctx.else_inst != null) {
-            currentClass.getCurrentCallable().instructions = new ArrayList<>();
+            currentClass.getCurrentCallable().instructions = new LinkedList<>();
             visit(ctx.else_inst);
             elseInstructions = currentClass.getCurrentCallable().instructions;
         } else {
@@ -465,21 +502,21 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
 
     @Override
     public Integer visitWhile_stmt(JovaParser.While_stmtContext ctx) {
-        List<BaseInstruction> backupInstructions = currentClass.getCurrentCallable().instructions;
+        LinkedList<BaseInstruction> backupInstructions = currentClass.getCurrentCallable().instructions;
 
-        currentClass.getCurrentCallable().instructions = new ArrayList<>();
+        currentClass.getCurrentCallable().instructions = new LinkedList<>();
 
         visitExpr(ctx.expr());
         List<BaseInstruction> conditionalExpression = currentClass.getCurrentCallable().instructions;
 
-        if(conditionalExpression.isEmpty()){
+        if (conditionalExpression.isEmpty()) {
             // TODO @Richard: Neurosen
             LogicalUnaryInstruction conditional = new LogicalUnaryInstruction(currentClass.getCurrentCallable(),
                     currentClass.currentSymbolVariable, null);
             conditionalExpression.add(conditional);
         }
 
-        currentClass.getCurrentCallable().instructions = new ArrayList<>();
+        currentClass.getCurrentCallable().instructions = new LinkedList<>();
 
         visit(ctx.compound_stmt());
         List<BaseInstruction> ifInstructions = currentClass.getCurrentCallable().instructions;
