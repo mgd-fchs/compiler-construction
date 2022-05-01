@@ -3,14 +3,10 @@ package at.tugraz.ist.cc;
 import at.tugraz.ist.cc.instructions.*;
 import at.tugraz.ist.cc.symbol_table.*;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
     public static final int OK = 0;
-    public static final int ERROR_GENERAL = -1;
 
     private SymbolClass currentClass;
     private final SymbolTable symbolTable;
@@ -173,20 +169,32 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
             throw new RuntimeException();
         }
 
+        // necassary to differentiate if the last was a instruction or if there is non => ...
+        LinkedList<BaseInstruction> backupInstructions = currentClass.getCurrentCallable().instructions;
+        currentClass.getCurrentCallable().instructions = new LinkedList<>();
+
         visitId_expr(ctx.id_expr());
 
-        BaseInstruction lastInstruction = currentClass.getCurrentCallable().instructions.getLast();
+        if (!currentClass.getCurrentCallable().instructions.isEmpty()) {
+            BaseInstruction lastInstruction = currentClass.getCurrentCallable().instructions.getLast();
 
-        if (lastInstruction instanceof MemberAccessInstruction) {
-            // setting member
-            ((MemberAccessInstruction) lastInstruction).setPutValue(rhs_var);
+            if (lastInstruction instanceof MemberAccessInstruction) {
+                // setting member
+                ((MemberAccessInstruction) lastInstruction).setPutValue(rhs_var);
+                currentClass.getCurrentCallable().instructions = backupInstructions;
+
+                return OK;
+            }
         } else {
-            // setting global
-            BaseInstruction assignLocalInstruction = new AssignLocalInstruction(currentClass.getCurrentCallable(),
-                    currentClass.currentSymbolVariable, rhs_var);
-            addInstruction(assignLocalInstruction);
+            currentClass.getCurrentCallable().instructions = backupInstructions;
         }
 
+
+        BaseInstruction assignLocalInstruction = new AssignLocalInstruction(currentClass.getCurrentCallable(),
+                currentClass.currentSymbolVariable, rhs_var);
+        addInstruction(assignLocalInstruction);
+
+        return OK;
 /*
         assignMember = false;
 
@@ -224,7 +232,6 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
             addInstruction(newInstruction);
         }
 */
-        return OK;
     }
 
     @Override
@@ -493,7 +500,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
             visit(ctx.else_inst);
             elseInstructions = currentClass.getCurrentCallable().instructions;
         } else {
-            elseInstructions = null;
+            elseInstructions = new ArrayList<>();
         }
 
         currentClass.getCurrentCallable().instructions = backupInstructions;
