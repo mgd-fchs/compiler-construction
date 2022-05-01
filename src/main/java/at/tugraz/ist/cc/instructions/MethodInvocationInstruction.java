@@ -67,7 +67,7 @@ public class MethodInvocationInstruction extends BaseInstruction {
             builder.append(pushVariableOntoStack(classRef));
             params.forEach(param -> builder.append(pushVariableOntoStack(param)));
             builder.append("    invokespecial ")
-                    .append(classRef.getName())
+                    .append(classRef.getTypeAsString())
                     .append("/")
                     .append(invokedMethod.getName())
                     .append("(")
