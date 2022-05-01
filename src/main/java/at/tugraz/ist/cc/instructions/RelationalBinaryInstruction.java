@@ -16,11 +16,6 @@ public class RelationalBinaryInstruction extends BinaryInstruction {
 
     @Override
     public String buildAssemblyString() {
-        int leftLocalArrayIndex = associatedCallable.getLocalArrayIndexBySymbolVariable(leftParam);
-        int rightLocalArrayIndex = associatedCallable.getLocalArrayIndexBySymbolVariable(rightParam);
-        int resultLocalArrayIndex = associatedCallable.getLocalArrayIndexBySymbolVariable(result);
-
-
         /**
          if_icmpeq succeeds if and only if value1 = value2
          if_icmpne succeeds if and only if value1 ≠ value2
@@ -30,19 +25,23 @@ public class RelationalBinaryInstruction extends BinaryInstruction {
          if_icmpge succeeds if and only if value1 ≥ value2
          **/
 
-        long endLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
-        long trueLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
-        return String.format("" +
-                        "   iload %d                ; \n" +
-                        "   iload %d                ; \n" +
-                        "   %s %d                   ; \n" +
-                        "   ldc 0                   ; \n" +
-                        "   istore %s               ; \n" +
-                        "   goto %d                 ; \n" +
-                        "   %d: ldc 1               ; \n" +
-                        "   istore %s               ; \n" +
-                        "   %d:                     ; \n\n",
-                leftLocalArrayIndex, rightLocalArrayIndex, CodeGeneratorUtils.getOpAssembly(operator),
-                trueLabel, resultLocalArrayIndex, endLabel, trueLabel, resultLocalArrayIndex, endLabel);
+        StringBuilder builder = new StringBuilder();
+        String endLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
+        String trueLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
+
+        builder
+                .append(pushVariableOntoStack(leftParam))
+                .append(pushVariableOntoStack(rightParam))
+                .append("    ").append(CodeGeneratorUtils.getOpAssembly(operator)).append(" ").append(trueLabel).append("\n")
+                .append("   ldc 0\n")
+                .append(popVariableFromStack(result))
+                .append("   goto ").append(endLabel).append("\n")
+                .append(trueLabel).append(":\n")
+                .append("   ldc 1\n")
+                .append(popVariableFromStack(result))
+                .append(endLabel).append(":\n")
+                .append("\n\n");
+
+        return builder.toString();
     }
 }

@@ -5,20 +5,8 @@ class Test {
       int f;
       int g;
 
-      while(!myvar)
-          {
-            f = print("myvar");
-
-            if (false){
-                f = print("somethingelse");
-
-                while(myvar && true){
-                    g = 5;
-                }
-            } else {
-                g = 3;
-            }
-          }
-        return myvar;
+      g = 3;
+      f = print(g);
+      return true;
     }
 }

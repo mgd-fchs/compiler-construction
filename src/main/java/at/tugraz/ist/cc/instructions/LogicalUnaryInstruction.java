@@ -13,23 +13,24 @@ public class LogicalUnaryInstruction extends UnaryInstruction {
 
     @Override
     public String buildAssemblyString() {
-        int localParameterIndex = associatedCallable.getLocalArrayIndexBySymbolVariable(parameter);
-        int resultParamterIndex = associatedCallable.getLocalArrayIndexBySymbolVariable(result);
+        if (operator == null) {
+            return "";
+        }
 
-        long trueLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
-        long endLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
+        String trueLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
+        String endLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
 
+        StringBuilder builder = new StringBuilder();
+        builder.append(pushVariableOntoStack(parameter));
+        builder.append("    ifeq ").append(trueLabel).append("\n");
+        builder.append("    ldc 0").append("\n");
+        builder.append(popVariableFromStack(result));
+        builder.append("    goto ").append(endLabel).append("\n");
+        builder.append(trueLabel).append(":").append("\n");
+        builder.append("    ldc 1").append("\n");
+        builder.append(popVariableFromStack(result));
+        builder.append(endLabel).append(":").append("\n\n");
 
-        return String.format("" +
-                        "    iload %d           ; load from local\n" +
-                        "    ifeq %d            ;\n" +
-                        "    ldc 0              ;\n" +
-                        "    istore %d          ;\n" +
-                        "    goto   %d          ;\n" +
-                        "    %d:                ;\n" +
-                        "    ldc 1              ;\n" +
-                        "    istore %d          ;\n" +
-                        "    %d:                ;\n\n",
-                localParameterIndex, trueLabel, resultParamterIndex, endLabel, trueLabel, resultParamterIndex, endLabel);
+        return builder.toString();
     }
 }

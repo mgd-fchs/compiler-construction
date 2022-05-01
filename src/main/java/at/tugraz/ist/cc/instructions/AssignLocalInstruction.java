@@ -17,7 +17,11 @@ public class AssignLocalInstruction extends BaseInstruction {
 
     @Override
     public String buildAssemblyString() {
-        // TODO
-        return null;
+        StringBuilder builder = new StringBuilder();
+        builder.append(pushVariableOntoStack(value))
+                .append(popVariableFromStack(paramName))
+                .append("\n\n");
+
+        return builder.toString();
     }
 }

@@ -15,42 +15,39 @@ public class LogicalBinaryInstruction  extends BinaryInstruction{
 
     @Override
     public String buildAssemblyString() {
-        int leftLocalArrayIndex = associatedCallable.getLocalArrayIndexBySymbolVariable(leftParam);
-        int rightLocalArrayIndex = associatedCallable.getLocalArrayIndexBySymbolVariable(rightParam);
-        int resultLocalArrayIndex = associatedCallable.getLocalArrayIndexBySymbolVariable(result);
+        StringBuilder builder = new StringBuilder();
+        builder.append(pushVariableOntoStack(leftParam));
 
-        long endLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
+        String endLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
 
         if (operator.equals(OperatorTypes.AND)){
-            long falseLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
-            return String.format("" +
-                            "   iload %d                ; pushes from local pos\n" +
-                            "   ifeq %d                 ; \n" + // TODO: description
-                            "   iload %d                ; \n" +
-                            "   ifeq %d                 ; \n" +
-                            "   ldc 1                   ; \n"+
-                            "   istore %s               ; \n" +
-                            "   goto %d                 ; \n"+
-                            "   %d: ldc 0               ; \n" +
-                            "   istore %s               ; \n" +
-                            "   %d:                     ; \n\n",
-                    leftLocalArrayIndex, falseLabel, rightLocalArrayIndex, falseLabel,
-                    resultLocalArrayIndex, endLabel, falseLabel, resultLocalArrayIndex, endLabel);
+            String falseLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
+
+            builder.append("   ifeq ").append(falseLabel).append("\n");
+            builder.append(pushVariableOntoStack(rightParam));
+            builder.append("   ifeq ").append(falseLabel).append("\n");
+            builder.append("   ldc 1").append("\n");
+            builder.append(popVariableFromStack(result));
+            builder.append("   goto ").append(endLabel).append("\n");
+            builder.append(falseLabel).append(":").append("\n");
+            builder.append("   ldc 0").append("\n");
+            builder.append(popVariableFromStack(result));
+            builder.append(endLabel).append(":").append("\n\n");
         } else {
-            long trueLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
-            return String.format("" +
-                            "   iload %d                ; pushes from local pos\n" +
-                            "   ifne %d                 ; \n" + // TODO: description
-                            "   iload %d                ; \n" +
-                            "   ifne %d                 ; \n" +
-                            "   ldc 0                   ; \n"+
-                            "   istore %s               ; \n" +
-                            "   goto %d                 ; \n"+
-                            "   %d: ldc 1               ; \n" +
-                            "   istore %s               ; \n" +
-                            "   %d:                     ; \n\n",
-                    leftLocalArrayIndex, trueLabel, rightLocalArrayIndex, trueLabel,
-                    resultLocalArrayIndex, endLabel, trueLabel, resultLocalArrayIndex, endLabel);
+            String trueLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
+
+            builder.append("   ifne ").append(trueLabel).append("\n");
+            builder.append(pushVariableOntoStack(rightParam));
+            builder.append("   ifne ").append(trueLabel).append("\n");
+            builder.append("   ldc 0").append("\n");
+            builder.append(popVariableFromStack(result));
+            builder.append("   goto ").append(endLabel).append("\n");
+            builder.append(trueLabel).append(":").append("\n");
+            builder.append("   ldc 1").append("\n");
+            builder.append(popVariableFromStack(result));
+            builder.append(endLabel).append(":").append("\n\n");
         }
+
+        return builder.toString();
     }
 }

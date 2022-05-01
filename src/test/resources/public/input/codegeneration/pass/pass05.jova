@@ -5,7 +5,9 @@ class Test {
       int f;
       int g;
 
+        f = print(f*g);
       g = true&&false ? f : 0;
+      //g = true&&false ? f*g : f+g;
 
       return myvar;
     }

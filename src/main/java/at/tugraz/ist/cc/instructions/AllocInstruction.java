@@ -11,7 +11,8 @@ public class AllocInstruction extends BaseInstruction {
     private final SymbolVariable actualType;
     private final Collection<SymbolVariable> params;
 
-    public AllocInstruction(SimpleCallable associatedCallable, SymbolVariable classType, Collection<SymbolVariable> params) {
+    public AllocInstruction(SimpleCallable associatedCallable,
+                            SymbolVariable classType, Collection<SymbolVariable> params) {
         super(associatedCallable, Optional.of(classType));
         this.actualType = classType;
         this.params = params;
@@ -19,14 +20,24 @@ public class AllocInstruction extends BaseInstruction {
 
     @Override
     public String buildAssemblyString() {
-        String class_name = actualType.getTypeAsString();
-        int resultLocalArrayIndex = associatedCallable.getLocalArrayIndexBySymbolVariable(result);
-        // TODO loading params: could be done by derive from MethodInvocation...
-        return String.format("" +
-                        "  new %s                               ; allocate new memory for the object => saves obj-ref of the stack\n" +
-                        "  dup                                  ; duplicates the obj-ref => now there are two obj-ref\n" +
-                        "  invokespecial %s/<init>(%s)V         ; calls the constructor and pops a obj-ref from stack\n" +
-                        "  astore %d                            ; pop obj-ref from stack and stores it into the right local space\n\n",
-                class_name, class_name, CodeGeneratorUtils.getParameterTypesAsString(params), resultLocalArrayIndex);
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("    new ")
+                .append(actualType.getTypeAsString()).append("\n")
+                .append("   dup\n");
+        params.forEach(param -> builder.append(pushVariableOntoStack(param)));
+        builder.append("    invokespecial ")
+                .append(actualType.getName())
+                .append("/")
+                .append("<init>")
+                .append("(")
+                .append(CodeGeneratorUtils.getParameterTypesAsString(params))
+                .append(")")
+                .append("V")
+                .append("\n")
+                .append(popVariableFromStack(result));
+
+        return builder.toString();
+
     }
 }

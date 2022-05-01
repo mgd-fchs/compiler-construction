@@ -1,5 +1,7 @@
 package at.tugraz.ist.cc.instructions;
 
+import at.tugraz.ist.cc.CodeGenerator;
+import at.tugraz.ist.cc.CodeGeneratorUtils;
 import at.tugraz.ist.cc.symbol_table.SimpleCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
@@ -19,11 +21,30 @@ public class MemberAccessInstruction extends BaseInstruction {
 
     @Override
     public String buildAssemblyString() {
-        // TODO: if value != null -> put, else get
-        return null;
+        // TODO: beautify
+        StringBuilder builder = new StringBuilder();
+        builder.append(pushVariableOntoStack(classRef));
+
+        if (value != null) {
+            builder.append(pushVariableOntoStack(value))
+                    .append("   putfield ");
+        } else {
+            builder.append("   getfield ");
+        }
+
+        builder.append(classRef.getTypeAsString()).append("/")
+                .append(memberRef.getName()).append(" ").append(CodeGeneratorUtils.getTypeAsAssemblyString(memberRef));
+
+        if (value == null) {
+            builder.append(popVariableFromStack(result));
+        }
+
+        builder.append("\n\n");
+
+        return builder.toString();
     }
 
-    public void setPutValue(SymbolVariable value){
+    public void setPutValue(SymbolVariable value) {
         this.value = value;
     }
 
