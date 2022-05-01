@@ -11,8 +11,16 @@ public class CodeGeneratorPrivateTest {
 
     private final String path_fail = "src/test/resources/public/input/codegeneration/fail/";
     private final String path_pass = "src/test/resources/public/input/codegeneration/pass/";
+    private final String path_pass_public = "src/test/resources/public/input/bytecode/";
     private final String path_out = "src/test/resources/public/out/codegeneration/";
     CodeGenerator codeGenerator = new CodeGenerator();
+
+    @Test
+    public void testPublicPass06() {
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass_public + "pass06.jova", path_out + "pass06.j");
+        assertEquals(0, result);
+    }
 
     @Test
     public void testPass01() {
