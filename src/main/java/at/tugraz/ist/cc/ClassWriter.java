@@ -114,6 +114,7 @@ public class ClassWriter implements AutoCloseable {
         symbolMethod.instructions.forEach(baseInstruction ->
                 writer.print(baseInstruction.buildAssemblyString()));
 
+        writer.print("   return\n");
         writer.printf(".end method\n\n");
     }
 

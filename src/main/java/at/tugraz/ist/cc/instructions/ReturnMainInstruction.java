@@ -18,7 +18,7 @@ public class ReturnMainInstruction extends BaseInstruction {
     public String buildAssemblyString() {
         // TODO:
         if (returnValue.getValue() != null && (Integer) returnValue.getValue() == 0) {
-            return "    return\n";
+            return "";
         }
 
         StringBuilder builder = new StringBuilder();
