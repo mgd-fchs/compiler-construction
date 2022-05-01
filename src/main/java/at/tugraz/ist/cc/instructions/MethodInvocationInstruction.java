@@ -30,13 +30,13 @@ public class MethodInvocationInstruction extends BaseInstruction {
         StringBuilder builder = new StringBuilder();
 
         if (invokedMethod.associatedSymbolClass == null) {
-            if (params.size() != 1) {
-                throw new RuntimeException();
-            }
-
-            SymbolVariable param = params.get(0);
             // this must be a predefined method
             if (invokedMethod.getName() == SymbolMethod.PRINT) {
+                if (params.size() != 1) {
+                    throw new RuntimeException();
+                }
+
+                SymbolVariable param = params.get(0);
 
                 builder.append("    getstatic java/lang/System/out Ljava/io/PrintStream;\n")
                         .append(pushVariableOntoStack(param))
@@ -45,11 +45,15 @@ public class MethodInvocationInstruction extends BaseInstruction {
                         .append(")V\n")
                         .append("    ldc 0\n");
             } else {
+                if (params.size() != 0) {
+                    throw new RuntimeException();
+                }
+
                 builder.append("" +
                         "    new java/util/Scanner\n" +
                         "    dup\n" +
                         "    getstatic java/lang/System/in Ljava/io/InputStream;\n" +
-                        "    invokespecial java/util/Scanner/<init>(Ljava/io/InputStream;)V\n");
+                        "    invokevirtual java/util/Scanner/<init>(Ljava/io/InputStream;)V\n");
 
                 if (invokedMethod.getName() == SymbolMethod.READ_STRING) {
                     builder.append("    invokevirtual java/util/Scanner/nextLine()Ljava/lang/String;\n");
@@ -62,8 +66,8 @@ public class MethodInvocationInstruction extends BaseInstruction {
         } else {
             builder.append(pushVariableOntoStack(classRef));
             params.forEach(param -> builder.append(pushVariableOntoStack(param)));
-            builder.append("    invokespecial ")
-                    .append(classRef.getName())
+            builder.append("    invokevirtual ")
+                    .append(classRef.getTypeAsString())
                     .append("/")
                     .append(invokedMethod.getName())
                     .append("(")

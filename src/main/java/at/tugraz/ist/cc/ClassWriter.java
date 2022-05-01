@@ -1,9 +1,14 @@
 package at.tugraz.ist.cc;
 
+import at.tugraz.ist.cc.instructions.BaseInstruction;
+import at.tugraz.ist.cc.instructions.ReturnInstruction;
+import at.tugraz.ist.cc.instructions.ReturnMainInstruction;
 import at.tugraz.ist.cc.symbol_table.*;
 
 import java.io.*;
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 public class ClassWriter implements AutoCloseable {
     private final PrintWriter writer;
@@ -30,10 +35,11 @@ public class ClassWriter implements AutoCloseable {
         writeClassHeader();
 
         if (symbolClass.getClassName().equals(SymbolClass.MAIN_CLASS_NAME)) {
-            symbolClass.getMethods().stream().findFirst().ifPresent(symbolMethod -> {
-                writeMainMethod(symbolMethod);
+            Optional<SymbolMethod> method = symbolClass.getMethods().stream().findFirst();
+            if (method.isPresent()) {
+                writeMainMethod(method.get());
                 return;
-            });
+            }
         }
 
         symbolClass.getMembers().forEach(member -> writeMember(member.getKey(), member.getValue()));
@@ -73,8 +79,8 @@ public class ClassWriter implements AutoCloseable {
 
     private void writeMethod(SymbolMethod symbolMethod) {
         String parameter = CodeGeneratorUtils.getParameterTypesAsString(symbolMethod.getParams());
-        int stack_limit = 1; // TODO
-        int local_limit = 1; // TODO
+        int stack_limit = 100; // TODO
+        int local_limit = 100; // TODO
         writer.printf("" +
                         ".method %s %s(%s)V\n" +
                         ".limit stack %d\n" +
@@ -89,19 +95,27 @@ public class ClassWriter implements AutoCloseable {
     }
 
     private void writeMainMethod(SymbolMethod symbolMethod) {
-        int stack_limit = 1; // TODO
-        int local_limit = 1; // TODO
+        int stack_limit = 100; // TODO
+        int local_limit = 100; // TODO
         writer.printf("" +
                 ".method public static main([Ljava/lang/String;)V\n" +
                 ".limit stack %d\n" +
                 ".limit locals %d\n", stack_limit, local_limit);
 
+        List<BaseInstruction> instructions = symbolMethod.instructions;
+        BaseInstruction instruction = instructions.get(instructions.size() - 1);
+
+        if (instruction instanceof ReturnInstruction) {
+            instructions.remove(instruction);
+            ReturnMainInstruction replaced = new ReturnMainInstruction((ReturnInstruction) instruction);
+            instructions.add(replaced);
+        }
+
         symbolMethod.instructions.forEach(baseInstruction ->
                 writer.print(baseInstruction.buildAssemblyString()));
 
-        writer.printf("" +
-                "  return\n" +
-                ".end method\n\n");
+        writer.print("   return\n");
+        writer.printf(".end method\n\n");
     }
 
     private void writeDefaultCtor() {
@@ -117,8 +131,8 @@ public class ClassWriter implements AutoCloseable {
 
     private void writeCtor(SymbolConstructor symbolConstructor) {
         String parameter = CodeGeneratorUtils.getParameterTypesAsString(symbolConstructor.getParams());
-        int stack_limit = 1; // TODO
-        int local_limit = 1; // TODO
+        int stack_limit = 100; // TODO
+        int local_limit = 100; // TODO
         writer.printf("" +
                 ".method public <init>(%s)V\n" +
                 ".limit stack %d\n" +

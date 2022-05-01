@@ -24,10 +24,10 @@ public class AllocInstruction extends BaseInstruction {
 
         builder.append("    new ")
                 .append(actualType.getTypeAsString()).append("\n")
-                .append("   dup\n");
+                .append("    dup\n");
         params.forEach(param -> builder.append(pushVariableOntoStack(param)));
         builder.append("    invokespecial ")
-                .append(actualType.getName())
+                .append(actualType.getTypeAsString())
                 .append("/")
                 .append("<init>")
                 .append("(")
