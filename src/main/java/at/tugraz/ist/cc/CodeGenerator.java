@@ -4,6 +4,7 @@ package at.tugraz.ist.cc;
 import at.tugraz.ist.cc.error.ErrorHandler;
 import at.tugraz.ist.cc.symbol_table.SymbolClass;
 import at.tugraz.ist.cc.symbol_table.SymbolTable;
+import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.Collection;
@@ -14,6 +15,7 @@ import java.util.Collection;
 public class CodeGenerator {
 
     public int createCode(String file_path, String out_path) {
+        SymbolTable.reset();
 
         LexicalAndSyntaxAnalyzer analyzer = new LexicalAndSyntaxAnalyzer();
         JovaParser parser = analyzer.createParser(analyzer.lexing(file_path, false));

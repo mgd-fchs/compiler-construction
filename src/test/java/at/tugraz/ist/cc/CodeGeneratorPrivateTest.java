@@ -18,9 +18,38 @@ public class CodeGeneratorPrivateTest {
     CodeGenerator codeGenerator = new CodeGenerator();
 
     @Test
+    public void testPublicPass01() {
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass_public + "pass01.jova", path_out + "passPublic01");
+        assertEquals(0, result);
+    }
+    @Test
+    public void testPublicPass02() {
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass_public + "pass02.jova", path_out + "passPublic02");
+        assertEquals(0, result);
+    }
+    @Test
+    public void testPublicPass03() {
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass_public + "pass03.jova", path_out + "passPublic03");
+        assertEquals(0, result);
+    }    @Test
+    public void testPublicPass04() {
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass_public + "pass04.jova", path_out + "passPublic04");
+        assertEquals(0, result);
+    }
+    @Test
+    public void testPublicPass05() {
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass_public + "pass05.jova", path_out + "passPublic05");
+        assertEquals(0, result);
+    }
+    @Test
     public void testPublicPass06() {
         ErrorHandler.INSTANCE.reset();
-        int result = codeGenerator.createCode(path_pass_public + "pass06.jova", path_out + "pass06.j");
+        int result = codeGenerator.createCode(path_pass_public + "pass06.jova", path_out + "passPublic06");
         assertEquals(0, result);
     }
 
