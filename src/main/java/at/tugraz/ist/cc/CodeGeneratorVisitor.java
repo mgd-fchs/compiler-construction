@@ -351,8 +351,8 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
             LinkedList<BaseInstruction> conditionalExpression = currentClass.getCurrentCallable().instructions;
 
             if (conditionalExpression.isEmpty()) {
-                LogicalUnaryInstruction conditional = new LogicalUnaryInstruction(currentClass.getCurrentCallable(),
-                        currentClass.currentSymbolVariable, null);
+                BaseInstruction conditional = new WrapperInstruction(currentClass.getCurrentCallable(),
+                        currentClass.currentSymbolVariable);
                 conditionalExpression.add(conditional);
             }
 
@@ -361,8 +361,8 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
             LinkedList<BaseInstruction> ifInstructions = currentClass.getCurrentCallable().instructions;
 
             if (ifInstructions.isEmpty()) {
-                LogicalUnaryInstruction literal = new LogicalUnaryInstruction(currentClass.getCurrentCallable(),
-                        currentClass.currentSymbolVariable, null);
+                BaseInstruction literal = new WrapperInstruction(currentClass.getCurrentCallable(),
+                        currentClass.currentSymbolVariable);
                 ifInstructions.add(literal);
             }
 
@@ -371,8 +371,8 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
             List<BaseInstruction> elseInstructions = currentClass.getCurrentCallable().instructions;
 
             if (elseInstructions.isEmpty()) {
-                LogicalUnaryInstruction literal = new LogicalUnaryInstruction(currentClass.getCurrentCallable(),
-                        currentClass.currentSymbolVariable, null);
+                BaseInstruction literal = new WrapperInstruction(currentClass.getCurrentCallable(),
+                        currentClass.currentSymbolVariable);
                 elseInstructions.add(literal);
             }
 
@@ -482,10 +482,10 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
 
         visitExpr(ctx.expr());
         List<BaseInstruction> conditionalExpression = currentClass.getCurrentCallable().instructions;
+
         if (conditionalExpression.isEmpty()) {
-            // TODO @Richard: Neurosen
-            LogicalUnaryInstruction conditional = new LogicalUnaryInstruction(currentClass.getCurrentCallable(),
-                    currentClass.currentSymbolVariable, null);
+            BaseInstruction conditional = new WrapperInstruction(currentClass.getCurrentCallable(),
+                    currentClass.currentSymbolVariable);
             conditionalExpression.add(conditional);
         }
 
@@ -519,9 +519,8 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
         List<BaseInstruction> conditionalExpression = currentClass.getCurrentCallable().instructions;
 
         if (conditionalExpression.isEmpty()) {
-            // TODO @Richard: Neurosen
-            LogicalUnaryInstruction conditional = new LogicalUnaryInstruction(currentClass.getCurrentCallable(),
-                    currentClass.currentSymbolVariable, null);
+            BaseInstruction conditional = new WrapperInstruction(currentClass.getCurrentCallable(),
+                    currentClass.currentSymbolVariable);
             conditionalExpression.add(conditional);
         }
 

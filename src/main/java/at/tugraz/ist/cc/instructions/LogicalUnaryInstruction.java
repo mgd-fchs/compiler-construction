@@ -13,10 +13,6 @@ public class LogicalUnaryInstruction extends UnaryInstruction {
 
     @Override
     public String buildAssemblyString() {
-        if (operator == null) {
-            return "";
-        }
-
         String trueLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
         String endLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
 
