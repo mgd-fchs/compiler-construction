@@ -53,7 +53,7 @@ public class MethodInvocationInstruction extends BaseInstruction {
                         "    new java/util/Scanner\n" +
                         "    dup\n" +
                         "    getstatic java/lang/System/in Ljava/io/InputStream;\n" +
-                        "    invokespecial java/util/Scanner/<init>(Ljava/io/InputStream;)V\n");
+                        "    invokevirtual java/util/Scanner/<init>(Ljava/io/InputStream;)V\n");
 
                 if (invokedMethod.getName() == SymbolMethod.READ_STRING) {
                     builder.append("    invokevirtual java/util/Scanner/nextLine()Ljava/lang/String;\n");
@@ -66,7 +66,7 @@ public class MethodInvocationInstruction extends BaseInstruction {
         } else {
             builder.append(pushVariableOntoStack(classRef));
             params.forEach(param -> builder.append(pushVariableOntoStack(param)));
-            builder.append("    invokespecial ")
+            builder.append("    invokevirtual ")
                     .append(classRef.getTypeAsString())
                     .append("/")
                     .append(invokedMethod.getName())

@@ -27,16 +27,16 @@ public class MemberAccessInstruction extends BaseInstruction {
 
         if (value != null) {
             builder.append(pushVariableOntoStack(value))
-                    .append("   putfield ");
+                    .append("    putfield ");
         } else {
-            builder.append("   getfield ");
+            builder.append("    getfield ");
         }
 
         builder.append(classRef.getTypeAsString()).append("/")
                 .append(memberRef.getName()).append(" ").append(CodeGeneratorUtils.getTypeAsAssemblyString(memberRef));
 
         if (value == null) {
-            builder.append(popVariableFromStack(result));
+            builder.append("\n").append(popVariableFromStack(result));
         }
 
         builder.append("\n\n");
