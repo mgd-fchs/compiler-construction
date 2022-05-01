@@ -5,6 +5,9 @@ import java.util.*;
 public class SymbolMethod extends SimpleCallable {
     public static final String MAIN_METHOD_NAME = "main";
     public final static Collection<SymbolMethod> IO_METHODS = new ArrayList<>();
+    public final static String PRINT = "print";
+    public final static String READ_INT = "readInt";
+    public final static String READ_STRING = "readString";
 
 
     static {
