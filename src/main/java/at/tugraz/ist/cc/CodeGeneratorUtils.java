@@ -30,7 +30,7 @@ public class CodeGeneratorUtils {
                     throw new RuntimeException();
             }
         } else {
-            return symbolVariable.getTypeAsString() + ";";
+            return "L" + symbolVariable.getTypeAsString() + ";";
         }
     }
 
