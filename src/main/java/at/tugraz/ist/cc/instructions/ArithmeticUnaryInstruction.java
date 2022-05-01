@@ -1,5 +1,6 @@
 package at.tugraz.ist.cc.instructions;
 
+import at.tugraz.ist.cc.CodeGeneratorUtils;
 import at.tugraz.ist.cc.symbol_table.SimpleCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolPrimitiveType;
 import at.tugraz.ist.cc.symbol_table.SymbolType;
@@ -15,17 +16,18 @@ public class ArithmeticUnaryInstruction extends UnaryInstruction {
 
     @Override
     public String buildAssemblyString() {
-        int localParameterIndex = associatedCallable.getLocalArrayIndexBySymbolVariable(parameter);
-        int resultParamterIndex = associatedCallable.getLocalArrayIndexBySymbolVariable(result);
+        StringBuilder builder = new StringBuilder();
+
         if (operator.equals(OperatorTypes.ADD)) {
             result = parameter; // TODO reuse temp
             return "";
         } else {
-            return String.format("" +
-                            "    iload %d        ; load from local\n" +
-                            "    ineg            ; toggle sign\n" +
-                            "    istore %d       ; save result into local\n\n",
-                    localParameterIndex, resultParamterIndex);
+            return  builder
+                    .append(pushVariableOntoStack(parameter))
+                    .append("    ineg").append("\n")
+                    .append(popVariableFromStack(result))
+                    .append("\n\n")
+                    .toString();
         }
     }
 }

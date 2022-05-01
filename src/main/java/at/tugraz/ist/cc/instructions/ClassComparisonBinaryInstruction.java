@@ -16,31 +16,28 @@ public class ClassComparisonBinaryInstruction extends BinaryInstruction {
 
     @Override
     public String buildAssemblyString() {
-        int leftLocalArrayIndex = associatedCallable.getLocalArrayIndexBySymbolVariable(leftParam);
-        int rightLocalArrayIndex = associatedCallable.getLocalArrayIndexBySymbolVariable(rightParam);
-        int resultLocalArrayIndex = associatedCallable.getLocalArrayIndexBySymbolVariable(result);
-        // TODO
-
         /**
          * if_acmpeq succeeds if and only if value1 = value2
          * if_acmpne succeeds if and only if value1 ≠ value2
          */
 
-
         long endLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
         long trueLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
-        return String.format("" +
-                        "   aload %d                ; \n" +
-                        "   aload %d                ; \n" +
-                        "   %s %d                   ; \n" +
-                        "   ldc 0                   ; \n" +
-                        "   istore %s               ; \n" +
-                        "   goto %d                 ; \n" +
-                        "   %d: ldc 1               ; \n" +
-                        "   istore %s               ; \n" +
-                        "   %d:                     ; \n\n",
-                leftLocalArrayIndex, rightLocalArrayIndex,
-                (operator.equals(OperatorTypes.EQUAL)) ? "if_acmpeq" : "if_acmpne",
-                trueLabel, resultLocalArrayIndex, endLabel, trueLabel, resultLocalArrayIndex, endLabel);
+        StringBuilder builder = new StringBuilder();
+
+        builder
+                .append(pushVariableOntoStack(leftParam))
+                .append(pushVariableOntoStack(rightParam))
+                .append("    ").append( (operator.equals(OperatorTypes.EQUAL)) ? "if_acmpeq" : "if_acmpne").append(" ").append(trueLabel).append("\n")
+                .append("   ldc 0\n")
+                .append(popVariableFromStack(result))
+                .append("   goto ").append(endLabel).append("\n")
+                .append(trueLabel).append(":\n")
+                .append("   ldc 1\n")
+                .append(popVariableFromStack(result))
+                .append(endLabel).append(":\n")
+                .append("\n\n");
+
+        return builder.toString();
     }
 }

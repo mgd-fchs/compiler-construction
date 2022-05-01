@@ -71,7 +71,7 @@ public class CodeGeneratorUtils {
             case NOT:
                 return "";
             default:
-                throw new RuntimeException();
+                throw new RuntimeException("getOpAssembly");
         }
     }
 
@@ -148,8 +148,8 @@ public class CodeGeneratorUtils {
                 "  astore %s", localArrayIndex);
     }
 
-    public static BaseInstruction createBinaryInstruction(SimpleCallable callable, OperatorTypes op,
-                                                     SymbolVariable left, SymbolVariable right) {
+    public static BaseInstruction createInstruction(SimpleCallable callable, OperatorTypes op,
+                                                    SymbolVariable left, SymbolVariable right) {
         switch (op) {
             case ADD:
             case SUB:

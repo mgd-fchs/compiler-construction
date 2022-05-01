@@ -2,7 +2,7 @@ package at.tugraz.ist.cc.symbol_table;
 
 import java.util.*;
 
-public class SymbolMethod extends SimpleCallable{
+public class SymbolMethod extends SimpleCallable {
     public static final String MAIN_METHOD_NAME = "main";
     public final static Collection<SymbolMethod> IO_METHODS = new ArrayList<>();
 
@@ -11,24 +11,24 @@ public class SymbolMethod extends SimpleCallable{
         SymbolVariable returnValue = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.INT, "returnValue");
 
         SymbolVariable param = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.STRING, "param");
-        IO_METHODS.add(new SymbolMethod(SymbolModifier.PUBLIC, "print",  returnValue, List.of(param), null));
+        IO_METHODS.add(new SymbolMethod(SymbolModifier.PUBLIC, "print", returnValue, List.of(param), null));
 
         param = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.INT, "param");
-        IO_METHODS.add(new SymbolMethod(SymbolModifier.PUBLIC, "print",  returnValue, List.of(param), null));
+        IO_METHODS.add(new SymbolMethod(SymbolModifier.PUBLIC, "print", returnValue, List.of(param), null));
 
         param = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "param");
-        IO_METHODS.add(new SymbolMethod(SymbolModifier.PUBLIC, "print",  returnValue, List.of(param), null));
+        IO_METHODS.add(new SymbolMethod(SymbolModifier.PUBLIC, "print", returnValue, List.of(param), null));
 
-        IO_METHODS.add(new SymbolMethod(SymbolModifier.PUBLIC, "readInt",  returnValue, new ArrayList<>(), null));
+        IO_METHODS.add(new SymbolMethod(SymbolModifier.PUBLIC, "readInt", returnValue, new ArrayList<>(), null));
 
         returnValue = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.STRING, "returnValue");
-        IO_METHODS.add(new SymbolMethod(SymbolModifier.PUBLIC, "readString",  returnValue, new ArrayList<>(), null));
+        IO_METHODS.add(new SymbolMethod(SymbolModifier.PUBLIC, "readString", returnValue, new ArrayList<>(), null));
     }
 
     private final SymbolModifier accessSymbol;
 
-    public SymbolMethod(SymbolModifier accessSymbol,
-                        String name, SymbolVariable returnValue, List<SymbolVariable> params, SymbolClass associatedClass) {
+    public SymbolMethod(SymbolModifier accessSymbol, String name, SymbolVariable returnValue,
+                        List<SymbolVariable> params, SymbolClass associatedClass) {
         super(name, params, returnValue, associatedClass);
         this.accessSymbol = accessSymbol;
     }
