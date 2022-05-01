@@ -13,7 +13,7 @@ public class ReturnInstruction extends BaseInstruction {
     private SymbolVariable returnValue;
 
     public ReturnInstruction(SimpleCallable associatedCallable, SymbolVariable returnValue) {
-        super(associatedCallable, Optional.of(returnValue));
+        super(associatedCallable, Optional.empty());
         this.returnValue = returnValue;
     }
 
@@ -46,5 +46,9 @@ public class ReturnInstruction extends BaseInstruction {
         builder.append("\n");
 
         return builder.toString();
+    }
+
+    public SymbolVariable getReturnValue() {
+        return returnValue;
     }
 }
