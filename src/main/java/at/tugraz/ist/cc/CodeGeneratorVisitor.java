@@ -158,13 +158,8 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
             rhs_var = currentClass.currentSymbolVariable;
 
         } else if (ctx.alloc != null) {
-            List<SymbolVariable> backupArgList = currentClass.getCurrentArgList(); // TODO to we need to save this?
-            currentClass.setArgList(new ArrayList<>());
-
             visitObject_alloc(ctx.object_alloc());
             rhs_var = currentClass.currentSymbolVariable;
-
-            currentClass.setArgList(backupArgList);
         } else {
             throw new RuntimeException();
         }
@@ -408,10 +403,12 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
         String className = ctx.CLASS_TYPE().toString();
 
         Optional<SymbolClass> correspondingClass = symbolTable.getClassByName(className, ctx);
-        SymbolClass classObjectAlloc;
+        SymbolClass classObjectAlloc = correspondingClass.orElseThrow();
 
-        classObjectAlloc = correspondingClass.orElseThrow();
         currentClass.currentSymbolVariable = new SymbolVariable(SymbolType.CLASS, classObjectAlloc, "");
+
+        List<SymbolVariable> backupArgList = currentClass.getCurrentArgList();
+        currentClass.setArgList(new ArrayList<>());
 
         visitChildren(ctx);
 
@@ -419,11 +416,18 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
                 currentClass.currentSymbolVariable, currentClass.getCurrentArgList());
 
         addInstruction(alloc);
+
+        currentClass.setArgList(backupArgList);
+
         return OK;
     }
 
     @Override
     public Integer visitCtor_args(JovaParser.Ctor_argsContext ctx) {
+        if (ctx.arg_list() != null) {
+            visitArg_list(ctx.arg_list());
+        }
+
         return OK;
     }
 

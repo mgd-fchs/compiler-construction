@@ -1,8 +1,15 @@
 class Other{
+    public int field_a;
+    public bool field_b;
+    public Other field_other;
+
     Other(){
     }
 
-    Other(int a, bool b){
+    Other(int a, bool b, Other other){
+        field_a = a;
+        field_b = b;
+        field_other = other;
     }
 }
 
@@ -13,8 +20,13 @@ class SomeClass {
     }
 
     SomeClass() {
+        int a;
+        bool b;
         Other obj;
-         obj = new Other();
+        a = 3;
+        b = false;
+        obj = new Other();
+        obj = new Other(a, b, obj);
     }
 
 }
