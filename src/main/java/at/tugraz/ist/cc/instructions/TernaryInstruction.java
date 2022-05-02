@@ -10,14 +10,15 @@ import java.util.Optional;
 public class TernaryInstruction extends ConditionalInstruction {
     public final List<BaseInstruction> elseInstructions;
 
-    private static SymbolVariable prepareReturnValue(SymbolVariable template) {
+    private static SymbolVariable prepareReturnValue(List<BaseInstruction> ifInstructions) {
+        SymbolVariable template = ifInstructions.get(ifInstructions.size() - 1).result;
         return new SymbolVariable(template.getType(), template.getActualType());
     }
 
     public TernaryInstruction(SimpleCallable currentCallable, List<BaseInstruction> conditionalExpression,
                               List<BaseInstruction> ifInstructions, List<BaseInstruction> elseInstructions) {
         super(currentCallable, conditionalExpression, ifInstructions,
-                Optional.of(prepareReturnValue(ifInstructions.get(ifInstructions.size() - 1).result)));
+                Optional.of(prepareReturnValue(ifInstructions)));
 
         this.elseInstructions = elseInstructions;
     }
