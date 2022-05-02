@@ -146,4 +146,12 @@ public class CodeGeneratorPrivateTest {
         int result = codeGenerator.createCode(path_pass + "ternary.jova", path_out + "ternary");
         assertEquals(0, result);
     }
+
+    @Test
+    public void rel_classes() {
+        // return statements
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "rel_classes.jova", path_out + "rel_classes");
+        assertEquals(0, result);
+    }
 }
