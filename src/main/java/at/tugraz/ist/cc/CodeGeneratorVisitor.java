@@ -176,7 +176,9 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
             if (lastInstruction instanceof MemberAccessInstruction) {
                 // setting member
                 ((MemberAccessInstruction) lastInstruction).setPutValue(rhs_var);
+                Collection<BaseInstruction> lhs_instructions = currentClass.getCurrentCallable().instructions;
                 currentClass.getCurrentCallable().instructions = backupInstructions;
+                currentClass.getCurrentCallable().instructions.addAll(lhs_instructions);
 
                 return OK;
             }
