@@ -6,6 +6,12 @@ class Other{
     Other(){
     }
 
+     Other(int a, bool b){
+     }
+
+     Other(bool a, int b){
+     }
+
     Other(int a, bool b, Other other){
         field_a = a;
         field_b = b;
@@ -25,6 +31,10 @@ class SomeClass {
         Other obj;
         a = 3;
         b = false;
+
+        obj = new Other(a, b);
+        obj = new Other(b, a);
+
         obj = new Other();
         obj = new Other(a, b, obj);
     }

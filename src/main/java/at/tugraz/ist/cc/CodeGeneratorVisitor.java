@@ -371,15 +371,33 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
         Optional<SymbolClass> correspondingClass = symbolTable.getClassByName(className, ctx);
         SymbolClass classObjectAlloc = correspondingClass.orElseThrow();
 
-        currentClass.currentSymbolVariable = new SymbolVariable(SymbolType.CLASS, classObjectAlloc, "");
+        SymbolVariable classWrappedAsVariable = new SymbolVariable(SymbolType.CLASS, classObjectAlloc, "");
 
         List<SymbolVariable> backupArgList = currentClass.getCurrentArgList();
         currentClass.setArgList(new ArrayList<>());
 
         visitChildren(ctx);
 
+        /*
+             TODO coerion will not work:
+                SomeClass(int a, bool b){
+                }
+                .
+                .
+                .
+
+                // somewhere else we call this ctor
+                int a;
+                int b;
+                SomeClass someClass;
+
+                a = 3;
+                b = 3;
+
+                someClass = new SomeClass(a, b); // i think we might not find this ctor in our table because b is int => or am I wrong??
+         */
         BaseInstruction alloc = new AllocInstruction(currentClass.getCurrentCallable(),
-                currentClass.currentSymbolVariable, currentClass.getCurrentArgList());
+                classWrappedAsVariable, currentClass.getCurrentArgList());
 
         addInstruction(alloc);
 
