@@ -192,43 +192,6 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
         addInstruction(assignLocalInstruction);
 
         return OK;
-/*
-        assignMember = false;
-
-        SymbolVariable lhsVar = currentClass.currentSymbolVariable;
-
-        List<BaseInstruction> instructions = currentClass.getCurrentCallable().instructions;
-        BaseInstruction newInstruction = null;
-        MemberAccessInstruction lastInstruction = null;
-
-        if (assignMember) {
-            lastInstruction = (MemberAccessInstruction) instructions.get(instructions.size() - 1);
-        }
-        if (ctx.ass != null) {
-            visitExpr(ctx.expr());
-            newInstruction = new AssignLocalInstruction(currentClass.getCurrentCallable(), lhsVar, currentClass.currentSymbolVariable);
-
-            if (lastInstruction != null) {
-                lastInstruction.setPutValue(currentClass.currentSymbolVariable);
-            } else {
-                addInstruction(newInstruction);
-            }
-        } else if (ctx.alloc != null) {
-            List<SymbolVariable> backupArgList = currentClass.getCurrentArgList();
-            currentClass.setArgList(new ArrayList<>());
-
-            visitObject_alloc(ctx.object_alloc());
-            newInstruction = new AllocInstruction(currentClass.getCurrentCallable(),
-                    currentClass.currentSymbolVariable, lhsVar, currentClass.getCurrentArgList());
-
-            currentClass.setArgList(backupArgList);
-
-            if (lastInstruction != null) {
-                lastInstruction.setPutValue(newInstruction.getResult());
-            }
-            addInstruction(newInstruction);
-        }
-*/
     }
 
     @Override
