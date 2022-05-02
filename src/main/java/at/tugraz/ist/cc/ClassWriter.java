@@ -110,7 +110,7 @@ public class ClassWriter implements AutoCloseable {
         symbolMethod.instructions.forEach(baseInstruction ->
                 writer.print(baseInstruction.buildAssemblyString()));
 
-        writer.print("   return\n");
+        writer.print("    return\n");
         writer.printf(".end method\n\n");
     }
 
@@ -119,9 +119,9 @@ public class ClassWriter implements AutoCloseable {
                 ".method public <init>()V\n" +
                 ".limit stack 1\n" +
                 ".limit locals 1\n" +
-                "  aload_0\n" +
-                "  invokespecial java/lang/Object/<init>()V\n" +
-                "  return\n" +
+                "    aload_0\n" +
+                "    invokespecial java/lang/Object/<init>()V\n" +
+                "    return\n" +
                 ".end method\n\n");
     }
 
@@ -132,15 +132,15 @@ public class ClassWriter implements AutoCloseable {
         writer.printf("" +
                 ".method public <init>(%s)V\n" +
                 ".limit stack %d\n" +
-                ".limit locals %d\n", parameter, stack_limit, local_limit);
+                ".limit locals %d\n" +
+                "    aload_0\n" +
+                "    invokespecial java/lang/Object/<init>()V\n", parameter, stack_limit, local_limit);
 
         symbolConstructor.instructions.forEach(baseInstruction ->
                 writer.print(baseInstruction.buildAssemblyString()));
 
         writer.printf("" +
-                "  aload_0\n" +
-                "  invokespecial java/lang/Object/<init>()V\n" +
-                "  return\n" +
+                "    return\n" +
                 ".end method\n\n");
     }
 }

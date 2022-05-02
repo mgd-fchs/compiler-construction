@@ -131,4 +131,11 @@ public class CodeGeneratorPrivateTest {
         assertEquals(0, result);
     }
 
+    @Test
+    public void ctor() {
+        // return statements
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "ctor.jova", path_out + "ctor");
+        assertEquals(0, result);
+    }
 }

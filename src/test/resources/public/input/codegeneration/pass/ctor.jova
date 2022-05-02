@@ -1,0 +1,20 @@
+class Other{
+    Other(){
+    }
+
+    Other(int a, bool b){
+    }
+}
+
+class SomeClass {
+
+    public Other someFunc(int a, Other other, bool b, string c, int d){
+        return nix;
+    }
+
+    SomeClass() {
+        Other obj;
+         obj = new Other();
+    }
+
+}
