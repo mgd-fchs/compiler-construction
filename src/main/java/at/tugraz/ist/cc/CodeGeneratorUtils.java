@@ -109,7 +109,7 @@ public class CodeGeneratorUtils {
                 return new RelationalBinaryInstruction(callable, left, right, op);
             case EQUAL:
             case UNEQUAL:
-                return (left.getType() == CLASS) ?
+                return (left.getType() == CLASS || left.getActualType().equals(SymbolPrimitiveType.NIX)) ?
                         new ClassComparisonBinaryInstruction(callable, left, right, op) :
                         new RelationalBinaryInstruction(callable, left, right, op);
             case OR:

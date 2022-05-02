@@ -1,59 +1,86 @@
 class One {
 }
 
-class Two {
-}
-
 class Main {
 
   public int main() {
     bool result;
-    int ret;
+    One one0;
+    one0 = new One();
+    result = nix == one0;
 
+/*
     One one0;
     One one1;
     One one2;
+    One one_nix;
 
-    //Two two0;
-    //Two two1;
 
     one0 = new One();
+
     one1 = new One();
     one2 = one1;
-    //two0 = new Two();
-    //two1 = new Two();
+    one_nix = nix;
 
-    result = one0 == one1;
-    ret = print(result);
-    ret = print("\n");
-    result = one0 == one2;
-    ret = print(result);
-    ret = print("\n");
-    result = one1 == one2;
-    ret = print(result);
-    ret = print("\n\n");
-
-    result = one0 != one1;
-    ret = print(result);
-    ret = print("\n");
-    result = one0 != one2;
-    ret = print(result);
-    ret = print("\n");
-    result = one1 != one2;
-    ret = print(result);
-    ret = print("\n\n");
-
-    result = one0 == one2;
-    ret = print(result);
+    ret = print("should be true is: ");
+    ret = print(one0 == one0);
     ret = print("\n");
 
-    one2 = nix;
-    result = one0 != one2;
-    ret = print(result);
+    ret = print("should be false is: ");
+    ret = print(one0 != one0);
     ret = print("\n");
 
+    ret = print("should be false is: ");
+    ret = print(one0 == one1);
+    ret = print("\n");
 
+    ret = print("should be true is: ");
+    ret = print(one0 != one1);
+    ret = print("\n");
 
+    ret = print("should be true is: ");
+    ret = print(one1 == one2);
+    ret = print("\n");
+
+    ret = print("should be false is: ");
+    ret = print(one1 != one2);
+    ret = print("\n");
+
+    ret = print("should be false is: ");
+    ret = print(one0 == nix);
+    ret = print("\n");
+
+    ret = print("should be true is: ");
+    ret = print(one0 != nix);
+    ret = print("\n");
+
+    ret = print("should be false is: ");
+    ret = print(one0 == one_nix);
+    ret = print("\n");
+
+    ret = print("should be true is: ");
+    ret = print(one0 != one_nix);
+    ret = print("\n");
+
+    ret = print("should be true is: ");
+    ret = print(one_nix == one_nix);
+    ret = print("\n");
+
+    ret = print("should be true is: ");
+    ret = print(nix == nix);
+    ret = print("\n");
+    //ret = print(nix);
+
+    ret = print("\n");
+    ret = print("\n");
+
+*/
+
+    //ret = print("should be true is: ");
+    //ret = print(nix == one0);
+    //ret = print(one0 == nix);
+    //ret = print("\n");
+    //ret = print(nix);
     return 0;
   }
 

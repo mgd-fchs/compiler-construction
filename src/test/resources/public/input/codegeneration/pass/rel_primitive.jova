@@ -1,0 +1,183 @@
+class Helper {
+
+    public int num_69;
+    public int num_70;
+
+    Helper() {
+        num_69 = 69;
+        num_70 = 70;
+    }
+
+    public int giveParamBack(int param) {
+        return param;
+    }
+
+    public bool returnFalse0() {
+        return num_69 == num_70;
+    }
+
+    public bool returnTrue() {
+        int num_69;
+        num_69= 70;
+        return num_69 == num_70;
+   }
+}
+
+class Main {
+
+  public int main() {
+
+    int a;
+    int b;
+    int c;
+    bool d;
+    bool e;
+    int ret;
+    Helper helper;
+    helper = new Helper;
+
+
+    a = 69;
+    b = 69;
+    c = 70;
+/*
+    ret = print("should be true is: ");
+    ret = print(a == b);
+    ret = print("\n");
+
+    ret = print("should be false is: ");
+    ret = print(a == c);
+    ret = print("\n");
+
+    ret = print("should be false is: ");
+    ret = print(a != b);
+    ret = print("\n");
+
+    ret = print("should be true is: ");
+    ret = print(a != c);
+    ret = print("\n");
+
+    d = true;
+    a = 69;
+    ret = print("should be false is: ");
+    ret = print(a == d);
+    ret = print("\n");
+
+    d = true;
+    a = 69;
+    ret = print("should be true is: ");
+    ret = print(a != d);
+    ret = print("\n");
+
+
+    d = false;
+    a = 69;
+    ret = print("should be false is: ");
+    ret = print(a == d);
+    ret = print("\n");
+
+    d = false;
+    a = 69;
+    ret = print("should be true is: ");
+    ret = print(a != d);
+    ret = print("\n");
+
+
+    d = false;
+    e = false;
+    ret = print("should be true is: ");
+    ret = print(d == e);
+    ret = print("\n");
+
+    ret = print("should be false is: ");
+    ret = print(d == !e);
+    ret = print("\n");
+
+    ret = print("should be true is: ");
+    ret = print(!d == !e);
+    ret = print("\n");
+
+    a = 69;
+    ret = print("should be true is: ");
+    ret = print(a == helper.giveParamBack(a));
+    ret = print("\n");
+
+    b = 4;
+    ret = print("should be false is: ");
+    ret = print(a == helper.giveParamBack(b));
+    ret = print("\n");
+
+    a = 69;
+    ret = print("should be true is: ");
+    ret = print(a == 69);
+    ret = print("\n");
+
+    b = 4;
+    ret = print("should be false is: ");
+    ret = print(a == 3);
+    ret = print("\n");
+
+    a = 69;
+    ret = print("should be true is: ");
+    ret = print(69 == a);
+    ret = print("\n");
+
+    b = 4;
+    ret = print("should be false is: ");
+    ret = print(3 == a);
+    ret = print("\n");
+
+    b = 4;
+    a = 69;
+    ret = print("should be true is: ");
+    ret = print(b == a == false);
+    ret = print("\n");
+
+
+    b = 4;
+    a = 69;
+    ret = print("should be false is: ");
+    ret = print(b == a != false);
+    ret = print("\n");
+
+
+
+    if(!false ? true : false){
+       ret = print("Should be printed");
+    }
+
+    d = true;
+    e = false;
+    ret = print("should be false is: ");
+    ret = print(!d == !e);
+    ret = print("\n");
+
+
+    d = true;
+    e = false;
+    ret = print("should be false is: ");
+    ret = print((!d) == 1);
+    ret = print("\n");
+
+    d = true;
+    e = false;
+    ret = print("should be true is: ");
+    ret = print((!d) == 0);
+    ret = print("\n");
+*/
+
+    ret = print("should be false is: ");
+    ret = print(helper.returnFalse0() == true);
+    ret = print("\n");
+
+    ret = print("should be true is: ");
+    ret = print(helper.returnTrue() == true);
+    ret = print("\n");
+
+    ret = print("\n");
+    ret = print("\n");
+
+    return 0;
+  }
+
+}

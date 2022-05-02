@@ -154,4 +154,12 @@ public class CodeGeneratorPrivateTest {
         int result = codeGenerator.createCode(path_pass + "rel_classes.jova", path_out + "rel_classes");
         assertEquals(0, result);
     }
+
+    @Test
+    public void rel_primitive() {
+        // return statements
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "rel_primitive.jova", path_out + "rel_primitive");
+        assertEquals(0, result);
+    }
 }
