@@ -138,4 +138,12 @@ public class CodeGeneratorPrivateTest {
         int result = codeGenerator.createCode(path_pass + "ctor.jova", path_out + "ctor");
         assertEquals(0, result);
     }
+
+    @Test
+    public void ternary() {
+        // return statements
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "ternary.jova", path_out + "ternary");
+        assertEquals(0, result);
+    }
 }

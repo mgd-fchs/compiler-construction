@@ -15,11 +15,7 @@ public abstract class BaseInstruction {
 
     public BaseInstruction(SimpleCallable associatedCallable, Optional<SymbolVariable> result) {
         this.associatedCallable = associatedCallable;
-        if (result.isPresent()) {
-            this.result = associatedCallable.getNewTempSymbolVariable(result.get());
-        } else {
-            this.result = null;
-        }
+        this.result = result.map(associatedCallable::getNewTempSymbolVariable).orElse(null);
     }
 
     protected String pushVariableOntoStack(SymbolVariable variable) {

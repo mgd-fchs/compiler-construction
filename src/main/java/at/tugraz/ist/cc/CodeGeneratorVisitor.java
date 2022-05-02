@@ -318,7 +318,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
 
             currentClass.getCurrentCallable().instructions = new LinkedList<>();
             visit(ctx.then);
-            LinkedList<BaseInstruction> ifInstructions = currentClass.getCurrentCallable().instructions;
+            List<BaseInstruction> ifInstructions = currentClass.getCurrentCallable().instructions;
 
             if (ifInstructions.isEmpty()) {
                 BaseInstruction literal = new WrapperInstruction(currentClass.getCurrentCallable(),
@@ -337,7 +337,8 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
             }
 
             currentClass.getCurrentCallable().instructions = backupInstructions;
-            addInstruction(new TernaryInstruction(currentClass.getCurrentCallable(), conditionalExpression, ifInstructions, elseInstructions));
+            addInstruction(new TernaryInstruction(currentClass.getCurrentCallable(),
+                    conditionalExpression, ifInstructions, elseInstructions));
 
         } else {
             visitPrimary_expr(ctx.primary_expr());
