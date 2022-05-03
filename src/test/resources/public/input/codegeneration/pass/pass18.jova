@@ -1,0 +1,53 @@
+class Test {
+    private int a;
+
+    public int setA(int a) {
+        this.a = a;
+        return this.a;
+    }
+
+    public int getA() {
+       return this.a;
+    }
+
+    public int calcStuff(int a) {
+        int ret;
+
+        if (this.a < 5)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (a != 1)
+        {
+            ret = print("error occurred\n");
+        }
+
+       return this.a;
+    }
+}
+
+class Main {
+
+    public int main()
+    {
+        int a,b,c;
+        Test t;
+        int ret;
+
+        a = 10;
+        t = new Test;
+        ret = t.setA(a);
+        ret = t.calcStuff(1);
+
+        if (ret != a)
+        {
+            ret = print("error occurred\n");
+        }
+
+
+        ret = print("finished\n");
+
+        return ret;
+    }
+}

@@ -1,0 +1,40 @@
+class Main {
+
+    public int main()
+    {
+        int a,b,c,d;
+        int ret;
+        bool cond;
+
+        cond = true;
+        a = 10;
+        b = 5;
+        c = 0;
+        d = -5;
+
+        if (10 / 5 != 2)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (a / 5 != 2)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (a / b != 2)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (a / d != -2)
+        {
+            ret = print("error occurred\n");
+        }
+
+
+        ret = print("finished\n");
+
+        return ret;
+    }
+}

@@ -186,6 +186,30 @@ public class CodeGeneratorPrivateTest {
         assertEquals(0, result);
     }
 
+    @Test
+    public void testPass18() {
+        // shadowing/this
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass18.jova", path_out + "pass18.j");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPass19() {
+        // multiplication
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass19.jova", path_out + "pass19.j");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPass20() {
+        // multiplication
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass20.jova", path_out + "pass20.j");
+        assertEquals(0, result);
+    }
+
 
 
     @Test

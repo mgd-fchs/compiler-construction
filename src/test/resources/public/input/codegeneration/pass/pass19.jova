@@ -1,0 +1,57 @@
+class Main {
+
+    public int main()
+    {
+        int a,b,c,d;
+        int ret;
+        bool cond;
+
+        cond = true;
+        a = 10;
+        b = 5;
+        c = 0;
+        d = -5;
+
+        if (!cond)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (5 * 0)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (a * 0)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (a * c)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (a - 2*b)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (a - -2*d)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (b - -d)
+        {
+            ret = print("error occurred\n");
+        }
+
+
+
+
+        ret = print("finished\n");
+
+        return ret;
+    }
+}
