@@ -52,5 +52,24 @@ public class TernaryInstruction extends ConditionalInstruction {
         return builder.toString();
     }
 
+    @Override
+    public int getNeededStackSize() {
+        int cond_stack = conditionals.stream()
+                .mapToInt(BaseInstruction::getNeededStackSize)
+                .max()
+                .orElse(0);
+
+        int if_stack = ifInstructions.stream()
+                .mapToInt(BaseInstruction::getNeededStackSize)
+                .max()
+                .orElse(0);
+
+        int else_stack = elseInstructions.stream()
+                .mapToInt(BaseInstruction::getNeededStackSize)
+                .max()
+                .orElse(0);
+
+        return cond_stack + Math.max(if_stack, else_stack);
+    }
 
 }

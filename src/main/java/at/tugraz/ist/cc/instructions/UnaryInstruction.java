@@ -17,4 +17,9 @@ public abstract class UnaryInstruction extends BaseInstruction {
         this.parameter = parameter;
         this.operator = operator;
     }
+
+    @Override
+    public int getNeededStackSize() {
+        return 1;
+    }
 }

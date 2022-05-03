@@ -184,4 +184,8 @@ public abstract class SimpleCallable {
     public int getLocalArraySize() {
         return localArrayIndex;
     }
+
+    public int getStackSize() {
+        return instructions.size();
+    }
 }

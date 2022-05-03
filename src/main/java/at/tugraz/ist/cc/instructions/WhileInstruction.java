@@ -30,4 +30,19 @@ public class WhileInstruction extends ConditionalInstruction{
 
         return builder.toString();
     }
+
+    @Override
+    public int getNeededStackSize() {
+        int cond_stack = conditionals.stream()
+                .mapToInt(BaseInstruction::getNeededStackSize)
+                .max()
+                .orElse(0);
+
+        int if_stack = ifInstructions.stream()
+                .mapToInt(BaseInstruction::getNeededStackSize)
+                .max()
+                .orElse(0);
+
+        return cond_stack + if_stack;
+    }
 }

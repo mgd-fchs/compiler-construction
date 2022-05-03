@@ -40,4 +40,9 @@ public class AllocInstruction extends BaseInstruction {
         return builder.toString();
 
     }
+
+    @Override
+    public int getNeededStackSize() {
+        return 2 + params.size();
+    }
 }

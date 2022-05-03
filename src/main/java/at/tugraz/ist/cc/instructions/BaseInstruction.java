@@ -13,6 +13,7 @@ public abstract class BaseInstruction {
     protected final SimpleCallable associatedCallable;
     protected SymbolVariable result;
 
+
     public BaseInstruction(SimpleCallable associatedCallable, Optional<SymbolVariable> result) {
         this.associatedCallable = associatedCallable;
         this.result = result.map(associatedCallable::getNewTempSymbolVariable).orElse(null);
@@ -95,4 +96,5 @@ public abstract class BaseInstruction {
      * @return
      */
     public abstract String buildAssemblyString();
+    public abstract int getNeededStackSize();
 }

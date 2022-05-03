@@ -24,4 +24,9 @@ public class AssignLocalInstruction extends BaseInstruction {
 
         return builder.toString();
     }
+
+    @Override
+    public int getNeededStackSize() {
+        return 1;
+    }
 }

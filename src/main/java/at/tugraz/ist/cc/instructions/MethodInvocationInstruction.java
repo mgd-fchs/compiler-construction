@@ -79,4 +79,23 @@ public class MethodInvocationInstruction extends BaseInstruction {
         builder.append(popVariableFromStack(result)).append("\n\n");
         return builder.toString();
     }
+
+    @Override
+    public int getNeededStackSize() {
+        int stack_size;
+        if (invokedMethod.associatedSymbolClass == null) {
+            if (invokedMethod.getName() == SymbolMethod.PRINT) {
+                // print
+                stack_size = 1 + 1; // getstatic + param
+            } else {
+                // read
+                stack_size = 1 + 1; // scanner + dup
+            }
+
+        } else {
+            stack_size = 1 + params.size();
+        }
+
+        return stack_size;
+    }
 }

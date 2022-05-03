@@ -75,7 +75,7 @@ public class ClassWriter implements AutoCloseable {
 
     private void writeMethod(SymbolMethod symbolMethod) {
         String parameter = CodeGeneratorUtils.getParameterTypesAsString(symbolMethod.getParams());
-        int stack_limit = 100; // TODO
+        int stack_limit = symbolMethod.getStackSize();
         int local_limit = symbolMethod.getLocalArraySize();
         writer.printf("" +
                         ".method %s %s(%s)%s\n" +
@@ -91,12 +91,8 @@ public class ClassWriter implements AutoCloseable {
     }
 
     private void writeMainMethod(SymbolMethod symbolMethod) {
-        int stack_limit = 100; // TODO
+        int stack_limit = symbolMethod.getStackSize();
         int local_limit = symbolMethod.getLocalArraySize();
-        writer.printf("" +
-                ".method public static main([Ljava/lang/String;)V\n" +
-                ".limit stack %d\n" +
-                ".limit locals %d\n", stack_limit, local_limit);
 
         List<BaseInstruction> instructions = symbolMethod.instructions;
         BaseInstruction instruction = instructions.get(instructions.size() - 1);
@@ -106,6 +102,11 @@ public class ClassWriter implements AutoCloseable {
             ReturnMainInstruction replaced = new ReturnMainInstruction((ReturnInstruction) instruction);
             instructions.add(replaced);
         }
+
+        writer.printf("" +
+                ".method public static main([Ljava/lang/String;)V\n" +
+                ".limit stack %d\n" +
+                ".limit locals %d\n", stack_limit, local_limit);
 
         symbolMethod.instructions.forEach(baseInstruction ->
                 writer.print(baseInstruction.buildAssemblyString()));
@@ -127,7 +128,7 @@ public class ClassWriter implements AutoCloseable {
 
     private void writeCtor(SymbolConstructor symbolConstructor) {
         String parameter = CodeGeneratorUtils.getParameterTypesAsString(symbolConstructor.getParams());
-        int stack_limit = 100; // TODO
+        int stack_limit = symbolConstructor.getStackSize();
         int local_limit = symbolConstructor.getLocalArraySize();
         writer.printf("" +
                 ".method public <init>(%s)V\n" +

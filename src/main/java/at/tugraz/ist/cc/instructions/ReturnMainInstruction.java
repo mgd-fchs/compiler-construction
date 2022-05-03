@@ -27,4 +27,9 @@ public class ReturnMainInstruction extends BaseInstruction {
 
         return  builder.toString();
     }
+
+    @Override
+    public int getNeededStackSize() {
+        return 1;
+    }
 }

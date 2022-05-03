@@ -17,4 +17,10 @@ public abstract class BinaryInstruction extends BaseInstruction {
         this.rightParam = rightParameter;
         this.operator = operator;
     }
+
+
+    @Override
+    public int getNeededStackSize() {
+        return 2;
+    }
 }

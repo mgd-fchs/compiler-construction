@@ -48,4 +48,10 @@ public class MemberAccessInstruction extends BaseInstruction {
         this.value = value;
     }
 
+
+    @Override
+    public int getNeededStackSize() {
+        // TODO:
+        return 2; // get needs 1 and the put would need 2 so meh
+    }
 }

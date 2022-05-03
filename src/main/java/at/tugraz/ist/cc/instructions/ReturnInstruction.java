@@ -51,4 +51,9 @@ public class ReturnInstruction extends BaseInstruction {
     public SymbolVariable getReturnValue() {
         return returnValue;
     }
+
+    @Override
+    public int getNeededStackSize() {
+        return 1;
+    }
 }

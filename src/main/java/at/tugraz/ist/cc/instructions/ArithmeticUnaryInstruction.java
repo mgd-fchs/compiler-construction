@@ -26,6 +26,5 @@ public class ArithmeticUnaryInstruction extends UnaryInstruction {
         return builder.append(popVariableFromStack(result))
                 .append("\n\n")
                 .toString();
-
     }
 }

@@ -3,6 +3,7 @@ package at.tugraz.ist.cc.instructions;
 import at.tugraz.ist.cc.symbol_table.SimpleCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,4 +38,23 @@ public class IfInstruction extends ConditionalInstruction{
         return builder.toString();
     }
 
+    @Override
+    public int getNeededStackSize() {
+        int cond_stack = conditionals.stream()
+                .mapToInt(BaseInstruction::getNeededStackSize)
+                .max()
+                .orElse(0);
+
+        int if_stack = ifInstructions.stream()
+                .mapToInt(BaseInstruction::getNeededStackSize)
+                .max()
+                .orElse(0);
+
+        int else_stack = elseInstructions.stream()
+                .mapToInt(BaseInstruction::getNeededStackSize)
+                .max()
+                .orElse(0);
+
+        return cond_stack + Math.max(if_stack, else_stack);
+    }
 }

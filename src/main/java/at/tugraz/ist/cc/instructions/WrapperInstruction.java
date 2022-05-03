@@ -16,4 +16,9 @@ public class WrapperInstruction extends BaseInstruction{
     public String buildAssemblyString() {
         return "";
     }
+
+    @Override
+    public int getNeededStackSize() {
+        return 1; // will be needed at for loading the constant
+    }
 }
