@@ -22,12 +22,16 @@ public class CodeGenerator {
         parser.reset();
         ParseTree parseTree = parser.program();
 
-        TypeChecker typeChecker = new TypeChecker();
-        typeChecker.checkTypes(file_path, false);
-
         if (ErrorHandler.INSTANCE.getNumParseErrors() != 0) {
             ErrorHandler.INSTANCE.printErrorsAndWarnings();
             return ErrorHandler.INSTANCE.getNumParseErrors();
+        }
+
+        TypeChecker typeChecker = new TypeChecker();
+        typeChecker.checkTypes(file_path, false);
+
+        if (ErrorHandler.INSTANCE.getNumTypeErrors() != 0) {
+            return ErrorHandler.INSTANCE.getNumTypeErrors();
         }
 
         CodeGeneratorVisitor codeVisitor = new CodeGeneratorVisitor();
@@ -41,6 +45,8 @@ public class CodeGenerator {
                 e.printStackTrace();
             }
         });
+
+        SymbolTable.reset();
 
         return 0;
     }
