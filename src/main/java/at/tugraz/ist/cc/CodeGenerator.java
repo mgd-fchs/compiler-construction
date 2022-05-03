@@ -31,6 +31,7 @@ public class CodeGenerator {
         typeChecker.checkTypes(file_path, false);
 
         if (ErrorHandler.INSTANCE.getNumTypeErrors() != 0) {
+            ErrorHandler.INSTANCE.printErrorsAndWarnings();
             return ErrorHandler.INSTANCE.getNumTypeErrors();
         }
 

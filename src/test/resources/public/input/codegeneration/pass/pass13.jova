@@ -1,0 +1,56 @@
+class Main {
+
+    public int main()
+    {
+        int a,b,c;
+        int ret;
+
+        a = 10;
+        b = 5;
+        c = 10;
+
+        if (b >= a)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (b >= 6)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (a > 10)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (a > c)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (b > 10-3)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (b > a-3)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (b >= -1 + a)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (b > a-b)
+        {
+            ret = print("error occurred\n");
+        }
+
+        ret = print("finished\n");
+
+        return ret;
+    }
+}

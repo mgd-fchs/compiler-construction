@@ -138,6 +138,38 @@ public class CodeGeneratorPrivateTest {
         assertEquals(0, result);
     }
 
+    @Test
+    public void testPass12() {
+        // smaller equal statements
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass12.jova", path_out + "pass12.j");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPass13() {
+        // greater equal statements
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass13.jova", path_out + "pass13.j");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPass14() {
+        // greater smaller statements with classes+memberaccesses
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass14.jova", path_out + "pass14.j");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPass15() {
+        // greater smaller statements with classes+memberaccesses
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass15.jova", path_out + "pass15.j");
+        assertEquals(0, result);
+    }
+
 
 
     @Test

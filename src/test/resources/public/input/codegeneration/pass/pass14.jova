@@ -1,0 +1,71 @@
+class Test2 {
+    private int b;
+
+    public int setB(int b) {
+        this.b = b;
+        return this.b;
+    }
+
+    public int getB() {
+       return this.b;
+    }
+}
+
+class Test {
+    private int a;
+
+    public int setA(int a) {
+        this.a = a;
+        return this.a;
+    }
+
+    public int getA() {
+       return this.a;
+    }
+}
+
+class Main {
+
+    public int main()
+    {
+        int a,b,c;
+        int ret;
+        Test t;
+        Test2 t2;
+
+        a = 10;
+        b = 5;
+        c = 10;
+
+        t = new Test;
+        t2 = new Test2;
+
+        ret = t.setA(a);
+        ret = t2.setB(b);
+
+        if (b >= t.getA())
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (b > t.getA() - b)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (t2.getB() >= t.getA())
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (t2.getB() >= t.getA() + a)
+        {
+            ret = print("error occurred\n");
+        }
+
+
+        ret = print("finished\n");
+
+        return ret;
+    }
+}

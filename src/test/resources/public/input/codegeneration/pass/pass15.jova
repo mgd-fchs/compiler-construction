@@ -1,0 +1,79 @@
+class Test2 {
+    private int b;
+
+    public int setB(int b) {
+        this.b = b;
+        return this.b;
+    }
+
+    public int getB() {
+       return this.b;
+    }
+}
+
+class Test {
+    private int a;
+
+    public int setA(int a) {
+        this.a = a;
+        return this.a;
+    }
+
+    public int getA() {
+       return this.a;
+    }
+}
+
+class Main {
+
+    public int main()
+    {
+        int a,b,c;
+        int ret;
+        Test test, test1, test2;
+        Test2 t2, t22;
+
+        a = 10;
+        b = 5;
+        c = 10;
+
+        test = new Test;
+        test1 = new Test;
+        test2 = test;
+        t2 = new Test2;
+        t22 = nix;
+
+        ret = test.setA(a);
+        ret = t2.setB(b);
+
+        if (test == test1)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (test != test2)
+        {
+            ret = print("no error occurred\n");
+        }
+
+        if (t2 == t22)
+        {
+            ret = print("error occurred2\n");
+        }
+
+        if (test == nix)
+        {
+            ret = print("error occurred3\n");
+        }
+
+        if (t22 != nix)
+        {
+            ret = print("error occurred4\n");
+        }
+
+
+        ret = print("finished\n");
+
+        return ret;
+    }
+}
