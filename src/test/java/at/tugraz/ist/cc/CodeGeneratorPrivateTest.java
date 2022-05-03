@@ -164,9 +164,25 @@ public class CodeGeneratorPrivateTest {
 
     @Test
     public void testPass15() {
-        // greater smaller statements with classes+memberaccesses
+        // comparisons of classes
         ErrorHandler.INSTANCE.reset();
         int result = codeGenerator.createCode(path_pass + "pass15.jova", path_out + "pass15.j");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPass16() {
+        // nested ifs
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass16.jova", path_out + "pass16.j");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPass17() {
+        // logical and/or
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass17.jova", path_out + "pass17.j");
         assertEquals(0, result);
     }
 

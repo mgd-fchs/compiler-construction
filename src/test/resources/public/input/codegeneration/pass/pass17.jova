@@ -1,0 +1,63 @@
+class Main {
+
+    public int main()
+    {
+        bool a,b,c;
+        int ret;
+
+        a = true;
+        b = false;
+        c = true;
+
+
+        if (!a)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (b)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (!c)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (a && b)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (a && !c)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (!a || b)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (b || false)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (b || !c)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (a && b)
+        {
+            ret = print("error occurred\n");
+        }
+
+
+        ret = print("finished\n");
+
+        return ret;
+    }
+}

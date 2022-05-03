@@ -1,0 +1,45 @@
+class Main {
+
+    public int main()
+    {
+        int a,b,c;
+        int ret;
+        bool cond;
+
+        a = 10;
+        b = 5;
+        c = 10;
+        cond = false;
+
+        if (a)
+        {
+            if (b)
+            {
+                if (c)
+                {
+                    if (a+b)
+                    {
+                        if (a+c)
+                        {
+                             if (b+c)
+                             {
+                                cond = true;
+                             }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (cond)
+        {
+            ret = print("finished\n");
+        }
+        else
+        {
+            ret = print("error occurred\n");
+        }
+
+        return ret;
+    }
+}
