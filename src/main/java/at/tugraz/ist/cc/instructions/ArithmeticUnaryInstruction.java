@@ -17,17 +17,15 @@ public class ArithmeticUnaryInstruction extends UnaryInstruction {
     @Override
     public String buildAssemblyString() {
         StringBuilder builder = new StringBuilder();
+        builder.append(pushVariableOntoStack(parameter));
 
-        if (operator.equals(OperatorTypes.ADD)) {
-            result = parameter; // TODO reuse temp
-            return "";
-        } else {
-            return  builder
-                    .append(pushVariableOntoStack(parameter))
-                    .append("    ineg").append("\n")
-                    .append(popVariableFromStack(result))
-                    .append("\n\n")
-                    .toString();
+        if (operator.equals(OperatorTypes.SUB)) {
+            builder.append("    ineg\n");
         }
+
+        return builder.append(popVariableFromStack(result))
+                .append("\n\n")
+                .toString();
+
     }
 }
