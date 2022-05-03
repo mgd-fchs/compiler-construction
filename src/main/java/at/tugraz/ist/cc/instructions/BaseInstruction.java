@@ -67,6 +67,8 @@ public abstract class BaseInstruction {
                     builder.append("    astore ");
                     break;
                 case NIX:
+                    builder.append("    astore ");
+                    break;
                 case FLOAT:
                 case CHAR:
                 default:
