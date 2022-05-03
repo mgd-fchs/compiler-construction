@@ -122,6 +122,23 @@ public class CodeGeneratorPrivateTest {
         assertEquals(0, result);
     }
 
+    @Test
+    public void testPass10() {
+        // ternary statements
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass10.jova", path_out + "pass10.j");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPass11() {
+        // ternary statements
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass11.jova", path_out + "pass11.j");
+        assertEquals(0, result);
+    }
+
+
 
     @Test
     public void read() {

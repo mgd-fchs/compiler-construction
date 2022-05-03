@@ -1,0 +1,32 @@
+class Another {
+    public bool b;
+
+    public int setB(bool b){
+        this.b = b;
+        return b;
+    }
+
+
+    public bool getB(){
+        return b;
+    }
+}
+
+class Main {
+
+    public int main()
+    {
+        int t;
+        Another a;
+        string tmp;
+        a = new Another;
+        t = a.setB(true);
+        tmp = (a.getB()) ? "hello" : "world";
+        t = print(tmp);
+
+        t = a.setB(!true);
+        tmp = (a.getB()) ? "hello" : "world";
+        t = print(tmp);
+        return 0;
+    }
+}

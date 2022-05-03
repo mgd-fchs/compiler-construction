@@ -61,7 +61,7 @@ class Main {
       number = tower.divide(number);
       ret = printer.printf(number);
     }
-      
+
     return 0;
   }
 }

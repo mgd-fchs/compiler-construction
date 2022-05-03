@@ -1,0 +1,47 @@
+class Another {
+    public bool b;
+
+    public int setB(bool b){
+        this.b = b;
+        return b;
+    }
+
+    public bool getB(){
+        return b;
+    }
+}
+
+class Bnother {
+    private Another a;
+
+    public int setA(Another a){
+        this.a = a;
+        return 0;
+    }
+
+    public Another getA(){
+        return a;
+    }
+}
+
+class Main {
+
+    public int main()
+    {
+        int t;
+        Bnother b;
+        Another a;
+        string tmp;
+        b = new Bnother;
+        a = new Another;
+        t = b.setA(a);
+        t = b.getA().setB(true);
+        tmp = (b.getA().getB()) ? "hello" : "world";
+        t = print(tmp);
+        tmp = (1 - b.getA().getB()) ? "hello" : "world";
+        t = print(tmp);
+        tmp = (!b.getA().getB()) ? "hello" : "world";
+        t = print(tmp);
+        return 0;
+    }
+}
