@@ -214,7 +214,6 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
 
     @Override
     public Integer visitMethod_invocation(JovaParser.Method_invocationContext ctx) {
-        // TODO what if the method is from inside the own class (without this keyword)
         SymbolClass classOfMethodInvocation = (SymbolClass) currentClass.currentSymbolVariable.getActualType();
         SymbolVariable backupVar = currentClass.currentSymbolVariable;
         currentClass.currentSymbolVariable = null;
@@ -378,24 +377,6 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
 
         visitChildren(ctx);
 
-        /*
-             TODO coerion will not work:
-                SomeClass(int a, bool b){
-                }
-                .
-                .
-                .
-
-                // somewhere else we call this ctor
-                int a;
-                int b;
-                SomeClass someClass;
-
-                a = 3;
-                b = 3;
-
-                someClass = new SomeClass(a, b); // i think we might not find this ctor in our table because b is int => or am I wrong??
-         */
         BaseInstruction alloc = new AllocInstruction(currentClass.getCurrentCallable(),
                 classWrappedAsVariable, currentClass.getCurrentArgList());
 

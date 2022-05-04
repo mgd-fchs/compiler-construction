@@ -25,7 +25,6 @@ public class TernaryInstruction extends ConditionalInstruction {
 
     @Override
     public String buildAssemblyString() {
-        // TODO: return value must be set right...
         StringBuilder builder = new StringBuilder();
         SymbolVariable resultCondition = conditionals.get(conditionals.size() - 1).result;
         String else_label = associatedCallable.associatedSymbolClass.getNextLabelCount();

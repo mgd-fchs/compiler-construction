@@ -21,7 +21,6 @@ public class MemberAccessInstruction extends BaseInstruction {
 
     @Override
     public String buildAssemblyString() {
-        // TODO: beautify
         StringBuilder builder = new StringBuilder();
         builder.append(pushVariableOntoStack(classRef));
 
@@ -51,7 +50,11 @@ public class MemberAccessInstruction extends BaseInstruction {
 
     @Override
     public int getNeededStackSize() {
-        // TODO:
-        return 2; // get needs 1 and the put would need 2 so meh
+        // get needs 1 and the put would need 2
+        if (value != null) {
+            return 2;
+        } else {
+            return 1;
+        }
     }
 }
