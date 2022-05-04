@@ -1,0 +1,25 @@
+class Main {
+
+    public int main()
+    {
+        int a,b,c,d;
+        int ret;
+        bool cond;
+
+        cond = true;
+        a = 10;
+        b = 5;
+        c = 1;
+        d = -5;
+
+        a = (b*c*d)/d + a*b;
+
+        ret = print(a); // output: "55"
+
+        ret = print(7%b); // output: "2"
+
+        ret = print((b + c * d + c)/c); // output: "1"
+
+        return ret;
+    }
+}

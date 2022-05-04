@@ -1,0 +1,38 @@
+class Nested {
+  private bool mem;
+
+  public bool fortyTwo() {
+    return true;
+  }
+
+  public bool func() {
+    return false;
+  }
+
+  public bool nestedIsland() {
+    bool foo;
+	bool a;
+	a = !true;
+	mem = false;
+
+    foo = print(!((fortyTwo() && this.func()) || (70 && a))||true);
+	foo = print(((!a && fortyTwo())||this.mem)&&a);
+
+    return func();
+  }
+}
+
+class Main{
+
+    public int main(){
+        Nested nested;
+        bool a;
+        nested = new Nested;
+
+        a = nested.nestedIsland();
+
+        return 0;
+    }
+}
+
+// output: true false

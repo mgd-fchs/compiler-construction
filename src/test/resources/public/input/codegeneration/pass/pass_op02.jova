@@ -1,0 +1,24 @@
+class FuncClass {
+  public int fortyTwo() {
+    return 42;
+  }
+
+  public int sixtyTwo() {
+    return 62;
+  }
+}
+
+class Main {
+
+  public int main() {
+    FuncClass fclass;
+    int foo;
+    int ret;
+
+    fclass = new FuncClass;
+    foo = -fclass.fortyTwo() + fclass.sixtyTwo();
+    ret = print(foo); // output: 20
+
+    return 0;
+  }
+}

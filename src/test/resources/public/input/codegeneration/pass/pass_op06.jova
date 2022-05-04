@@ -1,0 +1,47 @@
+class Smth {
+	public int f;
+	public string g;
+}
+
+class Nested {
+  private bool mem;
+
+  public bool fortyTwo() {
+    return true;
+  }
+
+  public int func() {
+    return true;
+  }
+
+  public bool nestedIsland() {
+    int foo;
+	bool a;
+    Smth smth;
+
+	this.mem = false;
+	smth = new Smth;
+	smth.g = "hithere";
+	smth.f = 7;
+	a = false;
+
+	foo = print(!a ? 4 : (fortyTwo()-smth.f));
+	foo = print(((!a && false)||this.mem)&&a ? "mystring" : smth.g);
+
+    return 0;
+  }
+}
+
+class Main {
+    public int main(){
+        Nested nest;
+        int a;
+
+        nest = new Nested;
+        a = nest.nestedIsland();
+
+        return 0;
+    }
+}
+
+// output: 4 hithere
