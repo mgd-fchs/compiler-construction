@@ -316,6 +316,31 @@ public class CodeGeneratorPrivateTest {
     }
 
     @Test
+    public void testPassMethod01() {
+        // simple method invocation
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass_method01.jova", path_out + "pass_method01");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassMethod02() {
+        // test method invocation and return values
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass_method02.jova", path_out + "pass_method02");
+        assertEquals(0, result);
+    }
+
+
+    @Test
+    public void testPassMethod03() {
+        // test method invocation and return values
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass_method03.jova", path_out + "pass_method03");
+        assertEquals(0, result);
+    }
+
+    @Test
     public void read() {
         // return statements
         ErrorHandler.INSTANCE.reset();
