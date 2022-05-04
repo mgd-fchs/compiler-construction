@@ -1,0 +1,49 @@
+class Test {
+    private int x;
+
+    public int getX(int x, Test t) {
+        return this.x;
+    }
+}
+
+class Testing {
+  private int x;
+  private Testing t;
+  private Test test;
+
+  public Testing test3(int x, bool t) {
+       return this.t;
+    }
+
+  public int test2(int x, Testing t) {
+     return print("Successful invocation!");
+  }
+
+  public int test1(int x) {
+       return 0;
+    }
+
+  public int test() {
+        int foo;
+        this.x = 5;
+        this.t = new Testing;
+        test = new Test;
+        this.t.x = 77;
+
+        foo = test2(test1(0), test3(test.getX(x, test), true));
+        return 0;
+    }
+}
+
+class Main {
+    public int main(){
+         Testing t;
+         int f;
+
+         t = new Testing;
+
+         f = t.test();
+
+         return 0;
+    }
+}
