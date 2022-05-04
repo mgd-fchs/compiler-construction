@@ -28,7 +28,7 @@ public class CodeGenerator {
         }
 
         TypeChecker typeChecker = new TypeChecker();
-        typeChecker.checkTypes(file_path, false);
+        typeChecker.checkTypes(file_path, false, false);
 
         if (ErrorHandler.INSTANCE.getNumTypeErrors() != 0) {
             ErrorHandler.INSTANCE.printErrorsAndWarnings();

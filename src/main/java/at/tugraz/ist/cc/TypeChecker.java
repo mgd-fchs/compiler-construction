@@ -2,6 +2,7 @@ package at.tugraz.ist.cc;
 
 
 import at.tugraz.ist.cc.error.ErrorHandler;
+import at.tugraz.ist.cc.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 /**
@@ -12,9 +13,7 @@ public class TypeChecker {
 
     private ParseTree parseTree;
 
-
-
-    public int checkTypes(String file_path, boolean debug) {
+    public int checkTypes(String file_path, boolean debug, boolean resetSymbolTable) {
         LexicalAndSyntaxAnalyzer analyzer = new LexicalAndSyntaxAnalyzer();
 
         JovaParser parser = analyzer.createParser(analyzer.lexing(file_path, debug));
@@ -36,10 +35,15 @@ public class TypeChecker {
             ErrorHandler.INSTANCE.printTypeWarnings();
         }
 
-        if (ErrorHandler.INSTANCE.getNumTypeErrors() != 0) {
-            return ErrorHandler.INSTANCE.getNumTypeErrors();
+        if (resetSymbolTable) {
+            SymbolTable.reset();
         }
-        return 0;
+
+        return ErrorHandler.INSTANCE.getNumTypeErrors();
+    }
+
+    public int checkTypes(String file_path, boolean debug) {
+        return checkTypes(file_path, debug, true);
     }
 
 }
