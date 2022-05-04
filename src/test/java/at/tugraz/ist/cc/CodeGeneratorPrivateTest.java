@@ -259,6 +259,38 @@ public class CodeGeneratorPrivateTest {
     }
 
     @Test
+    public void testPassOp07() {
+        // ternary operator
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass_op07.jova", path_out + "pass_op07");
+        assertEquals(0, result);
+    }
+
+
+    @Test
+    public void testPassOp08() {
+        // simple test ternary operator
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass_op08.jova", path_out + "pass_op08");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassIf01() {
+        // test if- conditions
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass_if01.jova", path_out + "pass_if01");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassIf02() {
+        // test if-conditions
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass_if02.jova", path_out + "pass_if02");
+        assertEquals(0, result);
+    }
+    @Test
     public void read() {
         // return statements
         ErrorHandler.INSTANCE.reset();

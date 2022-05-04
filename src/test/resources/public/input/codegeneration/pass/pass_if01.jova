@@ -1,0 +1,30 @@
+class Main{
+
+	public int main(){
+
+		string a;
+		bool b, c;
+		int f, i;
+
+		b = false;
+
+		a = b ? "f" : "string";
+		f = print(a);       // output: string
+
+		a = b ? "string" : "c";
+        f = print(a);       // output: c
+
+		i = b ? 4 : 1;
+		f = print(i);       // output: 1
+
+		c = b ? false : 3;
+		i = print(c);       // output: true;
+
+		f = !b ? 2 : true;
+		i = print(f);       // output: 2;
+
+		return f;
+
+	}
+
+}
