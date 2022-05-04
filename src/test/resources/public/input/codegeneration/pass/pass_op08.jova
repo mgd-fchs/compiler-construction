@@ -1,47 +1,30 @@
-class Smth {
-	public int f;
-	public string g;
+class Main{
+
+	public int main(){
+
+		string a;
+		bool b, c;
+		int f, i;
+
+		b = false;
+
+		a = b ? "f" : "string";
+		f = print(a);       // output: string
+
+		a = b ? "string" : "c";
+        f = print(a);       // output: c
+
+		i = b ? 4 : 1;
+		f = print(i);       // output: 1
+
+		c = b ? false : 3;
+		i = print(c);       // output: true;
+
+		f = !b ? 2 : true;
+		i = print(f);       // output: 2;
+
+		return f;
+
+	}
+
 }
-
-class Nested {
-  private bool mem;
-
-  public bool fortyTwo() {
-    return true;
-  }
-
-  public int func() {
-    return true;
-  }
-
-  public bool nestedIsland() {
-    int foo;
-	bool a;
-    Smth smth;
-
-	this.mem = false;
-	smth = new Smth;
-	smth.g = "hithere";
-	smth.f = 7;
-	a = false;
-
-	foo = print(!a ? 4 : (fortyTwo()-smth.f));
-	foo = print(((!a && false)||this.mem)&&a ? "mystring" : smth.g);
-
-    return 0;
-  }
-}
-
-class Main {
-    public int main(){
-        Nested nest;
-        int a;
-
-        nest = new Nested;
-        a = nest.nestedIsland();
-
-        return 0;
-    }
-}
-
-// output: 4 hithere

@@ -252,7 +252,7 @@ public class CodeGeneratorPrivateTest {
 
     @Test
     public void testPassOp06() {
-        // ternary operator
+        // nested logical
         ErrorHandler.INSTANCE.reset();
         int result = codeGenerator.createCode(path_pass + "pass_op06.jova", path_out + "pass_op06");
         assertEquals(0, result);
@@ -290,6 +290,31 @@ public class CodeGeneratorPrivateTest {
         int result = codeGenerator.createCode(path_pass + "pass_if02.jova", path_out + "pass_if02");
         assertEquals(0, result);
     }
+
+    @Test
+    public void testPassWhile01() {
+        // test while-loops
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass_while01.jova", path_out + "pass_while01");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassWhile02() {
+        // test while-loops
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass_while02.jova", path_out + "pass_while02");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassWhile03() {
+        // test while-loops
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass_while03.jova", path_out + "pass_while03");
+        assertEquals(0, result);
+    }
+
     @Test
     public void read() {
         // return statements

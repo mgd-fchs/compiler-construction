@@ -1,6 +1,5 @@
 
 class Test1 {
-
 	public int memint;
 	public bool membool;
 }
@@ -8,34 +7,43 @@ class Test1 {
 class Main{
 
 	public int main(){
+	    Test1 test1;
+	    Test1 test2;
 
-	    Test1 t;
-		int u;
-		bool f;
-		int a;
-		int c;
-		
-		u = 4;
-		t = new Test1;
-	    t.memint = 4;
-	    f = true;
-	    c = true;
-	    t.membool = true;
+		string res;
+		string txt;
+	    int t1, t2, t3;
+	    bool b1, b2, b3;
 
-	    if(t == nix){
-			u = u+1;
-			c = false;
-			u = print("T is nix-type"); // should not be output!
+        b1 = true;
+        b2 = true;
+        b3 = !b2;
+
+        t1 = 35;
+        t2 = 100;
+
+	    test1 = new Test1;
+	    test2 = new Test1;
+
+		test1.membool = true;
+		test1.memint = 0;
+
+		t1 = test1.membool || (b1 && (!(b2||b3))) ? t2: t1;
+		t3 = print(t1);                 // output: 100
+		t2 = (t1 >= t3 && t3 < t2)|| b1 && (test1.membool == true) ? 150 : 5;
+		t3 = print(t2);                 // output: 150
+
+
+	    if(test1 == test2){
+			t3 = print("Error output");  // should not be output!
+	    } else {
+	        t3 = print("This is good"); // should be output!
+
+	        if (test1.membool){
+	            t3 = print("This is even better"); // should be output!
+	        }
 	    }
 
-        if(t.memint > 0){
-            u = print("It's happening!"); // should be output!
-        }
-
-		if ((t.membool && (f == true) ) && c){
-		    u = print("It's happening again!"); // should be output!
-		}
-
-		return 0;
+		return t1;
 	}
 }

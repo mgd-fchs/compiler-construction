@@ -1,0 +1,48 @@
+
+class Test1 {
+
+	public int intfunc(){
+	    return 0;
+	}
+
+	public bool boolfunc(){
+	    return false;
+	}
+}
+
+class Main{
+
+	public int main(){
+
+	    Test1 t1;
+	    Test1 t2;
+		int u;
+		bool f;
+		int a;
+		bool c;
+
+		u = 4;
+		t1 = new Test1;
+	    t2 = new Test1;
+
+	    if(t1 != t2){
+			if (t1.boolfunc() == t2.intfunc()){
+			    a = print("Success!");
+			} else {
+			    a = print("Error output!");
+			}
+	    } else {
+	        a = print("Error output!");
+	    }
+
+        while (u > 0){
+            if(t2 != nix){
+                u = u-1;
+                c = false;
+            }
+            a = print("Looping... ");
+        }
+
+		return 0;
+	}
+}
