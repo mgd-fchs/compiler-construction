@@ -186,6 +186,9 @@ public abstract class SimpleCallable {
     }
 
     public int getStackSize() {
-        return instructions.size();
+        return instructions.stream()
+                .mapToInt(BaseInstruction::getNeededStackSize)
+                .max()
+                .orElse(1);
     }
 }

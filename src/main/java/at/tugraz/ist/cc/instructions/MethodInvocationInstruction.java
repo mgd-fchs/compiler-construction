@@ -3,11 +3,10 @@ package at.tugraz.ist.cc.instructions;
 import at.tugraz.ist.cc.CodeGeneratorUtils;
 import at.tugraz.ist.cc.symbol_table.SimpleCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolMethod;
-import at.tugraz.ist.cc.symbol_table.SymbolType;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class MethodInvocationInstruction extends BaseInstruction {
@@ -30,7 +29,7 @@ public class MethodInvocationInstruction extends BaseInstruction {
 
         if (invokedMethod.associatedSymbolClass == null) {
             // this must be a predefined method
-            if (invokedMethod.getName() == SymbolMethod.PRINT) {
+            if (Objects.equals(invokedMethod.getName(), SymbolMethod.PRINT)) {
                 if (params.size() != 1) {
                     throw new RuntimeException();
                 }
@@ -54,7 +53,7 @@ public class MethodInvocationInstruction extends BaseInstruction {
                         "    getstatic java/lang/System/in Ljava/io/InputStream;\n" +
                         "    invokespecial java/util/Scanner/<init>(Ljava/io/InputStream;)V\n");
 
-                if (invokedMethod.getName() == SymbolMethod.READ_STRING) {
+                if (Objects.equals(invokedMethod.getName(), SymbolMethod.READ_STRING)) {
                     builder.append("    invokevirtual java/util/Scanner/nextLine()Ljava/lang/String;\n");
                 } else if (invokedMethod.getName() == SymbolMethod.READ_INT) {
                     builder.append("    invokevirtual java/util/Scanner/nextInt()I\n");
@@ -89,7 +88,7 @@ public class MethodInvocationInstruction extends BaseInstruction {
                 stack_size = 1 + 1; // getstatic + param
             } else {
                 // read
-                stack_size = 1 + 1; // scanner + dup
+                stack_size = 1 + 1 + 1; // scanner + dup
             }
 
         } else {
