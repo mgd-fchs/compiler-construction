@@ -1,0 +1,48 @@
+class Test1 {
+    public int memint;
+}
+
+class Main{
+
+	public int main(){
+
+	    Test1 t;
+		int u;
+		bool f;
+		int a;
+		int c;
+
+		c = 0;
+		u = 4;
+		t = new Test1;
+		t.memint = 35;
+		f = true;
+
+	    if(t != nix){
+			u = u+1;
+			c = false;
+
+			if (!c){
+			    a = print("Nested if is working!"); // output
+			}
+	    } else {
+	        a = print("Error output");
+	    }
+
+        while(t.memint > 1){
+            if (t.memint % 3 != 0){
+                a = print(t.memint % 3);  // output
+                t.memint = t.memint % 2;
+            } else {
+                a = print("Loop done!"); // output
+            }
+        }
+
+
+		if ((u && (f == true) ) && c){
+		    a = print("Error output");
+		}
+
+		return 0;
+	}
+}

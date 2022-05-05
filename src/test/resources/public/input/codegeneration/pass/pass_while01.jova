@@ -1,0 +1,25 @@
+class Main {
+
+    public int main(){
+
+        bool a, b, c;
+        int f, g, h;
+
+        a = false;
+        g = 4;
+        f = 1;
+
+        while (!a){
+            h = print("Look at me iterating!");  // should output 4x
+
+            if (g > f){
+                f = f+1;
+            } else {
+                a = true;
+                h = print("End condition reached!");  // should output 1x at the end
+            }
+        }
+
+        return 0;
+    }
+}

@@ -1,0 +1,32 @@
+class Test2 {
+    private Test2 t;
+
+    public Test2 testing (Test2 t) {
+        t = new Test2;
+        return t;
+    }
+}
+
+class Test{
+    private Test2 t;
+
+    public Test2 test(int t) {
+        this.t = new Test2;
+
+        return this.t.testing(this.t);
+    }
+}
+
+class Main {
+    public int main(){
+        Test test;
+        int a;
+        test = new Test;
+
+        if (test.test(0) != nix){
+            a = print("Access successful!");
+        }
+
+        return 0;
+    }
+}

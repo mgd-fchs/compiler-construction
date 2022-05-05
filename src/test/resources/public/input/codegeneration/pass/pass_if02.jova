@@ -1,0 +1,49 @@
+
+class Test1 {
+	public int memint;
+	public bool membool;
+}
+
+class Main{
+
+	public int main(){
+	    Test1 test1;
+	    Test1 test2;
+
+		string res;
+		string txt;
+	    int t1, t2, t3;
+	    bool b1, b2, b3;
+
+        b1 = true;
+        b2 = true;
+        b3 = !b2;
+
+        t1 = 35;
+        t2 = 100;
+
+	    test1 = new Test1;
+	    test2 = new Test1;
+
+		test1.membool = true;
+		test1.memint = 0;
+
+		t1 = test1.membool || (b1 && (!(b2||b3))) ? t2: t1;
+		t3 = print(t1);                 // output: 100
+		t2 = (t1 >= t3 && t3 < t2)|| b1 && (test1.membool == true) ? 150 : 5;
+		t3 = print(t2);                 // output: 150
+
+
+	    if(test1 == test2){
+			t3 = print("Error output");  // should not be output!
+	    } else {
+	        t3 = print("This is good"); // should be output!
+
+	        if (test1.membool){
+	            t3 = print("This is even better"); // should be output!
+	        }
+	    }
+
+		return t1;
+	}
+}

@@ -1,0 +1,25 @@
+class Main {
+
+    public int main()
+    {
+        int a,b,c,d;
+        bool ret;
+        bool cond;
+
+        cond = true;
+        a = 10;
+        b = 5;
+        c = 1;
+        d = -5;
+
+        a = (b*c*d)/d + a*b;
+
+        ret = print((a || cond)&&!d); // output: "false"
+
+        ret = print(1 || 0 || cond); // output: "true"
+
+        ret = print(!((a || cond)&&!d)); // output: "true"
+
+        return 0;
+    }
+}

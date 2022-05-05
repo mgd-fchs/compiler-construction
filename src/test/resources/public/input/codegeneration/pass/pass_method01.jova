@@ -1,0 +1,19 @@
+class Class {
+    public int test2(int x) {
+
+        return print("Method call successful!");
+    }
+}
+
+
+class Main {
+    public int main(){
+        int a;
+        Class c;
+
+        c = new Class;
+        a = c.test2(55);
+
+        return 1;
+    }
+}

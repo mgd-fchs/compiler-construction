@@ -1,0 +1,32 @@
+class Class {
+    public int intfunc(int x) {
+
+        return print("Method call 1/2 successful! ");
+    }
+
+    public bool boolfunc(int a) {
+
+        int f;
+
+        f = a ? 1 : 0;
+        return f;
+    }
+}
+
+
+class Main {
+    public int main(){
+        int a;
+        Class c;
+
+        c = new Class;
+
+        if (c.boolfunc(c.intfunc(55))){
+            a = print("Method call 2/2 unsuccessful! ");
+        } else {
+            a = print("Method call 2/2 successful! ");
+        }
+
+        return 1;
+    }
+}

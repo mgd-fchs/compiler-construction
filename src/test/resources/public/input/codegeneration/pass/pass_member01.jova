@@ -1,0 +1,22 @@
+class Test{
+    private int x;
+
+    public int test() {
+        this.x = 0;
+        return this.x;
+    }
+}
+
+class Main {
+    public int main(){
+        Test test;
+        int a;
+        test = new Test;
+
+        if (test.test() == 0){
+            a = print("Access successful!");
+        }
+
+        return 0;
+    }
+}

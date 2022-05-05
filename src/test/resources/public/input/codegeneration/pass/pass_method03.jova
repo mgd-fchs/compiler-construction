@@ -1,0 +1,60 @@
+class Testing {
+    private int func1(){
+        return 1;
+    }
+
+    public int func3() {
+        int b;
+        b = 7;
+
+        return func1();
+    }
+
+    public int func2(int x) {
+        return func1();
+    }
+
+    public int func2(string y) {
+        return func3();
+    }
+
+    public int func2(bool z) {
+        return func1();
+    }
+
+    public int func3b(int a) {
+
+        return func2(a);
+    }
+
+    public int func3c() {
+        bool c;
+        c = true;
+
+        return func2(c);
+    }
+}
+
+class Main {
+
+    public int main(){
+        Testing t;
+        int foo;
+
+        t = new Testing;
+
+        if (t.func2(55) == 1) {
+            foo = print("Success 1/3 ");
+
+            if (t.func2("hihello") == 1){
+                foo = print("Success 2/3 ");
+            }
+
+            if (t.func3c() == 1){
+                foo = print("Success 3/3 ");
+            }
+        }
+
+        return 0;
+    }
+}

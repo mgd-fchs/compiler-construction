@@ -1,0 +1,41 @@
+
+class Test1 {
+
+	public int memint;
+	public bool membool;
+}
+
+class Main{
+
+	public int main(){
+
+	    Test1 t;
+		int u;
+		bool f;
+		int a;
+		int c;
+		
+		u = 4;
+		t = new Test1;
+	    t.memint = 4;
+	    f = true;
+	    c = true;
+	    t.membool = true;
+
+	    if(t == nix){
+			u = u+1;
+			c = false;
+			u = print("T is nix-type"); // should not be output!
+	    }
+
+        if(t.memint > 0){
+            u = print("It's happening!"); // should be output!
+        }
+
+		if ((t.membool && (f == true) ) && c){
+		    u = print("It's happening again!"); // should be output!
+		}
+
+		return 0;
+	}
+}
