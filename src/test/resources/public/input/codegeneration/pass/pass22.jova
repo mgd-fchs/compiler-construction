@@ -15,11 +15,12 @@ class Main {
 
     public int main()
     {
-        int ret, i;
+        int ret, i, a;
         Test t;
 
         i = 0;
-        t.setA(55);
+        a = 0;
+        ret = t.setA(55);
 
         while (i < t.getA())
         {
