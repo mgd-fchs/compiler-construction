@@ -453,6 +453,46 @@ public class CodeGeneratorPrivateTest {
     }
 
     @Test
+    public void testPassMisc04() {
+        // miscellaneous test program: ctor
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass_misc04.jova", path_out + "pass_misc04");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassMisc05() {
+        // miscellaneous test program
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass_misc05.jova", path_out + "pass_misc05");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassMisc06() {
+        // miscellaneous test program: type coercion
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass_misc06.jova", path_out + "pass_misc06");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassMisc07() {
+        // miscellaneous test program: type coercion
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass_misc07.jova", path_out + "pass_misc07");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassMisc08() {
+        // miscellaneous test program
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass_misc08.jova", path_out + "pass_misc08");
+        assertEquals(0, result);
+    }
+
+    @Test
     public void read() {
         // return statements
         ErrorHandler.INSTANCE.reset();

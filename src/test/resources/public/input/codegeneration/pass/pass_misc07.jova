@@ -1,0 +1,40 @@
+// expect output: 3x "Success!"
+
+class A {
+
+  public int fortyTwo() {
+    return 0;
+  }
+
+  public bool helloWorld() {
+    return print("Success! ");  	    // coerce int to bool
+  }
+
+  public bool combine() {
+	int a, b, c;
+	a = 27;
+	b = fortyTwo();
+	c = helloWorld();
+
+	return (a+b)*fortyTwo();		// coerce int to bool
+  }
+}
+
+class Main{
+    public int main(){
+        A a;
+        int foo, ret;
+
+        a = new A;
+
+        if (!a.combine()){
+            ret = print("Success! ");
+        } else {
+            ret = print("Error! ");
+        }
+
+        foo = a.helloWorld();
+
+        return 0;
+    }
+}

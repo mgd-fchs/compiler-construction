@@ -1,0 +1,19 @@
+class Test{
+
+}
+
+class Main {
+
+  public int main() {
+    int number;
+    number = 1;
+    
+    if(number){
+      number = print("Success! ");
+    } else {
+       number = print("Error! ");
+    }
+    return 0;
+  }
+
+}

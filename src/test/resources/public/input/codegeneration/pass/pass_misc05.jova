@@ -1,0 +1,27 @@
+class A {
+}
+
+class B {
+}
+
+class Main {
+    public int main() {
+        A a;
+        A b;
+        bool b1, b2;
+        int f;
+
+        a = new A;
+        b = nix;
+
+        b1 = a == b;
+        b2 = a != b;
+
+        if (!b1 && b2){
+            f = print("Success!");
+        } else {
+            f = print("Error!");
+        }
+        return 0;
+    }
+}

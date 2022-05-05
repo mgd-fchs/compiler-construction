@@ -1,0 +1,71 @@
+class Helper {
+
+    public int testint;
+
+    Helper(){
+        testint = 0;
+    }
+
+    Helper(int a, string b, bool c){
+        testint = 1;
+    }
+
+    Helper(Helper a, Helper b){
+        testint = 2;
+    }
+
+    Helper(int a, string b, bool c, Helper d, Helper f){
+        testint = 3;
+    }
+}
+
+
+class Main {
+    public int main() {
+        Helper c;
+
+        int v;
+        string w;
+        bool x;
+        Helper y;
+        Helper z;
+
+        v = 2;
+        w = "two";
+        x = false;
+
+        y = new Helper;
+        z = new Helper;
+
+        c = new Helper;
+        if (c.testint == 0){
+            v = print("Success!");
+        } else {
+           v = print("Error!");
+        }
+
+        c = new Helper(v, w, x);
+        if (c.testint == 1){
+            v = print("Success!");
+        } else {
+           v = print("Error!");
+        }
+
+        c = new Helper(y, z);
+
+        if (c.testint == 2){
+            v = print("Success!");
+        } else {
+           v = print("Error!");
+        }
+
+        c = new Helper(v, w, x, y, z);
+        if (c.testint == 3){
+            v = print("Success!");
+        } else {
+           v = print("Error!");
+        }
+
+        return 0;
+    }
+}
