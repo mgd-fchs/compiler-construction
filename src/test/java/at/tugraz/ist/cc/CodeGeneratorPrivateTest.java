@@ -210,6 +210,22 @@ public class CodeGeneratorPrivateTest {
         assertEquals(0, result);
     }
 
+    @Test
+    public void testPass21() {
+        // multiplication
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass21.jova", path_out + "pass21.j");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPass22() {
+        // multiplication
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass22.jova", path_out + "pass22.j");
+        assertEquals(0, result);
+    }
+
 
 
     @Test

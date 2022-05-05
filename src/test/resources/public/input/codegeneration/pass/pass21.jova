@@ -1,0 +1,22 @@
+class Main {
+
+    public int main()
+    {
+        int ret, i;
+        i = 0;
+
+        while (i < 20)
+        {
+            i = i + 1;
+        }
+
+        if (i < 20)
+        {
+            ret = print("error occurred\n");
+        }
+
+        ret = print("finished\n");
+
+        return ret;
+    }
+}
