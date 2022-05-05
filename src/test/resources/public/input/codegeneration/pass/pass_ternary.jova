@@ -1,0 +1,163 @@
+class Other {
+
+    public int num_69;
+    public int num;
+    public Other other;
+
+    Other() {
+        num_69 = 69;
+    }
+
+    Other(int num) {
+        this.num = num;
+        num_69 = 69;
+        other = new Other();
+    }
+
+    public bool getTrue() {
+        return true;
+    }
+
+    public int get69() {
+        return 69;
+    }
+
+    public int getNum() {
+        return num;
+    }
+
+    public int setNum(int num) {
+        this.num = num;
+        return num;
+    }
+
+    public int print(int a, int b, int c, int d) {
+       int ret;
+       ret = print(a);
+       ret = print(b);
+       ret = print(c);
+       ret = print(d);
+
+       return ret;
+    }
+}
+
+class Main {
+
+
+  public int main() {
+    int inputInt;
+    int ret;
+    int a;
+    int b;
+    int c;
+    int d;
+    bool bool_var;
+    Other first;
+    Other second;
+    Other third;
+    string string_var;
+
+    first = new Other;
+    second = new Other;
+
+    ret = print("Should be 69: ");
+    ret = (true) ? 69 : 70;
+    ret = print(ret);
+    ret = print("\n\n");
+
+    ret = print("Should be 69: ");
+    ret = (true) ? 68 + 1 : 90 + 1;
+    ret = print(ret);
+    ret = print("\n\n");
+
+    ret = print("Should be 69: ");
+    ret = (!true) ? 70 : 69;
+    ret = print(ret);
+    ret = print("\n\n");
+
+    ret = print("Should be true: ");
+    third = (true) ? first : second;
+    ret = print(first == third);
+    ret = print("\n\n");
+
+    ret = print("Should be true: ");
+    third = (false) ? first : second;
+    ret = print(second == third);
+    ret = print("\n\n");
+
+    third = second;
+    ret = print("Should be true: ");
+    bool_var = (true) ? second == third : first == third;
+    ret = print(bool_var);
+    ret = print("\n\n");
+
+    third = second;
+    ret = print("Should be true: ");
+    bool_var = (true) ? true : false;
+    ret = print(bool_var);
+    ret = print("\n\n");
+
+    third = second;
+    ret = print("Should be true: ");
+    bool_var = (true) ? 1 < 3 : 1 > 3;
+    ret = print(bool_var);
+    ret = print("\n\n");
+
+    third = second;
+    ret = print("Should be true: ");
+    bool_var = (true) ? first.getTrue() : false;
+    ret = print(bool_var);
+    ret = print("\n\n");
+
+    third = second;
+    ret = print("Should be 69: ");
+    ret = (true) ? first.get69() : 70 * 3;
+    ret = print(ret);
+    ret = print("\n\n");
+
+    ret = print("Should be 69: ");
+    ret = (true) ? first.num_69 : first.num_69 / 5;
+    ret = print(ret);
+    ret = print("\n\n");
+
+    // first = true;
+    ret = print("Should be false: ");
+    bool_var = (first.num_69 - 69) ? true : false;
+    ret = print(bool_var);
+    ret = print("\n\n");
+
+    ret = print("Should be Servus: ");
+    string_var = (first.num_69) ? "Servus" : "Hello";
+    ret = print(string_var);
+    ret = print("\n\n");
+
+    first = new Other(69);
+    second = new Other(70);
+    ret = print("Should be 69: ");
+    third = (first.num_69) ? first : second;
+    ret = print(third.num);
+    ret = print("\n\n");
+
+    first = new Other(69);
+    second = new Other(70);
+    ret = print("Should be ");
+    ret = print(first.num_69);
+    ret = print(":");
+    ret = (first.num_69 == second.get69()) ? first.num_69 : first.num_69 + 1;
+    ret = print(ret);
+    ret = print("\n\n");
+
+    first = new Other(69);
+    second = new Other(70);
+    second.other.num = first.setNum((0 == ((1 + 1 + 1 + 1 + 1 + 1) / 3 * 2 % 2 + -2 || false) + first.other.num_69 - first.get69()) ? 0 : (!(0 == ((1 + 1 + 1 + 1 + 1 + 1) / 3 * 2 % 2 + -2 || false) + first.other.num_69 - first.get69())) ? 17 : 100);
+
+    ret = print("Should be 17: ");
+    third = second.other;
+    ret = third.getNum();
+    ret = print(ret);
+    ret = print("\n\n");
+
+    return 0;
+  }
+}

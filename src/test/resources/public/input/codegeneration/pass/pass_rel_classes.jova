@@ -1,0 +1,44 @@
+class One {
+}
+
+class Main {
+
+  public int main() {
+    bool result;
+    One one0;
+    One one1;
+    One one2;
+    int ret;
+    one0 = new One;
+    one1 = new One;
+
+    ret = print("Should be false: ");
+    ret = print(nix == one0);
+    ret = print("\n");
+
+    ret = print("Should be false: ");
+    ret = print(one1 == one0);
+    ret = print("\n");
+
+    ret = print("Should be false: ");
+    ret = print(one1 == nix);
+    ret = print("\n");
+
+    one0 = nix;
+    ret = print("Should be true: ");
+    ret = print(one0 == nix);
+    ret = print("\n");
+
+    one2 = one0;
+    ret = print("Should be false: ");
+    ret = print(one1 == one2);
+    ret = print("\n");
+
+    ret = print("Should be true: ");
+    ret = print(one0 == one2);
+    ret = print("\n");
+
+    return 0;
+  }
+
+}

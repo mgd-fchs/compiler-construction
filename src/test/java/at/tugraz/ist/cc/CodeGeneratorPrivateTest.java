@@ -437,26 +437,34 @@ public class CodeGeneratorPrivateTest {
     }
 
     @Test
-    public void ternary() {
+    public void pass_ternary() {
         // return statements
         ErrorHandler.INSTANCE.reset();
-        int result = codeGenerator.createCode(path_pass + "ternary.jova", path_out + "ternary");
+        int result = codeGenerator.createCode(path_pass + "pass_ternary.jova", path_out + "pass_ternary");
         assertEquals(0, result);
     }
 
     @Test
-    public void rel_classes() {
+    public void pass_rel_classes() {
         // return statements
         ErrorHandler.INSTANCE.reset();
-        int result = codeGenerator.createCode(path_pass + "rel_classes.jova", path_out + "rel_classes");
+        int result = codeGenerator.createCode(path_pass + "pass_rel_classes.jova", path_out + "pass_rel_classes");
         assertEquals(0, result);
     }
 
     @Test
-    public void rel_primitive() {
+    public void pass_rel_primitive() {
         // return statements
         ErrorHandler.INSTANCE.reset();
-        int result = codeGenerator.createCode(path_pass + "rel_primitive.jova", path_out + "rel_primitive");
+        int result = codeGenerator.createCode(path_pass + "pass_rel_primitive.jova", path_out + "pass_rel_primitive");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void pass_main_exit01() {
+        // return statements
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass_main_exit01.jova", path_out + "pass_main_exit01");
         assertEquals(0, result);
     }
 }
