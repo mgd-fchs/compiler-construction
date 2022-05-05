@@ -1,0 +1,61 @@
+class Testing {
+    public int func1(int x) {
+        return 0;
+    }
+
+    public int func1(bool z) {
+        return 1;
+    }
+
+    public int func1(string z) {
+        return 2;
+    }
+
+    public int func2a() {
+        return func1(true);
+    }
+
+    public int func2b() {
+        return func1(69);
+    }
+
+    public int func2c() {
+        return func1("true 69");
+    }
+}
+
+class Main {
+    public int main(){
+        Testing t;
+        int a;
+        int ret;
+
+        t = new Testing;
+
+        a = t.func2a();
+
+        if (a == 1){
+            ret = print("Success!");
+        } else {
+            ret = print("Error!");
+        }
+
+        a = t.func2b();
+
+        if (a == 0){
+            ret = print("Success!");
+        } else {
+            ret = print("Error!");
+        }
+
+        a = t.func2c();
+
+        if (a == 2){
+            ret = print("Success!");
+        } else {
+            ret = print("Error!");
+        }
+
+        return 0;
+    }
+}

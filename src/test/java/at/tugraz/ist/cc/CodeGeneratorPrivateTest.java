@@ -33,7 +33,8 @@ public class CodeGeneratorPrivateTest {
         ErrorHandler.INSTANCE.reset();
         int result = codeGenerator.createCode(path_pass_public + "pass03.jova", path_out + "passPublic03");
         assertEquals(0, result);
-    }    @Test
+    }
+    @Test
     public void testPublicPass04() {
         ErrorHandler.INSTANCE.reset();
         int result = codeGenerator.createCode(path_pass_public + "pass04.jova", path_out + "passPublic04");
@@ -282,12 +283,27 @@ public class CodeGeneratorPrivateTest {
         assertEquals(0, result);
     }
 
-
     @Test
     public void testPassOp08() {
         // simple test ternary operator
         ErrorHandler.INSTANCE.reset();
         int result = codeGenerator.createCode(path_pass + "pass_op08.jova", path_out + "pass_op08");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassOp09() {
+        // misc operator tests
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass_op09.jova", path_out + "pass_op09");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassOp10() {
+        // misc operator tests
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass_op10.jova", path_out + "pass_op10");
         assertEquals(0, result);
     }
 
@@ -369,6 +385,22 @@ public class CodeGeneratorPrivateTest {
         // test method invocation and return values
         ErrorHandler.INSTANCE.reset();
         int result = codeGenerator.createCode(path_pass + "pass_method05.jova", path_out + "pass_method05");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassRet01() {
+        // test return of nix value
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass_ret01.jova", path_out + "pass_ret01");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassRet02() {
+        // test return value
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass_ret02.jova", path_out + "pass_ret02");
         assertEquals(0, result);
     }
 

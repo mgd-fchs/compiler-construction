@@ -1,0 +1,45 @@
+class Main{
+
+	public int main(){
+
+		string a;
+		bool b, c;
+		int f, i, g, h, ret;
+
+        f = 0;
+        i = 1;
+        g = 7;
+		b = false;
+		c = true;
+
+        if (!(f < i)){
+            ret = print("Error!");
+        } else {
+            ret = print("Success!");
+        }
+
+        h = ((g % 2) + 6) / (g * i - f);
+
+        if (h == 1){
+            ret = print("Success!");
+        } else {
+            ret = print("Error!");
+        }
+
+        if (f > i){
+            ret = print("Error!");
+        } else {
+            ret = print("Success!");
+        }
+
+        if (f >= 0){
+           ret = print("Success!");
+        } else {
+           ret = print("Error!");
+        }
+
+		return f;
+
+	}
+
+}

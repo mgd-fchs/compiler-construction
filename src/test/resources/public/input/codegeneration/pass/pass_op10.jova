@@ -1,0 +1,42 @@
+class Class {
+
+}
+
+class Main{
+
+	public int main(){
+
+        Class cl1, cl2;
+		string a;
+		bool b, c, d;
+		int f, i, g, h, ret;
+
+        f = 0;
+        i = 1;
+        g = 7;
+		b = false;
+		c = true;
+
+		cl1 = new Class;
+		cl2 = new Class;
+
+        if (!(cl1 == cl2)){
+            ret = print("Success!");
+        } else {
+            ret = print("Error!");
+        }
+
+		d = (b || c) && (cl1 != cl2);
+        h = ((g % 2) + 6) / (g * i - f);
+
+        if (d){
+            ret = print("Success!");
+        } else {
+            ret = print("Error!");
+        }
+
+		return f;
+
+	}
+
+}

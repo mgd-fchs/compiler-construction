@@ -1,0 +1,30 @@
+class Helper {
+
+}
+
+class Class {
+  public Helper func() {
+    return nix;
+  }
+}
+
+class Main {
+
+    public int main(){
+        int ret;
+        Helper h;
+        Class c;
+
+        c = new Class;
+        h = new Helper;
+        h = c.func();
+
+        if (h == nix){
+            ret = print("Success!");
+        } else {
+            ret = print("Error!");
+        }
+
+        return 0;
+    }
+}
