@@ -324,6 +324,14 @@ public class CodeGeneratorPrivateTest {
     }
 
     @Test
+    public void testPassIf03() {
+        // test if-conditions
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass_if03.jova", path_out + "pass_if03");
+        assertEquals(0, result);
+    }
+
+    @Test
     public void testPassWhile01() {
         // test while-loops
         ErrorHandler.INSTANCE.reset();
@@ -417,6 +425,30 @@ public class CodeGeneratorPrivateTest {
         // simple "this" access check method
         ErrorHandler.INSTANCE.reset();
         int result = codeGenerator.createCode(path_pass + "pass_member02.jova", path_out + "pass_member02");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassMisc01() {
+        // miscellaneous test program
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass_misc01.jova", path_out + "pass_misc01");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassMisc02() {
+        // miscellaneous test program
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass_misc02.jova", path_out + "pass_misc02");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPassMisc03() {
+        // miscellaneous test program
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass_misc03.jova", path_out + "pass_misc03");
         assertEquals(0, result);
     }
 
