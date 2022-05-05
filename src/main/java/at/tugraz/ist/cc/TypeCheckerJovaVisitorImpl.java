@@ -11,10 +11,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     public static final int OK = 0;
     public static final int ERROR_GENERAL = -1;
 
-
-    public static final int TYPE_CLASS = SymbolType.CLASS.getValue();
-    public static final int TYPE_PRIMITIVE = SymbolType.PRIMITIVE.getValue();
-    public static final int TYPE_METHOD = SymbolType.METHOD.getValue();
     public static final int TYPE_ERROR = -30;
 
     public static final int ERROR_DOUBLE_DEFINITION_CLASS = -50;
@@ -33,15 +29,12 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
     public static final int ERROR_UNKNOWN_CTOR = -90;
 
     private SymbolClass currentClass;
-    private SymbolVariable currentVar;
+
     private final SymbolTable symbolTable;
-    private boolean isReturnStatement = false;
-    public SymbolVariable currentMember;
 
     public TypeCheckerJovaVisitorImpl() {
         symbolTable = SymbolTable.getInstance();
         currentClass = null;
-        currentVar = null;
     }
 
     @Override
@@ -49,8 +42,6 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         try {
             visitChildren(ctx);
         } catch (Exception e) {
-            // TODO remove: remove at the end
-            e.printStackTrace();
         }
 
         return 0;
@@ -277,12 +268,8 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             return visitResult;
         } else {
             SymbolVariable variable = currentClass.currentSymbolVariable;
-            Integer checkResult = CompatibilityCheckUtils.checkReturnValue(variable, currentClass, ctx);
-            if (checkResult != OK){
-               return checkResult;
-            }
+            return CompatibilityCheckUtils.checkReturnValue(variable, currentClass, ctx);
         }
-        return OK;
     }
 
 
@@ -308,15 +295,14 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         }
 
         SymbolVariable assignedVarIs = currentClass.currentSymbolVariable;
-        Integer validAssignment = CompatibilityCheckUtils.checkExpressionAssignment(assignedVarShould, assignedVarIs, ctx);
 
-        return validAssignment;
+        return CompatibilityCheckUtils.checkExpressionAssignment(assignedVarShould, assignedVarIs, ctx);
     }
 
     @Override
     public Integer visitMember_access(JovaParser.Member_accessContext ctx) {
         if (currentClass.currentSymbolVariable.getType().equals(SymbolType.PRIMITIVE)) {
-            String id = null;
+            String id;
             if (ctx.ID() != null) {
                 id = ctx.ID().toString();
                 ErrorHandler.INSTANCE.addDoesNotHaveFieldError(ctx.start.getLine(), ctx.start.getCharPositionInLine(),
@@ -373,14 +359,10 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
             currentClass.currentSymbolVariable = member;
         } else if (ctx.method_invocation() != null) {
             // visitMethod_invocation already sets the currentClass.currentSymbolVariable
-            int error = visitMethod_invocation(ctx.method_invocation());
-            if (error != OK) {
-                return error;
-            }
+            return visitMethod_invocation(ctx.method_invocation());
         }
 
         return OK;
-
     }
 
 
@@ -532,11 +514,8 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
         } else {
             // case: primary expression
             // currentSymbolVariable must be set within the primary expression
-            Integer primVisitRet = visitPrimary_expr(ctx.primary_expr());
 
-            if (primVisitRet != OK){
-                return primVisitRet;
-            }
+            return visitPrimary_expr(ctx.primary_expr());
         }
 
         return OK;
@@ -623,8 +602,7 @@ public class TypeCheckerJovaVisitorImpl extends JovaBaseVisitor<Integer>{
 
     @Override
     public Integer visitParan_expr(JovaParser.Paran_exprContext ctx) {
-        Integer returnValue = visit(ctx.expr());
-        return returnValue;
+        return visit(ctx.expr());
     }
 
     @Override
