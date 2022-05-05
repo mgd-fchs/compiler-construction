@@ -1,0 +1,31 @@
+class Test{
+  private int x;
+  public int pleaseTouchMe(int x){
+    this.x = x;
+    return this.x;
+  }
+}
+
+class Testing {
+  private Test t;
+  public int test() {
+        t = new Test;
+        return t.pleaseTouchMe(55);
+    }
+}
+
+class Main {
+    public int main(){
+        Testing t;
+        int foo, ret;
+
+        t = new Testing;
+        foo = t.test();
+
+        if (foo == 55){
+            ret = print("Success!");
+        }
+
+        return 0;
+    }
+}

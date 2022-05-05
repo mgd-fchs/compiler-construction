@@ -1,0 +1,22 @@
+class Test{
+
+}
+
+class Main {
+
+  public int main() {
+    int number;
+    int ret;
+
+    number = 1;
+
+    if(number){
+        ret = print("Success!");
+    } else {
+        ret = print("Error!");
+    }
+
+    return 0;
+  }
+
+}
