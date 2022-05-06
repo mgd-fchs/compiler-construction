@@ -68,11 +68,16 @@ Remarks for task 2:
 -------------------
 General remarks:
 ----------------
-...
+- Additional testing:
+    - Test case location: "src/test/resources/public/codegeneration/pass"
+    - Test class: "src/test/java/at/tugraz/ist/cc/CodeGeneratorPrivateTest.java"
+    - Short description of each testcase can be found in a comment in each Test-Function
 
 Changes  made:
 --------------
-...
+- Implemented CodeGenerator according to the assignment description.
+- Implemented instruction-classes and a structure to manage them accordingly.
+- Added private test class
 
 Known limitations:
 ------------------
@@ -84,8 +89,9 @@ Implemented BONUS tasks:
 
 Percentage of participation:
 ----------------------------
-...
-
+1/3:  Simon Gutschlhofer
+1/3:  Richard Heinz
+1/3:  Magdalena Hinterkörner
 
 -------------------
 Remarks for task 3:
