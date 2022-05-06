@@ -1,0 +1,61 @@
+class Class5 {
+}
+
+class Class4 {
+}
+
+class Class3 {
+}
+
+class Class2 {
+    public int class_stuff(Class2 c2, Class3 c3, Class4 c4, Class5 c5) {
+        return 55;
+    }
+}
+
+class Class1 {
+    private Class2 c2;
+    private Class3 c3;
+    private Class4 c4;
+    private Class5 c5;
+
+    public int func() {
+        c2 = new Class2;
+        c3 = new Class3;
+        c4 = new Class4;
+        c5 = new Class5;
+
+        return c2.class_stuff(c2, c3, c4, c5);
+    }
+}
+
+class Main {
+
+    public int main()
+    {
+        Class1 c;
+        int ret;
+
+
+        ret = 0;
+        c = new Class1;
+
+        if (c == nix)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (c.func() != 55)
+        {
+            ret = print("error occurred\n");
+        }
+
+
+        ret = print("finished\n");
+
+        return ret;
+    }
+}
+
+
+

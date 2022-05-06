@@ -205,7 +205,7 @@ public class CodeGeneratorPrivateTest {
 
     @Test
     public void testPass20() {
-        // multiplication
+        // division
         ErrorHandler.INSTANCE.reset();
         int result = codeGenerator.createCode(path_pass + "pass20.jova", path_out + "pass20");
         assertEquals(0, result);
@@ -213,7 +213,7 @@ public class CodeGeneratorPrivateTest {
 
     @Test
     public void testPass21() {
-        // multiplication
+        // loops simple
         ErrorHandler.INSTANCE.reset();
         int result = codeGenerator.createCode(path_pass + "pass21.jova", path_out + "pass21");
         assertEquals(0, result);
@@ -221,9 +221,33 @@ public class CodeGeneratorPrivateTest {
 
     @Test
     public void testPass22() {
-        // multiplication
+        // loops advanced
         ErrorHandler.INSTANCE.reset();
         int result = codeGenerator.createCode(path_pass + "pass22.jova", path_out + "pass22");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPass23() {
+        // loop loop
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass23.jova", path_out + "pass23");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPass24() {
+        // modulo
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass24.jova", path_out + "pass24");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPass25() {
+        // misc test
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass25.jova", path_out + "pass25");
         assertEquals(0, result);
     }
 

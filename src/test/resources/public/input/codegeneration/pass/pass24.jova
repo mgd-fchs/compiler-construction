@@ -15,38 +15,37 @@ class Main {
 
     public int main()
     {
-        int ret, i, a;
+        int ret, i, a, b;
         Test t;
 
         t = new Test;
+
         i = 0;
         a = 0;
         ret = t.setA(55);
+        a = t.getA();
+        b = 0;
 
-        while (i < t.getA())
+        if (55 % 10 != 5)
         {
-            if (i < 20)
-            {
-                a = a+2;
-            }
-            else
-            {
-                a = a - 1;
-            }
-            i = i+1;
+            ret = print("error occurred\n");
         }
 
-        if (i != t.getA())
+        if (a % 5 != 0)
         {
-            ret = print(i);
-            ret = print(" - error occurred\n");
+            ret = print("error occurred\n");
         }
 
-        if (a != 5)
+        if (b % a != 0)
         {
-            ret = print(a);
-            ret = print(" - error occurred\n");
+            ret = print("error occurred\n");
         }
+
+        if ((a * 2) % 10 != 0)
+        {
+            ret = print("error occurred\n");
+        }
+
 
         ret = print("finished\n");
 

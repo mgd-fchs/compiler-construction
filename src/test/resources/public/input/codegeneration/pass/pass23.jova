@@ -15,25 +15,25 @@ class Main {
 
     public int main()
     {
-        int ret, i, a;
+        int ret, i, a, b;
         Test t;
 
         t = new Test;
+
         i = 0;
         a = 0;
-        ret = t.setA(55);
+        ret = t.setA(5);
+        b = 0;
 
         while (i < t.getA())
         {
-            if (i < 20)
+            while (a < 5)
             {
-                a = a+2;
+                a = a + 1;
+                b = b + 1;
             }
-            else
-            {
-                a = a - 1;
-            }
-            i = i+1;
+            a = 0;
+            i = i + 1;
         }
 
         if (i != t.getA())
@@ -42,11 +42,18 @@ class Main {
             ret = print(" - error occurred\n");
         }
 
-        if (a != 5)
+        if (a != 0)
         {
             ret = print(a);
             ret = print(" - error occurred\n");
         }
+
+        if (b != t.getA()*5)
+        {
+            ret = print(b);
+            ret = print(" - error occurred\n");
+        }
+
 
         ret = print("finished\n");
 
