@@ -1,0 +1,41 @@
+class Test2 {
+    public int testing (Test2 t) {
+        return 0;
+    }
+}
+
+class Test{
+    private Test2 t;
+    public int test(int t) {
+        this.t = new Test2;
+        return this.t.testing(this.t);
+    }
+}
+
+class Main {
+
+    public int main()
+    {
+        Test t;
+        int ret;
+
+
+        ret = 0;
+        t = new Test;
+
+        if (t == nix)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (t.test(1) != 0)
+        {
+            ret = print("error occurred\n");
+        }
+
+
+        ret = print("finished\n");
+
+        return ret;
+    }
+}

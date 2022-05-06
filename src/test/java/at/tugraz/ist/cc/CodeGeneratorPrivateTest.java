@@ -252,6 +252,22 @@ public class CodeGeneratorPrivateTest {
     }
 
     @Test
+    public void testPass26() {
+        // misc test
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass26.jova", path_out + "pass26");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPass27() {
+        // this test
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass27.jova", path_out + "pass27");
+        assertEquals(0, result);
+    }
+
+    @Test
     public void testPassOp01() {
         // arithmetic operator order and correct result
         ErrorHandler.INSTANCE.reset();
