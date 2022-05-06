@@ -268,6 +268,22 @@ public class CodeGeneratorPrivateTest {
     }
 
     @Test
+    public void testPass28() {
+        // multi-memberaccess
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass28.jova", path_out + "pass28");
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testPass29() {
+        // multi-class testing
+        ErrorHandler.INSTANCE.reset();
+        int result = codeGenerator.createCode(path_pass + "pass29.jova", path_out + "pass29");
+        assertEquals(0, result);
+    }
+
+    @Test
     public void testPassOp01() {
         // arithmetic operator order and correct result
         ErrorHandler.INSTANCE.reset();

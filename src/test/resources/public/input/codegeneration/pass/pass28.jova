@@ -1,0 +1,93 @@
+class Class5 {
+    public int x;
+
+    public int func() {
+        return 69;
+    }
+}
+
+class Class4 {
+    public Class5 c;
+
+    public int setC()
+    {
+        int ret;
+
+        c = new Class5;
+        return 0;
+    }
+}
+
+class Class3 {
+    public Class4 c;
+
+    public int setC()
+    {
+        int ret;
+
+        c = new Class4;
+        ret = c.setC();
+        return 0;
+    }
+}
+
+class Class2 {
+    public Class3 c;
+
+    public int setC()
+    {
+        int ret;
+
+        c = new Class3;
+        ret = c.setC();
+        return 0;
+    }
+}
+
+class Class1 {
+
+    private int func1(int x, string y, bool z, int tmp) {
+        return tmp;
+    }
+
+    public int func(){
+        Class2 c;
+        int ret;
+
+        c = new Class2;
+        ret = c.setC();
+
+        return this.func1(0, "sdfas", true, c.c.c.c.func());
+    }
+}
+
+
+class Main {
+
+    public int main()
+    {
+        Class1 c;
+        int ret;
+
+
+        ret = 0;
+        c = new Class1;
+
+
+        if (c == nix)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (c.func() != 69)
+        {
+            ret = print("error occurred\n");
+        }
+
+
+        ret = print("finished\n");
+
+        return ret;
+    }
+}
+

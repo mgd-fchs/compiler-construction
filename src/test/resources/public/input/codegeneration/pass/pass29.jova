@@ -1,0 +1,69 @@
+
+class Test {
+    private int x;
+
+    public int doStuff(int y)
+    {
+        if (y > 5)
+        {
+            this.x = y;
+        }
+        else
+        {
+            this.x = 4;
+        }
+
+        return 0;
+    }
+
+    public int giveStuff()
+    {
+        return this.x;
+    }
+}
+
+
+
+class Main {
+
+    public int main()
+    {
+        Test t;
+        int ret;
+
+
+        ret = 0;
+        t = new Test;
+
+
+        if (t == nix)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (t.doStuff(55) != 0)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (t.giveStuff() != 55)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (t.doStuff(2) != 0)
+        {
+            ret = print("error occurred\n");
+        }
+
+        if (t.giveStuff() != 4)
+        {
+            ret = print("error occurred\n");
+        }
+
+
+        ret = print("finished\n");
+
+        return ret;
+    }
+}
