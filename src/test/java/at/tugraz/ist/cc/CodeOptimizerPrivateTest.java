@@ -10,7 +10,7 @@ public class CodeOptimizerPrivateTest {
     private static final String BASE_PATH_NORMAL_OUTPUT = "src/test/resources/private/code_optimization/output/normal/";
     private static final String BASE_PATH_NORMAL_OPTIMIZED= "src/test/resources/private/code_optimization/output/optimized/";
     private static final String[] PROGRAMS = {
-            "constantFolding01.jova"
+            "constantFolding02.jova"
     };
 
     private final CodeGenerator codeGenerator = new CodeGenerator();
@@ -21,7 +21,7 @@ public class CodeOptimizerPrivateTest {
     }
 
     private void createCodeOptimized(String program_name) {
-        codeGenerator.createCode(BASE_PATH_INPUT + program_name, BASE_PATH_NORMAL_OPTIMIZED + program_name.replace(".jova", ""));
+        codeOpt.optimizeCode(BASE_PATH_INPUT + program_name, true, BASE_PATH_NORMAL_OPTIMIZED + program_name.replace(".jova", ""));
     }
 
     @Test

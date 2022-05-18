@@ -6,8 +6,13 @@ import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 import java.util.Optional;
 
 public class AssignLocalInstruction extends BaseInstruction {
-    private SymbolVariable lhs;
-    private SymbolVariable rhs;
+    public SymbolVariable lhs;
+
+    public void setRhs(SymbolVariable rhs) {
+        this.rhs = rhs;
+    }
+
+    public SymbolVariable rhs;
 
     public AssignLocalInstruction(SymbolCallable associatedCallable, SymbolVariable lhs, SymbolVariable rhs) {
         super(associatedCallable, Optional.empty());

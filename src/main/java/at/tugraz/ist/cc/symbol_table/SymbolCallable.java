@@ -145,7 +145,7 @@ public abstract class SymbolCallable {
     }
 
     public List<BaseInstruction> getInstructions() {
-        return new ArrayList<>(List.copyOf(instructions));
+        return new LinkedList<>(List.copyOf(instructions));
     }
 
 

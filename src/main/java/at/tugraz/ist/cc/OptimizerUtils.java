@@ -1,14 +1,21 @@
 package at.tugraz.ist.cc;
 
 import at.tugraz.ist.cc.instructions.ArithmeticBinaryInstruction;
+import at.tugraz.ist.cc.instructions.AssignLocalInstruction;
 import at.tugraz.ist.cc.instructions.BaseInstruction;
 import at.tugraz.ist.cc.instructions.OperatorTypes;
+import at.tugraz.ist.cc.symbol_table.SymbolType;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class OptimizerUtils {
+    public static HashMap<SymbolVariable, SymbolVariable> optimizerSymbolTable = new HashMap<>();
+
     public OptimizerUtils() {
+
     }
 
     public static LinkedList<BaseInstruction> constantsFolding(LinkedList<BaseInstruction> instructions) {
@@ -21,6 +28,15 @@ public class OptimizerUtils {
                     SymbolVariable rhs = ((ArithmeticBinaryInstruction) instruction).rightParam;
                     OperatorTypes operator = ((ArithmeticBinaryInstruction) instruction).operator;
                     Integer result = null;
+
+                    if (optimizerSymbolTable.get(lhs) != null){
+                        lhs = optimizerSymbolTable.get(lhs);
+                    }
+
+                    if (optimizerSymbolTable.get(rhs) != null){
+                        rhs = optimizerSymbolTable.get(rhs);
+                    }
+
 
                     if (lhs.getValue() != null && rhs.getValue() != null) {
                         switch (operator) {
@@ -54,9 +70,16 @@ public class OptimizerUtils {
                         }
                         instruction.getResult().setValue(result);
 
-                    } else {
-                        optimizedInstructions.add(instruction);
                     }
+
+                    }
+
+                else if (instruction instanceof AssignLocalInstruction) {
+                  SymbolVariable lhs = ((AssignLocalInstruction)instruction).lhs;
+                  SymbolVariable rhs = ((AssignLocalInstruction)instruction).rhs;
+
+                  optimizerSymbolTable.put(lhs, rhs);
+                  optimizedInstructions.add(instruction);
 
                 } else {
                     optimizedInstructions.add(instruction);
