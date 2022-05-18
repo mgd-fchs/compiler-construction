@@ -21,7 +21,7 @@ public class CodeOptimizerPrivateTest {
     }
 
     private void createCodeOptimized(String program_name) {
-        codeGenerator.createCode(BASE_PATH_INPUT + program_name, BASE_PATH_NORMAL_OUTPUT + program_name.replace(".jova", ""));
+        codeGenerator.createCode(BASE_PATH_INPUT + program_name, BASE_PATH_NORMAL_OPTIMIZED + program_name.replace(".jova", ""));
     }
 
     @Test

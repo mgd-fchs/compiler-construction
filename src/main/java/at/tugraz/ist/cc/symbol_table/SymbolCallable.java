@@ -12,6 +12,11 @@ public abstract class SymbolCallable {
     protected final List<SymbolVariable> localVariables;
     protected final List<SymbolVariable> tempVariable;
     protected final SymbolVariable returnValue;
+
+    public void setInstructions(LinkedList<BaseInstruction> instructions) {
+        this.instructions = instructions;
+    }
+
     public LinkedList<BaseInstruction> instructions;
     private final Map<SymbolVariable, Integer> localArrayMapping;
 

@@ -73,5 +73,7 @@ public class OptimizerUtils {
                 instruction -> {
                 }
         );
+
+        return optimizedInstructions;
     }
 }
