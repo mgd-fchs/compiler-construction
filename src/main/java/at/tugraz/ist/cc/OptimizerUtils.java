@@ -37,7 +37,7 @@ public class OptimizerUtils {
                         rhs = optimizerSymbolTable.get(rhs);
                     }
 
-
+                    // TODO: Switch lhs and rhs first, and check if they have values later
                     if (lhs.getValue() != null && rhs.getValue() != null) {
                         switch (operator) {
                             case ADD:
@@ -72,8 +72,7 @@ public class OptimizerUtils {
 
                     }
 
-                    }
-
+                }
                 else if (instruction instanceof AssignLocalInstruction) {
                   SymbolVariable lhs = ((AssignLocalInstruction)instruction).lhs;
                   SymbolVariable rhs = ((AssignLocalInstruction)instruction).rhs;
