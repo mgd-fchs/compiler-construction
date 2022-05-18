@@ -1,7 +1,7 @@
 package at.tugraz.ist.cc.instructions;
 
 import at.tugraz.ist.cc.ClassWriter;
-import at.tugraz.ist.cc.symbol_table.SimpleCallable;
+import at.tugraz.ist.cc.symbol_table.SymbolCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolPrimitiveType;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
@@ -10,11 +10,11 @@ import java.util.Optional;
 import static at.tugraz.ist.cc.symbol_table.SymbolType.PRIMITIVE;
 
 public abstract class BaseInstruction {
-    protected final SimpleCallable associatedCallable;
+    protected final SymbolCallable associatedCallable;
     protected SymbolVariable result;
 
 
-    public BaseInstruction(SimpleCallable associatedCallable, Optional<SymbolVariable> result) {
+    public BaseInstruction(SymbolCallable associatedCallable, Optional<SymbolVariable> result) {
         this.associatedCallable = associatedCallable;
         this.result = result.map(associatedCallable::getNewTempSymbolVariable).orElse(null);
     }
@@ -91,7 +91,7 @@ public abstract class BaseInstruction {
     /**
      * This function should be implemented so that the result of the instruction is
      * saved into the local array. The index for SymbolVariables can be found via the
-     * mapping which is saved in th SimpleCallable
+     * mapping which is saved in th SymbolCallable
      *
      * @return
      */

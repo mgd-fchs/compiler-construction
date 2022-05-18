@@ -1,13 +1,13 @@
 package at.tugraz.ist.cc.instructions;
 
-import at.tugraz.ist.cc.symbol_table.SimpleCallable;
+import at.tugraz.ist.cc.symbol_table.SymbolCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolPrimitiveType;
 import at.tugraz.ist.cc.symbol_table.SymbolType;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
 public class LogicalUnaryInstruction extends UnaryInstruction {
 
-    public LogicalUnaryInstruction(SimpleCallable associatedCallable, SymbolVariable parameter, OperatorTypes operator) {
+    public LogicalUnaryInstruction(SymbolCallable associatedCallable, SymbolVariable parameter, OperatorTypes operator) {
         super(associatedCallable, new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL), parameter, operator);
     }
 

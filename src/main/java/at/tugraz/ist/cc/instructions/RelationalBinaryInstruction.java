@@ -1,14 +1,14 @@
 package at.tugraz.ist.cc.instructions;
 
 import at.tugraz.ist.cc.CodeGeneratorUtils;
-import at.tugraz.ist.cc.symbol_table.SimpleCallable;
+import at.tugraz.ist.cc.symbol_table.SymbolCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolPrimitiveType;
 import at.tugraz.ist.cc.symbol_table.SymbolType;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
 public class RelationalBinaryInstruction extends BinaryInstruction {
 
-    public RelationalBinaryInstruction(SimpleCallable associatedCallable, SymbolVariable leftParameter,
+    public RelationalBinaryInstruction(SymbolCallable associatedCallable, SymbolVariable leftParameter,
                                        SymbolVariable rightParameter, OperatorTypes operator) {
         super(associatedCallable, new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL),
                 leftParameter, rightParameter, operator);

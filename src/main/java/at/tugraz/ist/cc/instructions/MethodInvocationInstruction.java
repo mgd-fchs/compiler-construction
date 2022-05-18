@@ -1,7 +1,7 @@
 package at.tugraz.ist.cc.instructions;
 
 import at.tugraz.ist.cc.CodeGeneratorUtils;
-import at.tugraz.ist.cc.symbol_table.SimpleCallable;
+import at.tugraz.ist.cc.symbol_table.SymbolCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolMethod;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
@@ -11,12 +11,12 @@ import java.util.Optional;
 
 public class MethodInvocationInstruction extends BaseInstruction {
     private final SymbolVariable classRef;
-    private final SimpleCallable invokedMethod;
+    private final SymbolCallable invokedMethod;
 
     private final List<SymbolVariable> params;
 
-    public MethodInvocationInstruction(SimpleCallable associatedCallable, SymbolVariable classRef,
-                                       SimpleCallable invokedMethod, List<SymbolVariable> params) {
+    public MethodInvocationInstruction(SymbolCallable associatedCallable, SymbolVariable classRef,
+                                       SymbolCallable invokedMethod, List<SymbolVariable> params) {
         super(associatedCallable, Optional.of(invokedMethod.getReturnValue()));
         this.classRef = classRef;
         this.invokedMethod = invokedMethod;

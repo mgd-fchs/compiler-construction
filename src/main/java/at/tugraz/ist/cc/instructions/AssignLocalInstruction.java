@@ -1,6 +1,6 @@
 package at.tugraz.ist.cc.instructions;
 
-import at.tugraz.ist.cc.symbol_table.SimpleCallable;
+import at.tugraz.ist.cc.symbol_table.SymbolCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
 import java.util.Optional;
@@ -9,7 +9,7 @@ public class AssignLocalInstruction extends BaseInstruction {
     private SymbolVariable lhs;
     private SymbolVariable rhs;
 
-    public AssignLocalInstruction(SimpleCallable associatedCallable, SymbolVariable lhs, SymbolVariable rhs) {
+    public AssignLocalInstruction(SymbolCallable associatedCallable, SymbolVariable lhs, SymbolVariable rhs) {
         super(associatedCallable, Optional.empty());
         this.lhs = lhs;
         this.rhs = rhs;

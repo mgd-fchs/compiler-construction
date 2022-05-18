@@ -162,7 +162,7 @@ public class CodeGeneratorVisitor extends JovaBaseVisitor<Integer> {
             throw new RuntimeException();
         }
 
-        // necassary to differentiate if the last was a instruction or if there is non => ...
+        // necessary to differentiate if the last was a instruction or if there is non => ...
         LinkedList<BaseInstruction> backupInstructions = currentClass.getCurrentCallable().instructions;
         currentClass.getCurrentCallable().instructions = new LinkedList<>();
 

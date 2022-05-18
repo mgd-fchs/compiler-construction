@@ -1,6 +1,6 @@
 package at.tugraz.ist.cc.instructions;
 
-import at.tugraz.ist.cc.symbol_table.SimpleCallable;
+import at.tugraz.ist.cc.symbol_table.SymbolCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.Optional;
 public class WhileInstruction extends ConditionalInstruction{
 
 
-    public WhileInstruction(SimpleCallable associatedCallable, List<BaseInstruction> conditionals, List<BaseInstruction> ifInstructions) {
+    public WhileInstruction(SymbolCallable associatedCallable, List<BaseInstruction> conditionals, List<BaseInstruction> ifInstructions) {
         super(associatedCallable, conditionals, ifInstructions, Optional.empty());
     }
 

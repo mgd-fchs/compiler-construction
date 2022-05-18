@@ -6,7 +6,7 @@ import at.tugraz.ist.cc.instructions.BaseInstruction;
 
 import java.util.*;
 
-public abstract class SimpleCallable {
+public abstract class SymbolCallable {
     protected final String name;
     protected final List<SymbolVariable> params;
     protected final List<SymbolVariable> localVariables;
@@ -18,7 +18,7 @@ public abstract class SimpleCallable {
     public final SymbolClass associatedSymbolClass;
     private int localArrayIndex;
 
-    public SimpleCallable(String name, List<SymbolVariable> params,
+    public SymbolCallable(String name, List<SymbolVariable> params,
                           SymbolVariable returnValue, SymbolClass associatedSymbolClass) {
         this.name = name;
         this.returnValue = returnValue;
@@ -156,7 +156,7 @@ public abstract class SimpleCallable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SimpleCallable that = (SimpleCallable) o;
+        SymbolCallable that = (SymbolCallable) o;
 
         if (!Objects.equals(name, that.name)) return false;
         if (params.size() != that.params.size()) return false;

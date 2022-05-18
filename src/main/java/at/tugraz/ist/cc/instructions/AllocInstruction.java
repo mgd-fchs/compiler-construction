@@ -1,7 +1,7 @@
 package at.tugraz.ist.cc.instructions;
 
 import at.tugraz.ist.cc.CodeGeneratorUtils;
-import at.tugraz.ist.cc.symbol_table.SimpleCallable;
+import at.tugraz.ist.cc.symbol_table.SymbolCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
 import java.util.Collection;
@@ -11,7 +11,7 @@ public class AllocInstruction extends BaseInstruction {
     private final SymbolVariable actualType;
     private final Collection<SymbolVariable> params;
 
-    public AllocInstruction(SimpleCallable associatedCallable,
+    public AllocInstruction(SymbolCallable associatedCallable,
                             SymbolVariable classType, Collection<SymbolVariable> params) {
         super(associatedCallable, Optional.of(classType));
         this.actualType = classType;

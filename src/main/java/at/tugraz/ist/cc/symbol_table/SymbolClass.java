@@ -5,7 +5,6 @@ import at.tugraz.ist.cc.TypeCheckerJovaVisitorImpl;
 import at.tugraz.ist.cc.error.ErrorHandler;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static at.tugraz.ist.cc.symbol_table.SymbolType.PRIMITIVE;
 
@@ -20,7 +19,7 @@ public class SymbolClass {
     private SymbolPrimitiveType currentSymbolPrimitiveType;
     private String currentClassName;
     private Collection<String> currentIds;
-    private SimpleCallable currentCallable;
+    private SymbolCallable currentCallable;
     private List<SymbolVariable> currentParams;
     private List<SymbolVariable> currentArgList;
     public SymbolVariable currentSymbolVariable;
@@ -299,11 +298,11 @@ public class SymbolClass {
         return currentArgList;
     }
 
-    public SimpleCallable getCurrentCallable() {
+    public SymbolCallable getCurrentCallable() {
         return currentCallable;
     }
 
-    public void setCurrentCallable(SimpleCallable callable){
+    public void setCurrentCallable(SymbolCallable callable){
         this.currentCallable = callable;
     }
 

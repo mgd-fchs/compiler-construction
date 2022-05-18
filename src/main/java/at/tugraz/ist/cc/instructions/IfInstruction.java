@@ -1,9 +1,8 @@
 package at.tugraz.ist.cc.instructions;
 
-import at.tugraz.ist.cc.symbol_table.SimpleCallable;
+import at.tugraz.ist.cc.symbol_table.SymbolCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,7 +10,7 @@ public class IfInstruction extends ConditionalInstruction{
 
     public final List<BaseInstruction> elseInstructions;
 
-    public IfInstruction(SimpleCallable currentCallable, List<BaseInstruction> conditionalExpression,
+    public IfInstruction(SymbolCallable currentCallable, List<BaseInstruction> conditionalExpression,
                          List<BaseInstruction> ifInstructions, List<BaseInstruction> elseInstructions) {
         super(currentCallable, conditionalExpression, ifInstructions,
                 Optional.empty());

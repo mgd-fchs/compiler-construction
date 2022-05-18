@@ -1,6 +1,6 @@
 package at.tugraz.ist.cc.instructions;
 
-import at.tugraz.ist.cc.symbol_table.SimpleCallable;
+import at.tugraz.ist.cc.symbol_table.SymbolCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
 import java.util.List;
@@ -10,7 +10,7 @@ public abstract class ConditionalInstruction extends BaseInstruction{
     public final List<BaseInstruction> ifInstructions;
     public final List<BaseInstruction> conditionals;
 
-    public ConditionalInstruction(SimpleCallable associatedCallable,
+    public ConditionalInstruction(SymbolCallable associatedCallable,
                                   List<BaseInstruction> conditionals,
                                   List<BaseInstruction> ifInstructions,
                                   Optional<SymbolVariable> result) {

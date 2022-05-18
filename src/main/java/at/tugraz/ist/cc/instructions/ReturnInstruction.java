@@ -1,7 +1,7 @@
 package at.tugraz.ist.cc.instructions;
 
 import at.tugraz.ist.cc.ClassWriter;
-import at.tugraz.ist.cc.symbol_table.SimpleCallable;
+import at.tugraz.ist.cc.symbol_table.SymbolCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolPrimitiveType;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
@@ -12,7 +12,7 @@ import static at.tugraz.ist.cc.symbol_table.SymbolType.PRIMITIVE;
 public class ReturnInstruction extends BaseInstruction {
     private SymbolVariable returnValue;
 
-    public ReturnInstruction(SimpleCallable associatedCallable, SymbolVariable returnValue) {
+    public ReturnInstruction(SymbolCallable associatedCallable, SymbolVariable returnValue) {
         super(associatedCallable, Optional.empty());
         this.returnValue = returnValue;
     }

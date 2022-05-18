@@ -1,9 +1,8 @@
 package at.tugraz.ist.cc.instructions;
 
-import at.tugraz.ist.cc.symbol_table.SimpleCallable;
+import at.tugraz.ist.cc.symbol_table.SymbolCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +14,7 @@ public class TernaryInstruction extends ConditionalInstruction {
         return new SymbolVariable(template.getType(), template.getActualType());
     }
 
-    public TernaryInstruction(SimpleCallable currentCallable, List<BaseInstruction> conditionalExpression,
+    public TernaryInstruction(SymbolCallable currentCallable, List<BaseInstruction> conditionalExpression,
                               List<BaseInstruction> ifInstructions, List<BaseInstruction> elseInstructions) {
         super(currentCallable, conditionalExpression, ifInstructions,
                 Optional.of(prepareReturnValue(ifInstructions)));

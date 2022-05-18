@@ -2,7 +2,7 @@ package at.tugraz.ist.cc.symbol_table;
 
 import java.util.*;
 
-public class SymbolMethod extends SimpleCallable {
+public class SymbolMethod extends SymbolCallable {
     public static final String MAIN_METHOD_NAME = "main";
     public final static Collection<SymbolMethod> IO_METHODS = new ArrayList<>();
     public final static String PRINT = "print";

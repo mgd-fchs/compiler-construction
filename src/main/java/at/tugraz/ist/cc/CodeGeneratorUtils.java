@@ -1,7 +1,7 @@
 package at.tugraz.ist.cc;
 
 import at.tugraz.ist.cc.instructions.*;
-import at.tugraz.ist.cc.symbol_table.SimpleCallable;
+import at.tugraz.ist.cc.symbol_table.SymbolCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolPrimitiveType;
 import at.tugraz.ist.cc.symbol_table.SymbolType;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
@@ -76,7 +76,7 @@ public class CodeGeneratorUtils {
     }
 
     public static String getLoadingParametersString(Collection<SymbolVariable> params,
-                                                    SimpleCallable associatedCallable) {
+                                                    SymbolCallable associatedCallable) {
         StringBuilder builder = new StringBuilder();
         params.forEach(param -> {
             int paramLocalArrayIndex = associatedCallable.getLocalArrayIndexBySymbolVariable(param);
@@ -89,7 +89,7 @@ public class CodeGeneratorUtils {
     }
 
 
-    public static BaseInstruction createInstruction(SimpleCallable callable, OperatorTypes op,
+    public static BaseInstruction createInstruction(SymbolCallable callable, OperatorTypes op,
                                                     SymbolVariable left, SymbolVariable right) {
         switch (op) {
             case ADD:
