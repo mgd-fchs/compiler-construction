@@ -65,4 +65,13 @@ public class OptimizerUtils {
 
         return optimizedInstructions;
     }
+
+    public static LinkedList<BaseInstruction> constantsPropagation(LinkedList<BaseInstruction> instructions) {
+        LinkedList<BaseInstruction> optimizedInstructions = new LinkedList<BaseInstruction>();
+
+        instructions.forEach(
+                instruction -> {
+                }
+        );
+    }
 }
