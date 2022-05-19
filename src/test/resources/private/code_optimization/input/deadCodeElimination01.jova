@@ -1,0 +1,13 @@
+class Main {
+  public int main() {
+    int a, b, c, x, y;
+
+    a = x + y;
+    c = 2 * a;
+    a = 41;
+    a = print(c);
+    b = a;
+
+    return a;
+  }
+}
