@@ -137,6 +137,14 @@ public class OptimizerUtils {
                     }
 
                     optimizedInstructions.addFirst(instruction);
+                } else if (instruction instanceof MethodInvocationInstruction) {
+                    if (((MethodInvocationInstruction) instruction).isReadOrPrint() || codeEliminationTable.get(instruction.getResult())) {
+                        ((MethodInvocationInstruction) instruction).getParams().forEach(
+                                param -> codeEliminationTable.put(param, true)
+                        );
+
+                        optimizedInstructions.addFirst(instruction);
+                    }
                 } else if (codeEliminationTable.get(instruction.getResult())) {
                     if (instruction instanceof BinaryInstruction) {
                         SymbolVariable lhs = ((BinaryInstruction) instruction).leftParam;
@@ -154,10 +162,6 @@ public class OptimizerUtils {
                         if (param.getValue() == null) {
                             codeEliminationTable.put(param, true);
                         }
-                    } else if (instruction instanceof MethodInvocationInstruction) {
-                        ((MethodInvocationInstruction) instruction).getParams().forEach(
-                                param -> codeEliminationTable.put(param, true)
-                        );
                     }
 
                     optimizedInstructions.addFirst(instruction);

@@ -101,4 +101,10 @@ public class MethodInvocationInstruction extends BaseInstruction {
 
         return stack_size;
     }
+
+    public boolean isReadOrPrint() {
+        return classRef.getName() == null;
+    }
+
+
 }
