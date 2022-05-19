@@ -1,11 +1,11 @@
 class Main {
   public int main() {
     int a, b, c, x, y;
-    x = 5;
-    y = 20;
+//    x = 5;
+//    y = 20;
 
-    a = x + y;
-    c = 2 * a;
+//    a = x + y;
+//    c = 2 * a;
     a = 41;
     a = print(c);
     b = a;

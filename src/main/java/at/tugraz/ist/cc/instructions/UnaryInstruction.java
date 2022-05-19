@@ -6,6 +6,10 @@ import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 import java.util.Optional;
 
 public abstract class UnaryInstruction extends BaseInstruction {
+    public SymbolVariable getParameter() {
+        return parameter;
+    }
+
     protected SymbolVariable parameter;
     protected OperatorTypes operator;
 

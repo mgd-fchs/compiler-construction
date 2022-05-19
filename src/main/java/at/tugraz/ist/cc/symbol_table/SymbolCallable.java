@@ -46,6 +46,11 @@ public abstract class SymbolCallable {
         localArrayMapping.put(symbolVariable, localArrayIndex++);
     }
 
+    public List<SymbolVariable> getAllVars(){
+        ArrayList<SymbolVariable> allVars = new ArrayList<SymbolVariable>(tempVariable);
+        allVars.addAll(localVariables);
+        return allVars;
+    }
     public int getLocalArrayIndexBySymbolVariable(SymbolVariable symbolVariable) {
         if (symbolVariable.isThisClass){
             return 0;

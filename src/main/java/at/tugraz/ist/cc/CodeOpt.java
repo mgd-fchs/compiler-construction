@@ -71,8 +71,8 @@ public class CodeOpt {
                         LinkedList<BaseInstruction> optimizedInstructions =
                                 OptimizerUtils.constantsFolding((LinkedList<BaseInstruction>) method.getInstructions());
 
-                       // optimizedInstructions =
-                          //      OptimizerUtils.constantsPropagation(optimizedInstructions);
+                        optimizedInstructions =
+                               OptimizerUtils.deadCodeElimination(optimizedInstructions, method);
 
                         method.setInstructions(optimizedInstructions);
                     });

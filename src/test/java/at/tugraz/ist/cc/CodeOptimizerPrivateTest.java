@@ -10,11 +10,11 @@ public class CodeOptimizerPrivateTest {
     private static final String BASE_PATH_NORMAL_OUTPUT = "src/test/resources/private/code_optimization/output/normal/";
     private static final String BASE_PATH_NORMAL_OPTIMIZED= "src/test/resources/private/code_optimization/output/optimized/";
     private static final String[] PROGRAMS = {
-            "constantFolding01.jova",
+/*            "constantFolding01.jova",
             "constantFolding02.jova",
             "constantFolding03.jova",
             "constantFolding04.jova",
-            "constantPropagation01.jova",
+            "constantPropagation01.jova",*/
             "deadCodeElimination01.jova"
     };
 

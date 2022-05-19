@@ -13,6 +13,10 @@ public class MethodInvocationInstruction extends BaseInstruction {
     private final SymbolVariable classRef;
     private final SymbolCallable invokedMethod;
 
+    public List<SymbolVariable> getParams() {
+        return params;
+    }
+
     private final List<SymbolVariable> params;
 
     public MethodInvocationInstruction(SymbolCallable associatedCallable, SymbolVariable classRef,

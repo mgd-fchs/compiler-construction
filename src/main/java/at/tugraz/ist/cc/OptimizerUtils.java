@@ -1,15 +1,14 @@
 package at.tugraz.ist.cc;
 
 import at.tugraz.ist.cc.instructions.*;
-import at.tugraz.ist.cc.symbol_table.SymbolType;
+import at.tugraz.ist.cc.symbol_table.SymbolCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 public class OptimizerUtils {
     public static HashMap<SymbolVariable, SymbolVariable> optimizerSymbolTable = new HashMap<>();
+    public static HashMap<SymbolVariable, Boolean> codeEliminationTable = new HashMap<>();
 
     public OptimizerUtils() {
 
@@ -107,13 +106,101 @@ public class OptimizerUtils {
         return optimizedInstructions;
     }
 
-    public static LinkedList<BaseInstruction> constantsPropagation(LinkedList<BaseInstruction> instructions) {
+    public static LinkedList<BaseInstruction> deadCodeElimination(LinkedList<BaseInstruction> instructions, SymbolCallable method) {
+        boolean optimized = false;
+        boolean isAssignment = false;
+        ListIterator<BaseInstruction> listIterator = instructions.listIterator(instructions.size());
+
+        List<SymbolVariable> allVars = method.getAllVars();
         LinkedList<BaseInstruction> optimizedInstructions = new LinkedList<BaseInstruction>();
 
-        instructions.forEach(
-                instruction -> {
+
+        while (!optimized){
+            optimized = true;
+            allVars.forEach(var -> codeEliminationTable.put(var, false));
+
+            while (listIterator.hasPrevious()) {
+                BaseInstruction instruction = listIterator.previous();
+
+                if (instruction instanceof AssignLocalInstruction){
+                    SymbolVariable lhs = ((AssignLocalInstruction)instruction).lhs;
+
+                    // SymbolVariable rhs = ((AssignLocalInstruction)instruction).rhs;
+
+                    if (codeEliminationTable.get(lhs)){
+                        // if assigned variable is live, keep the instruction and set lhs to dead
+                        optimizedInstructions.addFirst(instruction);
+                        isAssignment = true;
+                        codeEliminationTable.replace(lhs, false);
+
+                    } else{
+                        isAssignment = false;
+                        optimized = false;
+                    }
                 }
-        );
+                if (isAssignment){
+                    if (instruction instanceof BinaryInstruction){
+                        SymbolVariable lhs = ((BinaryInstruction)instruction).leftParam;
+                        SymbolVariable rhs = ((BinaryInstruction)instruction).rightParam;
+
+                        if (lhs.getValue() == null){
+                            codeEliminationTable.put(lhs, true);
+                        }
+                        if (rhs.getValue() == null){
+                            codeEliminationTable.put(rhs, true);
+                        }
+                    }
+                    else if (instruction instanceof UnaryInstruction){
+                        SymbolVariable param = ((UnaryInstruction) instruction).getParameter();
+
+                        if (param.getValue() == null){
+                            codeEliminationTable.put(param, true);
+                        }
+                    } else if (instruction instanceof MethodInvocationInstruction){
+                        ((MethodInvocationInstruction) instruction).getParams().forEach(
+                                param -> codeEliminationTable.put(param, true)
+                        );
+                    }
+
+                    optimizedInstructions.addFirst(instruction);
+
+                } else {
+                    optimized = false;
+                    if (instruction instanceof BinaryInstruction){
+                        SymbolVariable lhs = ((BinaryInstruction)instruction).leftParam;
+                        SymbolVariable rhs = ((BinaryInstruction)instruction).rightParam;
+
+                        if (lhs.getValue() == null){
+                            codeEliminationTable.put(lhs, false);
+                        }
+                        if (rhs.getValue() == null){
+                            codeEliminationTable.put(rhs, false);
+                        }
+
+                    }
+                    else if (instruction instanceof UnaryInstruction){
+                        SymbolVariable param = ((UnaryInstruction) instruction).getParameter();
+
+                        if (param.getValue() == null){
+                            codeEliminationTable.put(param, false);
+                        }
+                    } else if (instruction instanceof MethodInvocationInstruction){
+                        ((MethodInvocationInstruction) instruction).getParams().forEach(
+                                param -> codeEliminationTable.put(param, false)
+                        );
+                    }
+                    else if (instruction instanceof ReturnInstruction){
+                        SymbolVariable retVal = ((ReturnInstruction) instruction).getReturnValue();
+                        if (retVal.getValue() == null){
+                            codeEliminationTable.put(retVal, true);
+                        }
+                    }
+                    optimizedInstructions.addFirst(instruction);
+                }
+            }
+
+            listIterator = optimizedInstructions.listIterator(optimizedInstructions.size());
+        }
 
         return optimizedInstructions;
     }
