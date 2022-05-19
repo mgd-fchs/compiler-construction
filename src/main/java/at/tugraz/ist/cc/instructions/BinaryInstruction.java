@@ -22,4 +22,12 @@ public abstract class BinaryInstruction extends BaseInstruction {
     public int getNeededStackSize() {
         return 2;
     }
+
+    public void setLhs(SymbolVariable lhs) {
+        leftParam = lhs;
+    }
+
+    public void setRhs(SymbolVariable rhs) {
+        rightParam = rhs;
+    }
 }

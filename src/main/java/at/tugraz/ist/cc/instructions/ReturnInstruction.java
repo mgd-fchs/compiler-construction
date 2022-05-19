@@ -56,4 +56,8 @@ public class ReturnInstruction extends BaseInstruction {
     public int getNeededStackSize() {
         return 1;
     }
+
+    public void setReturnValue(SymbolVariable retVal) {
+        returnValue = retVal;
+    }
 }

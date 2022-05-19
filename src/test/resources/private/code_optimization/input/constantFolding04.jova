@@ -1,0 +1,9 @@
+class Main {
+  public int main() {
+      int res, val, x, y;
+
+      res = x + y;
+      val = res;
+      return val;
+  }
+}

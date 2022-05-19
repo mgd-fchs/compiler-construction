@@ -1,9 +1,6 @@
 package at.tugraz.ist.cc;
 
-import at.tugraz.ist.cc.instructions.ArithmeticBinaryInstruction;
-import at.tugraz.ist.cc.instructions.AssignLocalInstruction;
-import at.tugraz.ist.cc.instructions.BaseInstruction;
-import at.tugraz.ist.cc.instructions.OperatorTypes;
+import at.tugraz.ist.cc.instructions.*;
 import at.tugraz.ist.cc.symbol_table.SymbolType;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
@@ -31,13 +28,16 @@ public class OptimizerUtils {
 
                     if (optimizerSymbolTable.get(lhs) != null){
                         lhs = optimizerSymbolTable.get(lhs);
+                        ((ArithmeticBinaryInstruction)instruction).setLhs(lhs);
                     }
 
                     if (optimizerSymbolTable.get(rhs) != null){
                         rhs = optimizerSymbolTable.get(rhs);
+                        ((ArithmeticBinaryInstruction)instruction).setRhs(rhs);
                     }
 
-                    // TODO: Switch lhs and rhs first, and check if they have values later
+
+                    // TODO: Ask if we need to do this for logic operators as well
                     if (lhs.getValue() != null && rhs.getValue() != null) {
                         switch (operator) {
                             case ADD:
@@ -70,6 +70,8 @@ public class OptimizerUtils {
                         }
                         instruction.getResult().setValue(result);
 
+                    } else {
+                        optimizedInstructions.add(instruction);
                     }
 
                 }
@@ -80,7 +82,19 @@ public class OptimizerUtils {
                   optimizerSymbolTable.put(lhs, rhs);
                   optimizedInstructions.add(instruction);
 
-                } else {
+                }
+                else if (instruction instanceof ReturnInstruction) {
+                    SymbolVariable retVal = ((ReturnInstruction)instruction).getReturnValue();
+
+                    if (optimizerSymbolTable.get(retVal) != null){
+                        retVal = optimizerSymbolTable.get(retVal);
+                        ((ReturnInstruction) instruction).setReturnValue(retVal);
+                    }
+
+                    optimizedInstructions.add(instruction);
+
+                }
+                else {
                     optimizedInstructions.add(instruction);
                 }
         });
