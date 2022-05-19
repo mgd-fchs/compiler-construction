@@ -79,6 +79,11 @@ public class OptimizerUtils {
                   SymbolVariable lhs = ((AssignLocalInstruction)instruction).lhs;
                   SymbolVariable rhs = ((AssignLocalInstruction)instruction).rhs;
 
+                    if (optimizerSymbolTable.get(rhs) != null){
+                        rhs = optimizerSymbolTable.get(rhs);
+                        ((AssignLocalInstruction)instruction).setRhs(rhs);
+                    }
+
                   optimizerSymbolTable.put(lhs, rhs);
                   optimizedInstructions.add(instruction);
 

@@ -3,7 +3,7 @@ class Main {
     int a, b, c;
     int result;
 
-    b = readInt();
+    b = print("aaaaa");
     c = b;
     a = 3 + c;
 

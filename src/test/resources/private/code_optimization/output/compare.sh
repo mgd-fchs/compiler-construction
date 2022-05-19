@@ -2,12 +2,12 @@
 
 
 
-# check if java  environment variables is set
-if [ -z "${JAVA_HOME}" ]
-then
-    echo "ERROR: java not found"
-    exit -1
-fi
+# # check if java  environment variables is set
+# if [ -z "${JAVA_HOME}" ]
+# then
+#     echo "ERROR: java not found"
+#     exit -1
+# fi
 
 
 
