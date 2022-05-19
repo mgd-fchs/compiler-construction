@@ -18,184 +18,158 @@ public class OptimizerUtils {
         LinkedList<BaseInstruction> optimizedInstructions = new LinkedList<BaseInstruction>();
 
         instructions.forEach(
-            instruction -> {
-                if (instruction instanceof ArithmeticBinaryInstruction) {
-                    SymbolVariable lhs = ((ArithmeticBinaryInstruction) instruction).leftParam;
-                    SymbolVariable rhs = ((ArithmeticBinaryInstruction) instruction).rightParam;
-                    OperatorTypes operator = ((ArithmeticBinaryInstruction) instruction).operator;
-                    Integer result = null;
+                instruction -> {
+                    if (instruction instanceof ArithmeticBinaryInstruction) {
+                        SymbolVariable lhs = ((ArithmeticBinaryInstruction) instruction).leftParam;
+                        SymbolVariable rhs = ((ArithmeticBinaryInstruction) instruction).rightParam;
+                        OperatorTypes operator = ((ArithmeticBinaryInstruction) instruction).operator;
+                        Integer result = null;
 
-                    if (optimizerSymbolTable.get(lhs) != null){
-                        lhs = optimizerSymbolTable.get(lhs);
-                        ((ArithmeticBinaryInstruction)instruction).setLhs(lhs);
-                    }
-
-                    if (optimizerSymbolTable.get(rhs) != null){
-                        rhs = optimizerSymbolTable.get(rhs);
-                        ((ArithmeticBinaryInstruction)instruction).setRhs(rhs);
-                    }
-
-
-                    // TODO: Ask if we need to do this for logic operators as well
-                    if (lhs.getValue() != null && rhs.getValue() != null) {
-                        switch (operator) {
-                            case ADD:
-                                result = (Integer) lhs.getValue() + (Integer) rhs.getValue();
-                                break;
-
-                            case MUL:
-                                result = (Integer) lhs.getValue() * (Integer) rhs.getValue();
-                                break;
-
-                            case SUB:
-                                result = (Integer) lhs.getValue() - (Integer) rhs.getValue();
-                                break;
-
-                            case DIV:
-                                if ((Integer) rhs.getValue() != 0) {
-                                    result = (Integer) lhs.getValue() / (Integer) rhs.getValue();
-                                } else {
-                                    optimizedInstructions.add(instruction);
-                                }
-                                break;
-
-                            case MOD:
-                                if ((Integer) rhs.getValue() != 0) {
-                                    result = (Integer) lhs.getValue() % (Integer) rhs.getValue();
-                                } else {
-                                    optimizedInstructions.add(instruction);
-                                }
-                                break;
+                        if (optimizerSymbolTable.get(lhs) != null) {
+                            lhs = optimizerSymbolTable.get(lhs);
+                            ((ArithmeticBinaryInstruction) instruction).setLhs(lhs);
                         }
-                        instruction.getResult().setValue(result);
+
+                        if (optimizerSymbolTable.get(rhs) != null) {
+                            rhs = optimizerSymbolTable.get(rhs);
+                            ((ArithmeticBinaryInstruction) instruction).setRhs(rhs);
+                        }
+
+
+                        // TODO: Ask if we need to do this for logic operators as well
+                        if (lhs.getValue() != null && rhs.getValue() != null) {
+                            switch (operator) {
+                                case ADD:
+                                    result = (Integer) lhs.getValue() + (Integer) rhs.getValue();
+                                    break;
+
+                                case MUL:
+                                    result = (Integer) lhs.getValue() * (Integer) rhs.getValue();
+                                    break;
+
+                                case SUB:
+                                    result = (Integer) lhs.getValue() - (Integer) rhs.getValue();
+                                    break;
+
+                                case DIV:
+                                    if ((Integer) rhs.getValue() != 0) {
+                                        result = (Integer) lhs.getValue() / (Integer) rhs.getValue();
+                                    } else {
+                                        optimizedInstructions.add(instruction);
+                                    }
+                                    break;
+
+                                case MOD:
+                                    if ((Integer) rhs.getValue() != 0) {
+                                        result = (Integer) lhs.getValue() % (Integer) rhs.getValue();
+                                    } else {
+                                        optimizedInstructions.add(instruction);
+                                    }
+                                    break;
+                            }
+                            instruction.getResult().setValue(result);
+
+                        } else {
+                            optimizedInstructions.add(instruction);
+                        }
+
+                    } else if (instruction instanceof AssignLocalInstruction) {
+                        SymbolVariable lhs = ((AssignLocalInstruction) instruction).lhs;
+                        SymbolVariable rhs = ((AssignLocalInstruction) instruction).rhs;
+
+                        if (optimizerSymbolTable.get(rhs) != null) {
+                            rhs = optimizerSymbolTable.get(rhs);
+                            ((AssignLocalInstruction) instruction).setRhs(rhs);
+                        }
+
+                        optimizerSymbolTable.put(lhs, rhs);
+                        optimizedInstructions.add(instruction);
+
+                    } else if (instruction instanceof ReturnInstruction) {
+                        SymbolVariable retVal = ((ReturnInstruction) instruction).getReturnValue();
+
+                        if (optimizerSymbolTable.get(retVal) != null) {
+                            retVal = optimizerSymbolTable.get(retVal);
+                            ((ReturnInstruction) instruction).setReturnValue(retVal);
+                        }
+
+                        optimizedInstructions.add(instruction);
 
                     } else {
                         optimizedInstructions.add(instruction);
                     }
-
-                }
-                else if (instruction instanceof AssignLocalInstruction) {
-                  SymbolVariable lhs = ((AssignLocalInstruction)instruction).lhs;
-                  SymbolVariable rhs = ((AssignLocalInstruction)instruction).rhs;
-
-                    if (optimizerSymbolTable.get(rhs) != null){
-                        rhs = optimizerSymbolTable.get(rhs);
-                        ((AssignLocalInstruction)instruction).setRhs(rhs);
-                    }
-
-                  optimizerSymbolTable.put(lhs, rhs);
-                  optimizedInstructions.add(instruction);
-
-                }
-                else if (instruction instanceof ReturnInstruction) {
-                    SymbolVariable retVal = ((ReturnInstruction)instruction).getReturnValue();
-
-                    if (optimizerSymbolTable.get(retVal) != null){
-                        retVal = optimizerSymbolTable.get(retVal);
-                        ((ReturnInstruction) instruction).setReturnValue(retVal);
-                    }
-
-                    optimizedInstructions.add(instruction);
-
-                }
-                else {
-                    optimizedInstructions.add(instruction);
-                }
-        });
+                });
 
         return optimizedInstructions;
     }
 
     public static LinkedList<BaseInstruction> deadCodeElimination(LinkedList<BaseInstruction> instructions, SymbolCallable method) {
-        boolean optimized = false;
-        boolean isAssignment = false;
+        boolean optimized_in_last_round = true;
+        boolean keepAssignment = false;
+
         ListIterator<BaseInstruction> listIterator = instructions.listIterator(instructions.size());
 
         List<SymbolVariable> allVars = method.getAllVars();
-        LinkedList<BaseInstruction> optimizedInstructions = new LinkedList<BaseInstruction>();
+        LinkedList<BaseInstruction> optimizedInstructions = new LinkedList<>();
 
 
-        while (!optimized){
-            optimized = true;
+        while (optimized_in_last_round) {
+            optimized_in_last_round = false;
             allVars.forEach(var -> codeEliminationTable.put(var, false));
+            optimizedInstructions = new LinkedList<>();
 
             while (listIterator.hasPrevious()) {
                 BaseInstruction instruction = listIterator.previous();
 
-                if (instruction instanceof AssignLocalInstruction){
-                    SymbolVariable lhs = ((AssignLocalInstruction)instruction).lhs;
+                if (instruction instanceof AssignLocalInstruction) {
+                    SymbolVariable lhs = ((AssignLocalInstruction) instruction).lhs;
 
-                    // SymbolVariable rhs = ((AssignLocalInstruction)instruction).rhs;
-
-                    if (codeEliminationTable.get(lhs)){
+                    if (codeEliminationTable.get(lhs)) {
                         // if assigned variable is live, keep the instruction and set lhs to dead
                         optimizedInstructions.addFirst(instruction);
-                        isAssignment = true;
-                        codeEliminationTable.replace(lhs, false);
-
-                    } else{
-                        isAssignment = false;
-                        optimized = false;
+                        keepAssignment = true;
+                        codeEliminationTable.put(lhs, false);
+                    } else {
+                        keepAssignment = false;
+                        optimized_in_last_round = true;
                     }
                 }
-                if (isAssignment){
-                    if (instruction instanceof BinaryInstruction){
-                        SymbolVariable lhs = ((BinaryInstruction)instruction).leftParam;
-                        SymbolVariable rhs = ((BinaryInstruction)instruction).rightParam;
+                else {
+                    if (keepAssignment) {
+                        if (instruction instanceof BinaryInstruction) {
+                            SymbolVariable lhs = ((BinaryInstruction) instruction).leftParam;
+                            SymbolVariable rhs = ((BinaryInstruction) instruction).rightParam;
 
-                        if (lhs.getValue() == null){
-                            codeEliminationTable.put(lhs, true);
-                        }
-                        if (rhs.getValue() == null){
-                            codeEliminationTable.put(rhs, true);
-                        }
-                    }
-                    else if (instruction instanceof UnaryInstruction){
-                        SymbolVariable param = ((UnaryInstruction) instruction).getParameter();
+                            if (lhs.getValue() == null) {
+                                codeEliminationTable.put(lhs, true);
+                            }
+                            if (rhs.getValue() == null) {
+                                codeEliminationTable.put(rhs, true);
+                            }
+                        } else if (instruction instanceof UnaryInstruction) {
+                            SymbolVariable param = ((UnaryInstruction) instruction).getParameter();
 
-                        if (param.getValue() == null){
-                            codeEliminationTable.put(param, true);
-                        }
-                    } else if (instruction instanceof MethodInvocationInstruction){
-                        ((MethodInvocationInstruction) instruction).getParams().forEach(
-                                param -> codeEliminationTable.put(param, true)
-                        );
-                    }
-
-                    optimizedInstructions.addFirst(instruction);
-
-                } else {
-                    optimized = false;
-                    if (instruction instanceof BinaryInstruction){
-                        SymbolVariable lhs = ((BinaryInstruction)instruction).leftParam;
-                        SymbolVariable rhs = ((BinaryInstruction)instruction).rightParam;
-
-                        if (lhs.getValue() == null){
-                            codeEliminationTable.put(lhs, false);
-                        }
-                        if (rhs.getValue() == null){
-                            codeEliminationTable.put(rhs, false);
+                            if (param.getValue() == null) {
+                                codeEliminationTable.put(param, true);
+                            }
+                        } else if (instruction instanceof MethodInvocationInstruction) {
+                            ((MethodInvocationInstruction) instruction).getParams().forEach(
+                                    param -> codeEliminationTable.put(param, true)
+                            );
                         }
 
-                    }
-                    else if (instruction instanceof UnaryInstruction){
-                        SymbolVariable param = ((UnaryInstruction) instruction).getParameter();
-
-                        if (param.getValue() == null){
-                            codeEliminationTable.put(param, false);
-                        }
-                    } else if (instruction instanceof MethodInvocationInstruction){
-                        ((MethodInvocationInstruction) instruction).getParams().forEach(
-                                param -> codeEliminationTable.put(param, false)
-                        );
-                    }
-                    else if (instruction instanceof ReturnInstruction){
-                        SymbolVariable retVal = ((ReturnInstruction) instruction).getReturnValue();
-                        if (retVal.getValue() == null){
-                            codeEliminationTable.put(retVal, true);
+                        optimizedInstructions.addFirst(instruction);
+                    } else {
+                        if (instruction instanceof ReturnInstruction) {
+                            SymbolVariable retVal = ((ReturnInstruction) instruction).getReturnValue();
+                            if (retVal.getValue() == null) {
+                                codeEliminationTable.put(retVal, true);
+                            }
+                            optimizedInstructions.addFirst(instruction);
+                        } else {
+                            optimized_in_last_round = true;
                         }
                     }
-                    optimizedInstructions.addFirst(instruction);
                 }
             }
 

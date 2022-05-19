@@ -68,11 +68,11 @@ public class CodeOpt {
             clazz -> {
                 clazz.getMethods().forEach(
                     method -> {
-                        LinkedList<BaseInstruction> optimizedInstructions =
-                                OptimizerUtils.constantsFolding((LinkedList<BaseInstruction>) method.getInstructions());
+                        LinkedList<BaseInstruction> optimizedInstructions;
+                               // OptimizerUtils.constantsFolding((LinkedList<BaseInstruction>) method.getInstructions());
 
                         optimizedInstructions =
-                               OptimizerUtils.deadCodeElimination(optimizedInstructions, method);
+                               OptimizerUtils.deadCodeElimination((LinkedList<BaseInstruction> )method.getInstructions(), method);
 
                         method.setInstructions(optimizedInstructions);
                     });
