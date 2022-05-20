@@ -1,0 +1,49 @@
+class Main {
+  public int main() {
+    int a, b, c, d, e, f, g, h, i,j ,k ,l ,m ,n , result;
+    a = 1;
+    b = 2;
+    c = 3;
+    d = 4;
+    e = 5;
+    f = 6;
+    g = 7;
+    h = 8;
+    i = 9;
+    j = 10;
+    k = 11;
+
+    a = a + b * c - d + (e) / f % g + h * i - (j) * k;
+
+    a = 3;
+    b = a;
+    c = b;
+    d = c;
+    e = d;
+    f = e;
+    g = f;
+
+    g = 7;
+    h = 8;
+    i = 9;
+    j = 10;
+    k = 11;
+
+    a = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    result = a;
+
+    a = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    b = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    c = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    d = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    e = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    f = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    g = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    h = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    i = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    j = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    k = a + b * c - d + (e) / f % g + h * i - (j) * k;
+
+    return 0;
+  }
+}

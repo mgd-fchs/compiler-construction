@@ -1,0 +1,87 @@
+class Main {
+  public int main() {
+    int a, b, c, d, e, f, g, h, i,j ,k ,l ,m ,n , result;
+    a = 1;
+    result = print(a);
+    b = 2;
+    result = print(b);
+    c = 3;
+    result = print(c);
+    d = 4;
+    result = print(d);
+    e = 5;
+    result = print(e);
+    f = 6;
+    result = print(f);
+    g = 7;
+    result = print(g);
+    h = 8;
+    result = print(h);
+    i = 9;
+    result = print(i);
+    j = 10;
+    result = print(j);
+    k = 11;
+    result = print(k);
+
+    a = a + b * c - d + (e) / f % g + h * i - (j) * k;
+
+    a = 3;
+    b = a;
+    c = b;
+    d = c;
+    e = d;
+    f = e;
+    g = f;
+
+    result = print(a);
+    result = print(b);
+    result = print(c);
+    result = print(d);
+    result = print(e);
+    result = print(f);
+    result = print(g);
+    result = print(h);
+    result = print(i);
+    result = print(j);
+    result = print(k);
+
+    a = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    result = a;
+    result = print(a);
+    a = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    result = print(a);
+    result = print(b);
+    b = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    result = print(b);
+    result = print(c);
+    c = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    result = print(c);
+    result = print(d);
+    d = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    result = print(d);
+    result = print(e);
+    e = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    result = print(e);
+    result = print(f);
+    f = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    result = print(f);
+    result = print(g);
+    g = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    result = print(g);
+    result = print(h);
+    h = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    result = print(h);
+    result = print(i);
+    i = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    result = print(i);
+    result = print(j);
+    j = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    result = print(j);
+    result = print(k);
+    k = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    result = print(k);
+
+    return 0;
+  }
+}

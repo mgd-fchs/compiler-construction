@@ -1,0 +1,55 @@
+class Main {
+  public int main() {
+    int a, b, c, d, e, f, g, h, i,j ,k ,l ,m ,n , result, z;
+    a = 1;
+    result = print(a);
+    b = 2;
+    result = print(b);
+    c = 3;
+    result = print(c);
+    d = 4;
+    result = print(d);
+    e = 5;
+    result = print(e);
+    f = 6;
+    result = print(f);
+    g = 7;
+    result = print(g);
+    h = 8;
+    result = print(h);
+    i = 9;
+    result = print(i);
+    j = 10;
+    result = print(j);
+    k = 11;
+    result = print(k);
+    a = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    a = print("Hello... ");
+
+    a = 3;
+    b = a;
+    c = b;
+    d = c;
+    e = d;
+    f = e;
+    g = f;
+    z = 3;
+
+
+
+    a = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    a = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    b = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    c = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    d = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    e = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    f = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    g = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    h = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    i = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    j = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    k = a + b * c - d + (e) / f % g + h * i - (j) * k;
+
+    return k;
+  }
+}

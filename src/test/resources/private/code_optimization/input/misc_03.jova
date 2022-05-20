@@ -1,0 +1,55 @@
+class Main {
+  public int main() {
+    int a, b, c, d, e, f, g, h, i,j ,k ,l ,m ,n , result, z, neverUsed;
+    int aNeverUsed, bNeverUsed, cNeverUsed, dNeverUsed, eNeverUsed, fNeverUsed, gNeverUsed, hNeverUsed, iNeverUsed,jNeverUsed ,kNeverUsed;
+
+    a = 1;
+    b = 2;
+    c = 3;
+    d = 4;
+    e = 5;
+    f = 6;
+    g = 7;
+    h = 8;
+    i = 9;
+    j = 10;
+    k = 11;
+    result = print(k);
+    neverUsed = a + b * c - d + (e) / f % g + h * i - (j) * print(69);
+    neverUsed = a + b * c - d + (e) / f % g + h * i - (j) * print(69);
+    neverUsed = a + b * c - d + (e) / f % g + h * i - (j) * print(69);
+    neverUsed = a + b * c - d + (e) / f % g + h * i - (j) * print(69);
+    neverUsed = a + b * c - d + (e) / f % g + h * i - (j) * print(69);
+    neverUsed = a + b * c - d + (e) / f % g + h * i - (j) * print(69);
+    neverUsed = a + b * c - d + (e) / f % g + h * i - (j) * print(69);
+    neverUsed = a + b * c - d + (e) / f % g + h * i - (j) * print(69);
+    neverUsed = a + b * c - d + (e) / f % g + h * i - (j) * print(69);
+    neverUsed = print("Hello... ");
+
+    a = 3;
+    b = a;
+    c = b;
+    d = c;
+    e = d;
+    f = e;
+    g = f;
+    z = 3;
+
+
+
+    aNeverUsed = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    aNeverUsed = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    bNeverUsed = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    cNeverUsed = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    dNeverUsed = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    eNeverUsed = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    fNeverUsed = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    gNeverUsed = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    hNeverUsed = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    iNeverUsed = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    jNeverUsed = a + b * c - d + (e) / f % g + h * i - (j) * k;
+    kNeverUsed = a + b * c - d + (e) / f % g + h * i - (j) * k;
+
+    return k;
+  }
+}

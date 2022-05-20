@@ -24,6 +24,11 @@ public class CodeOptimizerPrivateTest {
             "modulo_by_zero_02.jova",
             "deadcode_elimination_01.jova",
             "print_01.jova",
+            "no_print_or_read_empty.jova",
+            "no_print_or_read_return.jova",
+            "misc_01.jova",
+            "misc_02.jova",
+            "misc_03.jova",
     };
 
     private static final String[] PROGRAMS_WITH_USER_INTERACTION = {
