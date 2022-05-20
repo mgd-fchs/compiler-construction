@@ -18,16 +18,22 @@ public class ReturnMainInstruction extends BaseInstruction {
 
     @Override
     public String buildAssemblyString() {
-        String trueLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
 
-        StringBuilder builder = new StringBuilder();
-        builder.append(pushVariableOntoStack(returnValue));
-        builder.append("    ifeq ").append(trueLabel).append("\n");
-        builder.append(pushVariableOntoStack(returnValue));
-        builder.append("    invokestatic java/lang/System/exit(I)V\n");
-        builder.append(trueLabel).append(":").append("\n");
+        if (returnValue.getValue() != null &&  (Integer) returnValue.getValue() == 0) {
+            return "";
+        } else {
+            String trueLabel = associatedCallable.associatedSymbolClass.getNextLabelCount();
 
-        return  builder.toString();
+            StringBuilder builder = new StringBuilder();
+
+            builder.append(pushVariableOntoStack(returnValue));
+            builder.append("    ifeq ").append(trueLabel).append("\n");
+            builder.append(pushVariableOntoStack(returnValue));
+            builder.append("    invokestatic java/lang/System/exit(I)V\n");
+            builder.append(trueLabel).append(":").append("\n");
+
+            return  builder.toString();
+        }
     }
 
     @Override
