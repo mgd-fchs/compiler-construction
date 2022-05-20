@@ -14,8 +14,12 @@ public class CodeOptimizerPrivateTest {
             "constantFolding02.jova",
             "constantFolding03.jova",
             "constantFolding04.jova",
+            "constantFolding05_divide_zero.jova",
+            "constantFolding06_divide_zero.jova",
             "constantPropagation01.jova",
-            "deadCodeElimination01.jova"
+            "deadCodeElimination01.jova",
+            "print01.jova",
+
     };
 
     private final CodeGenerator codeGenerator = new CodeGenerator();
@@ -61,6 +65,19 @@ public class CodeOptimizerPrivateTest {
     @Test
     public void constantFolding01() {
         String program_name = "constantFolding01.jova";
+        createCodeNormal(program_name);
+        createCodeOptimized(program_name);
+    }
+
+    @Test
+    public void constantFolding05_divide_zero() {
+        String program_name = "constantFolding05_divide_zero.jova";
+        createCodeNormal(program_name);
+        createCodeOptimized(program_name);
+    }
+    @Test
+    public void constantFolding06_divide_zero() {
+        String program_name = "constantFolding06_divide_zero.jova";
         createCodeNormal(program_name);
         createCodeOptimized(program_name);
     }
