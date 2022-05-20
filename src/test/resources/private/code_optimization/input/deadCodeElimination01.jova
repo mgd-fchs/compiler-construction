@@ -7,7 +7,7 @@ class Main {
     a = x + y;
     c = 2 * a;
     a = 41;
-    a = readInt();
+    a = print("hello");
     a = print(c);
     a = print(c);
     b = a;

@@ -4,6 +4,8 @@ import at.tugraz.ist.cc.CodeGeneratorUtils;
 import at.tugraz.ist.cc.symbol_table.SymbolCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Optional;
 
 public class MemberAccessInstruction extends BaseInstruction {
@@ -55,5 +57,22 @@ public class MemberAccessInstruction extends BaseInstruction {
         } else {
             return 1;
         }
+    }
+
+    @Override
+    public Collection<SymbolVariable> getUsedSymbolVariables() {
+        Collection<SymbolVariable> usedVariablesOnLocal =  new ArrayList<>();
+        usedVariablesOnLocal.add(classRef);
+
+        if (value != null) {
+            if (value.getValue() != null) {
+                usedVariablesOnLocal.add(value);
+            }
+
+        } else {
+            usedVariablesOnLocal.add(result);
+        }
+
+        return usedVariablesOnLocal;
     }
 }

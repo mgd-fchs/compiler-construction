@@ -4,6 +4,7 @@ import at.tugraz.ist.cc.CodeGeneratorUtils;
 import at.tugraz.ist.cc.symbol_table.SymbolCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -44,5 +45,20 @@ public class AllocInstruction extends BaseInstruction {
     @Override
     public int getNeededStackSize() {
         return 2 + params.size();
+    }
+
+    @Override
+    public Collection<SymbolVariable> getUsedSymbolVariables() {
+        Collection<SymbolVariable> usedVariablesOnLocal = new ArrayList<>();
+
+        params.forEach(param -> {
+            if (param.getValue() != null) {
+                usedVariablesOnLocal.add(param);
+            }
+        });
+
+        usedVariablesOnLocal.add(result);
+
+        return usedVariablesOnLocal;
     }
 }

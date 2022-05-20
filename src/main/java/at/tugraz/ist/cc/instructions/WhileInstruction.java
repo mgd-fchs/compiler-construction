@@ -3,6 +3,8 @@ package at.tugraz.ist.cc.instructions;
 import at.tugraz.ist.cc.symbol_table.SymbolCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,5 +46,13 @@ public class WhileInstruction extends ConditionalInstruction{
                 .orElse(0);
 
         return cond_stack + if_stack;
+    }
+
+    @Override
+    public Collection<SymbolVariable> getUsedSymbolVariables() {
+        Collection<SymbolVariable> usedVariablesOnLocal = new ArrayList<>();
+        ifInstructions.forEach(baseInstruction -> usedVariablesOnLocal.addAll(baseInstruction.getUsedSymbolVariables()));
+        conditionals.forEach(baseInstruction -> usedVariablesOnLocal.addAll(baseInstruction.getUsedSymbolVariables()));
+        return usedVariablesOnLocal;
     }
 }

@@ -5,6 +5,7 @@ import at.tugraz.ist.cc.symbol_table.SymbolCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class OptimizerUtils {
     public static HashMap<SymbolVariable, SymbolVariable> optimizerSymbolTable = new HashMap<>();
@@ -14,91 +15,90 @@ public class OptimizerUtils {
 
     }
 
-    public static LinkedList<BaseInstruction> constantsFolding(LinkedList<BaseInstruction> instructions) {
-        LinkedList<BaseInstruction> optimizedInstructions = new LinkedList<BaseInstruction>();
+    public static LinkedList<BaseInstruction> constantFoldingConstantPropagationCopyPropagation(LinkedList<BaseInstruction> instructions) {
+        LinkedList<BaseInstruction> optimizedInstructions = new LinkedList<>();
 
-        instructions.forEach(
-                instruction -> {
-                    if (instruction instanceof ArithmeticBinaryInstruction) {
-                        SymbolVariable lhs = ((ArithmeticBinaryInstruction) instruction).leftParam;
-                        SymbolVariable rhs = ((ArithmeticBinaryInstruction) instruction).rightParam;
-                        OperatorTypes operator = ((ArithmeticBinaryInstruction) instruction).operator;
-                        Integer result = null;
+        instructions.forEach(instruction -> {
+            if (instruction instanceof ArithmeticBinaryInstruction) {
+                SymbolVariable lhs = ((ArithmeticBinaryInstruction) instruction).leftParam;
+                SymbolVariable rhs = ((ArithmeticBinaryInstruction) instruction).rightParam;
+                OperatorTypes operator = ((ArithmeticBinaryInstruction) instruction).operator;
+                Integer result = null;
 
-                        if (optimizerSymbolTable.get(lhs) != null) {
-                            lhs = optimizerSymbolTable.get(lhs);
-                            ((ArithmeticBinaryInstruction) instruction).setLhs(lhs);
-                        }
+                if (optimizerSymbolTable.get(lhs) != null) {
+                    lhs = optimizerSymbolTable.get(lhs);
+                    ((ArithmeticBinaryInstruction) instruction).setLhs(lhs);
+                }
 
-                        if (optimizerSymbolTable.get(rhs) != null) {
-                            rhs = optimizerSymbolTable.get(rhs);
-                            ((ArithmeticBinaryInstruction) instruction).setRhs(rhs);
-                        }
+                if (optimizerSymbolTable.get(rhs) != null) {
+                    rhs = optimizerSymbolTable.get(rhs);
+                    ((ArithmeticBinaryInstruction) instruction).setRhs(rhs);
+                }
 
 
-                        // TODO: Ask if we need to do this for logic operators as well
-                        if (lhs.getValue() != null && rhs.getValue() != null) {
-                            switch (operator) {
-                                case ADD:
-                                    result = (Integer) lhs.getValue() + (Integer) rhs.getValue();
-                                    break;
+                // TODO: Ask if we need to do this for logic operators as well
+                if (lhs.getValue() != null && rhs.getValue() != null) {
+                    switch (operator) {
+                        case ADD:
+                            result = (Integer) lhs.getValue() + (Integer) rhs.getValue();
+                            break;
 
-                                case MUL:
-                                    result = (Integer) lhs.getValue() * (Integer) rhs.getValue();
-                                    break;
+                        case MUL:
+                            result = (Integer) lhs.getValue() * (Integer) rhs.getValue();
+                            break;
 
-                                case SUB:
-                                    result = (Integer) lhs.getValue() - (Integer) rhs.getValue();
-                                    break;
+                        case SUB:
+                            result = (Integer) lhs.getValue() - (Integer) rhs.getValue();
+                            break;
 
-                                case DIV:
-                                    if ((Integer) rhs.getValue() != 0) {
-                                        result = (Integer) lhs.getValue() / (Integer) rhs.getValue();
-                                    } else {
-                                        optimizedInstructions.add(instruction);
-                                    }
-                                    break;
-
-                                case MOD:
-                                    if ((Integer) rhs.getValue() != 0) {
-                                        result = (Integer) lhs.getValue() % (Integer) rhs.getValue();
-                                    } else {
-                                        optimizedInstructions.add(instruction);
-                                    }
-                                    break;
+                        case DIV:
+                            if ((Integer) rhs.getValue() != 0) {
+                                result = (Integer) lhs.getValue() / (Integer) rhs.getValue();
+                            } else {
+                                optimizedInstructions.add(instruction);
                             }
-                            instruction.getResult().setValue(result);
+                            break;
 
-                        } else {
-                            optimizedInstructions.add(instruction);
-                        }
-
-                    } else if (instruction instanceof AssignLocalInstruction) {
-                        SymbolVariable lhs = ((AssignLocalInstruction) instruction).lhs;
-                        SymbolVariable rhs = ((AssignLocalInstruction) instruction).rhs;
-
-                        if (optimizerSymbolTable.get(rhs) != null) {
-                            rhs = optimizerSymbolTable.get(rhs);
-                            ((AssignLocalInstruction) instruction).setRhs(rhs);
-                        }
-
-                        optimizerSymbolTable.put(lhs, rhs);
-                        optimizedInstructions.add(instruction);
-
-                    } else if (instruction instanceof ReturnInstruction) {
-                        SymbolVariable retVal = ((ReturnInstruction) instruction).getReturnValue();
-
-                        if (optimizerSymbolTable.get(retVal) != null) {
-                            retVal = optimizerSymbolTable.get(retVal);
-                            ((ReturnInstruction) instruction).setReturnValue(retVal);
-                        }
-
-                        optimizedInstructions.add(instruction);
-
-                    } else {
-                        optimizedInstructions.add(instruction);
+                        case MOD:
+                            if ((Integer) rhs.getValue() != 0) {
+                                result = (Integer) lhs.getValue() % (Integer) rhs.getValue();
+                            } else {
+                                optimizedInstructions.add(instruction);
+                            }
+                            break;
                     }
-                });
+                    instruction.getResult().setValue(result);
+
+                } else {
+                    optimizedInstructions.add(instruction);
+                }
+
+            } else if (instruction instanceof AssignLocalInstruction) {
+                SymbolVariable lhs = ((AssignLocalInstruction) instruction).lhs;
+                SymbolVariable rhs = ((AssignLocalInstruction) instruction).rhs;
+
+                if (optimizerSymbolTable.get(rhs) != null) {
+                    rhs = optimizerSymbolTable.get(rhs);
+                    ((AssignLocalInstruction) instruction).setRhs(rhs);
+                }
+
+                optimizerSymbolTable.put(lhs, rhs);
+                optimizedInstructions.add(instruction);
+
+            } else if (instruction instanceof ReturnInstruction) {
+                SymbolVariable retVal = ((ReturnInstruction) instruction).getReturnValue();
+
+                if (optimizerSymbolTable.get(retVal) != null) {
+                    retVal = optimizerSymbolTable.get(retVal);
+                    ((ReturnInstruction) instruction).setReturnValue(retVal);
+                }
+
+                optimizedInstructions.add(instruction);
+
+            } else {
+                optimizedInstructions.add(instruction);
+            }
+        });
 
         return optimizedInstructions;
     }
@@ -138,13 +138,11 @@ public class OptimizerUtils {
 
                     optimizedInstructions.addFirst(instruction);
                 } else if (instruction instanceof MethodInvocationInstruction) {
-                    if (((MethodInvocationInstruction) instruction).isReadOrPrint() || codeEliminationTable.get(instruction.getResult())) {
-                        ((MethodInvocationInstruction) instruction).getParams().forEach(
-                                param -> codeEliminationTable.put(param, true)
-                        );
+                    ((MethodInvocationInstruction) instruction).getParams().forEach(
+                            param -> codeEliminationTable.put(param, true)
+                    );
 
-                        optimizedInstructions.addFirst(instruction);
-                    }
+                    optimizedInstructions.addFirst(instruction);
                 } else if (codeEliminationTable.get(instruction.getResult())) {
                     if (instruction instanceof BinaryInstruction) {
                         SymbolVariable lhs = ((BinaryInstruction) instruction).leftParam;
@@ -172,5 +170,20 @@ public class OptimizerUtils {
         }
 
         return optimizedInstructions;
+    }
+
+    public static void reorderLocalArrayVars(SymbolCallable method) {
+        Set<SymbolVariable> userSymbolVariables = new HashSet<>();
+
+        method.instructions.forEach(instruction -> userSymbolVariables.addAll(instruction.getUsedSymbolVariables()));
+
+        /*  FYI: we can not use a simple int value from the stack inside a lambda
+        => https://www.baeldung.com/java-lambda-effectively-final-local-variables */
+        int[] localArrayIndex = {1}; // 0 is reserved for the class ref which owns the method
+        Map<SymbolVariable, Integer> newLocalArrayMapping = new HashMap<>();
+
+        userSymbolVariables.forEach(variable -> newLocalArrayMapping.put(variable, localArrayIndex[0]++));
+
+        method.setLocalArrayMapping(newLocalArrayMapping, localArrayIndex[0]);
     }
 }

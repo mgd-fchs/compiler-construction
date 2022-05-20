@@ -3,6 +3,8 @@ package at.tugraz.ist.cc.instructions;
 import at.tugraz.ist.cc.symbol_table.SymbolCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Optional;
 
 public class AssignLocalInstruction extends BaseInstruction {
@@ -33,5 +35,17 @@ public class AssignLocalInstruction extends BaseInstruction {
     @Override
     public int getNeededStackSize() {
         return 1;
+    }
+
+    @Override
+    public Collection<SymbolVariable> getUsedSymbolVariables() {
+        Collection<SymbolVariable> usedVariablesOnLocal =  new ArrayList<>();
+        usedVariablesOnLocal.add(lhs);
+
+        if (rhs.getValue() != null) {
+            usedVariablesOnLocal.add(rhs);
+        }
+
+        return usedVariablesOnLocal;
     }
 }

@@ -50,4 +50,11 @@ public class CodeOptimizerPrivateTest {
         createCodeNormal(program_name);
         createCodeOptimized(program_name);
     }
+
+    @Test
+    public void constantFolding04() {
+        String program_name = "constantFolding04.jova";
+        createCodeNormal(program_name);
+        createCodeOptimized(program_name);
+    }
 }

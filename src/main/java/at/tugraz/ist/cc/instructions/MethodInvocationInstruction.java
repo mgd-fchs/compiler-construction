@@ -5,9 +5,7 @@ import at.tugraz.ist.cc.symbol_table.SymbolCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolMethod;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class MethodInvocationInstruction extends BaseInstruction {
     private final SymbolVariable classRef;
@@ -107,4 +105,19 @@ public class MethodInvocationInstruction extends BaseInstruction {
     }
 
 
+    @Override
+    public Collection<SymbolVariable> getUsedSymbolVariables() {
+        Collection<SymbolVariable> usedVariablesOnLocal = new ArrayList<>();
+
+        params.forEach(param -> {
+            if (param.getValue() != null) {
+                usedVariablesOnLocal.add(param);
+            }
+        });
+
+        usedVariablesOnLocal.add(classRef);
+        usedVariablesOnLocal.add(result);
+
+        return usedVariablesOnLocal;
+    }
 }

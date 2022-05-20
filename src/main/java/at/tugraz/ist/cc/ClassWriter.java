@@ -76,9 +76,7 @@ public class ClassWriter implements AutoCloseable {
     private void writeMethod(SymbolMethod symbolMethod) {
         String parameter = CodeGeneratorUtils.getParameterTypesAsString(symbolMethod.getParams());
         int stack_limit = symbolMethod.getStackSize();
-        // TODO
-        int local_limit = 100;
-        //int local_limit = symbolMethod.getLocalArraySize();
+        int local_limit = symbolMethod.getLocalArraySize();
         writer.printf("" +
                         ".method %s %s(%s)%s\n" +
                         ".limit stack %d\n" +
@@ -94,9 +92,7 @@ public class ClassWriter implements AutoCloseable {
 
     private void writeMainMethod(SymbolMethod symbolMethod) {
         int stack_limit = symbolMethod.getStackSize();
-        // TODO
-        int local_limit = 100;
-        //int local_limit = symbolMethod.getLocalArraySize();
+        int local_limit = symbolMethod.getLocalArraySize();
 
         List<BaseInstruction> instructions = symbolMethod.instructions;
         BaseInstruction instruction = instructions.get(instructions.size() - 1);
@@ -133,9 +129,7 @@ public class ClassWriter implements AutoCloseable {
     private void writeCtor(SymbolConstructor symbolConstructor) {
         String parameter = CodeGeneratorUtils.getParameterTypesAsString(symbolConstructor.getParams());
         int stack_limit = symbolConstructor.getStackSize();
-        // TODO
-        int local_limit = 100;
-        //int local_limit = symbolConstructor.getLocalArraySize();
+        int local_limit = symbolConstructor.getLocalArraySize();
         writer.printf("" +
                 ".method public <init>(%s)V\n" +
                 ".limit stack %d\n" +

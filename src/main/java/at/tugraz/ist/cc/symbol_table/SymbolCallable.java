@@ -18,7 +18,7 @@ public abstract class SymbolCallable {
     }
 
     public LinkedList<BaseInstruction> instructions;
-    private final Map<SymbolVariable, Integer> localArrayMapping;
+    private Map<SymbolVariable, Integer> localArrayMapping;
 
     public final SymbolClass associatedSymbolClass;
     private int localArrayIndex;
@@ -149,7 +149,7 @@ public abstract class SymbolCallable {
         return new SymbolVariable(returnValue);
     }
 
-    public List<BaseInstruction> getInstructions() {
+    public LinkedList<BaseInstruction> getInstructions() {
         return new LinkedList<>(List.copyOf(instructions));
     }
 
@@ -200,5 +200,10 @@ public abstract class SymbolCallable {
                 .mapToInt(BaseInstruction::getNeededStackSize)
                 .max()
                 .orElse(1);
+    }
+
+    public void setLocalArrayMapping(Map<SymbolVariable, Integer> localArrayMapping, int localArrayIndex) {
+        this.localArrayMapping = localArrayMapping;
+        this.localArrayIndex = localArrayIndex;
     }
 }

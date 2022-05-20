@@ -5,6 +5,8 @@ import at.tugraz.ist.cc.symbol_table.SymbolCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolPrimitiveType;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import static at.tugraz.ist.cc.symbol_table.SymbolType.PRIMITIVE;
@@ -59,5 +61,10 @@ public class ReturnInstruction extends BaseInstruction {
 
     public void setReturnValue(SymbolVariable retVal) {
         returnValue = retVal;
+    }
+
+    @Override
+    public Collection<SymbolVariable> getUsedSymbolVariables() {
+        return  List.of(returnValue);
     }
 }

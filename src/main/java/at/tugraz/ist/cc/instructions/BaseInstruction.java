@@ -5,6 +5,7 @@ import at.tugraz.ist.cc.symbol_table.SymbolCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolPrimitiveType;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
+import java.util.Collection;
 import java.util.Optional;
 
 import static at.tugraz.ist.cc.symbol_table.SymbolType.PRIMITIVE;
@@ -97,4 +98,5 @@ public abstract class BaseInstruction {
      */
     public abstract String buildAssemblyString();
     public abstract int getNeededStackSize();
+    public abstract Collection<SymbolVariable> getUsedSymbolVariables();
 }

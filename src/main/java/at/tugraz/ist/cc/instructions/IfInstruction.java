@@ -3,6 +3,8 @@ package at.tugraz.ist.cc.instructions;
 import at.tugraz.ist.cc.symbol_table.SymbolCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,5 +57,14 @@ public class IfInstruction extends ConditionalInstruction{
                 .orElse(0);
 
         return cond_stack + Math.max(if_stack, else_stack);
+    }
+
+    @Override
+    public Collection<SymbolVariable> getUsedSymbolVariables() {
+        Collection<SymbolVariable> tmp = new ArrayList<>();
+        ifInstructions.forEach(baseInstruction -> tmp.addAll(baseInstruction.getUsedSymbolVariables()));
+        elseInstructions.forEach(baseInstruction -> tmp.addAll(baseInstruction.getUsedSymbolVariables()));
+        conditionals.forEach(baseInstruction -> tmp.addAll(baseInstruction.getUsedSymbolVariables()));
+        return tmp;
     }
 }
