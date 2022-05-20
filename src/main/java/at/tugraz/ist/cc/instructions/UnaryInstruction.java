@@ -3,8 +3,8 @@ package at.tugraz.ist.cc.instructions;
 import at.tugraz.ist.cc.symbol_table.SymbolCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 public abstract class UnaryInstruction extends BaseInstruction {
@@ -29,6 +29,16 @@ public abstract class UnaryInstruction extends BaseInstruction {
 
     @Override
     public Collection<SymbolVariable> getUsedSymbolVariables() {
-        return  List.of(parameter, result);
+        Collection<SymbolVariable> usedVariablesOnLocal =  new ArrayList<>();
+
+        if (parameter.getValue() == null) {
+            usedVariablesOnLocal.add(parameter);
+        }
+
+        if (result.getValue() == null) {
+            usedVariablesOnLocal.add(result);
+        }
+
+        return  usedVariablesOnLocal;
     }
 }

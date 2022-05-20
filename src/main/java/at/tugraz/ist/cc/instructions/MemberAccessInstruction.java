@@ -65,7 +65,7 @@ public class MemberAccessInstruction extends BaseInstruction {
         usedVariablesOnLocal.add(classRef);
 
         if (value != null) {
-            if (value.getValue() != null) {
+            if (value.getValue() == null) {
                 usedVariablesOnLocal.add(value);
             }
 

@@ -42,7 +42,7 @@ public class AssignLocalInstruction extends BaseInstruction {
         Collection<SymbolVariable> usedVariablesOnLocal =  new ArrayList<>();
         usedVariablesOnLocal.add(lhs);
 
-        if (rhs.getValue() != null) {
+        if (rhs.getValue() == null) {
             usedVariablesOnLocal.add(rhs);
         }
 

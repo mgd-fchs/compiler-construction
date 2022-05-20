@@ -37,11 +37,11 @@ public abstract class BinaryInstruction extends BaseInstruction {
     public Collection<SymbolVariable> getUsedSymbolVariables() {
         Collection<SymbolVariable> usedVariablesOnLocal =  new ArrayList<>();
 
-        if (leftParam.getValue() != null) {
+        if (leftParam.getValue() == null) {
             usedVariablesOnLocal.add(leftParam);
         }
 
-        if (leftParam.getValue() != null) {
+        if (leftParam.getValue() == null) {
             usedVariablesOnLocal.add(rightParam);
         }
 

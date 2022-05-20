@@ -6,6 +6,7 @@ import at.tugraz.ist.cc.symbol_table.SymbolPrimitiveType;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +39,7 @@ public class ReturnInstruction extends BaseInstruction {
                 case CHAR:
                 default:
                     System.out.printf(
-                            "pushVariableOntoStack\n\n%n", ClassWriter.class.getName());
+                            "pushVariableOntoStack %s\n\n", ClassWriter.class.getName());
                     throw new RuntimeException();
             }
         } else {
@@ -65,6 +66,6 @@ public class ReturnInstruction extends BaseInstruction {
 
     @Override
     public Collection<SymbolVariable> getUsedSymbolVariables() {
-        return  List.of(returnValue);
+        return (returnValue.getValue() == null) ? List.of(returnValue) : Collections.emptyList();
     }
 }

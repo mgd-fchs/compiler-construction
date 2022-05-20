@@ -57,7 +57,7 @@ public class MethodInvocationInstruction extends BaseInstruction {
 
                 if (Objects.equals(invokedMethod.getName(), SymbolMethod.READ_STRING)) {
                     builder.append("    invokevirtual java/util/Scanner/nextLine()Ljava/lang/String;\n");
-                } else if (invokedMethod.getName() == SymbolMethod.READ_INT) {
+                } else if (Objects.equals(invokedMethod.getName(), SymbolMethod.READ_INT)) {
                     builder.append("    invokevirtual java/util/Scanner/nextInt()I\n");
                 } else {
                     throw new RuntimeException();
@@ -85,7 +85,7 @@ public class MethodInvocationInstruction extends BaseInstruction {
     public int getNeededStackSize() {
         int stack_size;
         if (invokedMethod.associatedSymbolClass == null) {
-            if (invokedMethod.getName() == SymbolMethod.PRINT) {
+            if (Objects.equals(invokedMethod.getName(), SymbolMethod.PRINT)) {
                 // print
                 stack_size = 1 + 1; // getstatic + param
             } else {
@@ -110,12 +110,16 @@ public class MethodInvocationInstruction extends BaseInstruction {
         Collection<SymbolVariable> usedVariablesOnLocal = new ArrayList<>();
 
         params.forEach(param -> {
-            if (param.getValue() != null) {
+            if (param.getValue() == null) {
                 usedVariablesOnLocal.add(param);
             }
         });
 
-        usedVariablesOnLocal.add(classRef);
+        if (classRef.getName() != null) {
+            // print or read method
+            usedVariablesOnLocal.add(classRef);
+        }
+
         usedVariablesOnLocal.add(result);
 
         return usedVariablesOnLocal;

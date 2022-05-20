@@ -79,7 +79,11 @@ public class TernaryInstruction extends ConditionalInstruction {
         ifInstructions.forEach(baseInstruction -> usedVariablesOnLocal.addAll(baseInstruction.getUsedSymbolVariables()));
         elseInstructions.forEach(baseInstruction -> usedVariablesOnLocal.addAll(baseInstruction.getUsedSymbolVariables()));
         conditionals.forEach(baseInstruction -> usedVariablesOnLocal.addAll(baseInstruction.getUsedSymbolVariables()));
-        usedVariablesOnLocal.add(result);
+
+        if (result.getValue() == null) {
+            usedVariablesOnLocal.add(result);
+        }
+
         return usedVariablesOnLocal;
     }
 }

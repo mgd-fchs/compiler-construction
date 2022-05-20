@@ -52,7 +52,7 @@ public class AllocInstruction extends BaseInstruction {
         Collection<SymbolVariable> usedVariablesOnLocal = new ArrayList<>();
 
         params.forEach(param -> {
-            if (param.getValue() != null) {
+            if (param.getValue() == null) {
                 usedVariablesOnLocal.add(param);
             }
         });

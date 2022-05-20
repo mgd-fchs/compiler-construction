@@ -2,6 +2,7 @@ package at.tugraz.ist.cc;
 
 import at.tugraz.ist.cc.instructions.*;
 import at.tugraz.ist.cc.symbol_table.SymbolCallable;
+import at.tugraz.ist.cc.symbol_table.SymbolClass;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
 import java.util.*;
@@ -173,16 +174,18 @@ public class OptimizerUtils {
     }
 
     public static void reorderLocalArrayVars(SymbolCallable method) {
-        Set<SymbolVariable> userSymbolVariables = new HashSet<>();
+        Set<SymbolVariable> usedSymbolVariables = new HashSet<>();
 
-        method.instructions.forEach(instruction -> userSymbolVariables.addAll(instruction.getUsedSymbolVariables()));
+        method.instructions.forEach(instruction -> usedSymbolVariables.addAll(instruction.getUsedSymbolVariables()));
 
         /*  FYI: we can not use a simple int value from the stack inside a lambda
         => https://www.baeldung.com/java-lambda-effectively-final-local-variables */
-        int[] localArrayIndex = {1}; // 0 is reserved for the class ref which owns the method
+
+        // 0 is reserved for the class ref or when it is the main it if for the args form the user
+        int[] localArrayIndex = {1};
         Map<SymbolVariable, Integer> newLocalArrayMapping = new HashMap<>();
 
-        userSymbolVariables.forEach(variable -> newLocalArrayMapping.put(variable, localArrayIndex[0]++));
+        usedSymbolVariables.forEach(variable -> newLocalArrayMapping.put(variable, localArrayIndex[0]++));
 
         method.setLocalArrayMapping(newLocalArrayMapping, localArrayIndex[0]);
     }

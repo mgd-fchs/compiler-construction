@@ -4,6 +4,7 @@ import at.tugraz.ist.cc.symbol_table.SymbolCallable;
 import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +27,6 @@ public class WrapperInstruction extends BaseInstruction{
 
     @Override
     public Collection<SymbolVariable> getUsedSymbolVariables() {
-        return List.of(this.result);
+        return (result.getValue() == null) ? List.of(this.result) : Collections.emptyList();
     }
 }
