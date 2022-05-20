@@ -149,6 +149,15 @@ public class OptimizerUtils {
                         (((ArithmeticBinaryInstruction) instruction).operator == OperatorTypes.DIV || (((ArithmeticBinaryInstruction) instruction).operator == OperatorTypes.MOD))
                         &&
                         (((ArithmeticBinaryInstruction) instruction).rightParam.getValue() == null || (Integer) ((ArithmeticBinaryInstruction) instruction).rightParam.getValue() == 0)) {
+
+                    if (((ArithmeticBinaryInstruction) instruction).leftParam.getValue() == null) {
+                        codeEliminationTable.put(((ArithmeticBinaryInstruction) instruction).leftParam, true);
+                    }
+
+                    if (((ArithmeticBinaryInstruction) instruction).rightParam.getValue() == null) {
+                        codeEliminationTable.put(((ArithmeticBinaryInstruction) instruction).rightParam, true);
+                    }
+
                     optimizedInstructions.addFirst(instruction);
                 } else if (codeEliminationTable.get(instruction.getResult())) {
                     if (instruction instanceof BinaryInstruction) {
