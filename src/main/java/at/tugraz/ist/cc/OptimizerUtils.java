@@ -188,10 +188,33 @@ public class OptimizerUtils {
         return optimizedInstructions;
     }
 
+    private static boolean isSymbolVarUsed(LinkedList<BaseInstruction> instructionsToLock,
+                                        BaseInstruction instructionsToSkip, SymbolVariable variableToSearch) {
+        boolean bool =  instructionsToLock
+                .stream()
+                .anyMatch(baseInstruction -> {
+                    if (baseInstruction.equals(instructionsToSkip)) {
+                        return false;
+                    } else {
+                        return baseInstruction.getUsedSymbolVariables().contains(variableToSearch);
+                    }
+                });
+        return bool;
+    }
+
     public static void reorderLocalArrayVars(SymbolCallable method) {
         Set<SymbolVariable> usedSymbolVariables = new HashSet<>();
 
-        method.instructions.forEach(instruction -> usedSymbolVariables.addAll(instruction.getUsedSymbolVariables()));
+        method.instructions.forEach(instruction -> {
+            if (instruction instanceof MethodInvocationInstruction
+                    && ((MethodInvocationInstruction) instruction).isReadOrPrint()
+                    && !isSymbolVarUsed(method.instructions, instruction, instruction.getResult())) {
+                // no one uses the result from the print
+                ((MethodInvocationInstruction) instruction).setIgnoreResult();
+            } else {
+                usedSymbolVariables.addAll(instruction.getUsedSymbolVariables());
+            }
+        });
 
         /*  FYI: we can not use a simple int value from the stack inside a lambda
         => https://www.baeldung.com/java-lambda-effectively-final-local-variables */

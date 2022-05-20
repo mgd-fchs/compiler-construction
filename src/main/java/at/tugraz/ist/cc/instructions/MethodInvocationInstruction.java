@@ -17,12 +17,15 @@ public class MethodInvocationInstruction extends BaseInstruction {
 
     private final List<SymbolVariable> params;
 
+    private boolean ignoreResult;
+
     public MethodInvocationInstruction(SymbolCallable associatedCallable, SymbolVariable classRef,
                                        SymbolCallable invokedMethod, List<SymbolVariable> params) {
         super(associatedCallable, Optional.of(invokedMethod.getReturnValue()));
         this.classRef = classRef;
         this.invokedMethod = invokedMethod;
         this.params = params;
+        this.ignoreResult = false;
     }
 
     @Override
@@ -42,8 +45,10 @@ public class MethodInvocationInstruction extends BaseInstruction {
                         .append(pushVariableOntoStack(param))
                         .append("    invokevirtual java/io/PrintStream/print(")
                         .append(CodeGeneratorUtils.getTypeAsAssemblyString(param))
-                        .append(")V\n")
-                        .append("    ldc 0\n");
+                        .append(")V\n");
+                if (!ignoreResult) {
+                    builder.append("    ldc 0\n");
+                }
             } else {
                 if (params.size() != 0) {
                     throw new RuntimeException();
@@ -77,7 +82,12 @@ public class MethodInvocationInstruction extends BaseInstruction {
                     .append("\n");
         }
 
-        builder.append(popVariableFromStack(result)).append("\n\n");
+        if (!ignoreResult) {
+            builder.append(popVariableFromStack(result));
+        }
+
+        builder.append("\n\n");
+
         return builder.toString();
     }
 
@@ -118,10 +128,17 @@ public class MethodInvocationInstruction extends BaseInstruction {
         if (classRef.getName() != null) {
             // print or read method
             usedVariablesOnLocal.add(classRef);
+            if (!ignoreResult) {
+                usedVariablesOnLocal.add(result);
+            }
+        } else {
+            usedVariablesOnLocal.add(result);
         }
 
-        usedVariablesOnLocal.add(result);
-
         return usedVariablesOnLocal;
+    }
+
+    public void setIgnoreResult() {
+        ignoreResult = true;
     }
 }
