@@ -1,0 +1,16 @@
+class Main {
+  public int main() {
+    int a, b, c, d, e, f, g;
+    int result;
+    result = print("this should be reached");
+    a = 3;
+    b = 69;
+    result = print("this also");
+    result = print(b);
+    c = 420;
+    c = print("hello");
+    d = print("this should be reached");
+
+    return 0;
+  }
+}
