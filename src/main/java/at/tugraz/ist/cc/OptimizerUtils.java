@@ -185,6 +185,11 @@ public class OptimizerUtils {
         int[] localArrayIndex = {1};
         Map<SymbolVariable, Integer> newLocalArrayMapping = new HashMap<>();
 
+        if (method.associatedSymbolClass.getClassName().equals(SymbolClass.MAIN_CLASS_NAME)
+                && usedSymbolVariables.size() != 0) {
+            localArrayIndex[0] = 0; // if we have variables we can start at 0 and overwrite the java args for the static main
+        }
+
         usedSymbolVariables.forEach(variable -> newLocalArrayMapping.put(variable, localArrayIndex[0]++));
 
         method.setLocalArrayMapping(newLocalArrayMapping, localArrayIndex[0]);
