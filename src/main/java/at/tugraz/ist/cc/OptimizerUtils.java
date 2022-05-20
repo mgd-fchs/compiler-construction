@@ -168,61 +168,6 @@ public class OptimizerUtils {
                 }
             }
 
-/*
-        while (listIterator.hasPrevious()) {
-            BaseInstruction instruction = listIterator.previous();
-
-            if (instruction instanceof AssignLocalInstruction) {
-                SymbolVariable lhs = ((AssignLocalInstruction) instruction).lhs;
-
-                if (codeEliminationTable.get(lhs)) {
-                    // if assigned variable is live, keep the instruction and set lhs to dead
-                    optimizedInstructions.addFirst(instruction);
-                    keepAssignment = true;
-                    codeEliminationTable.put(lhs, false);
-                } else {
-                    keepAssignment = false;
-                    optimized_in_last_round = true;
-                }
-            } else {
-                if (keepAssignment) {
-                    if (instruction instanceof BinaryInstruction) {
-                        SymbolVariable lhs = ((BinaryInstruction) instruction).leftParam;
-                        SymbolVariable rhs = ((BinaryInstruction) instruction).rightParam;
-
-                        if (lhs.getValue() == null) {
-                            codeEliminationTable.put(lhs, true);
-                        }
-                        if (rhs.getValue() == null) {
-                            codeEliminationTable.put(rhs, true);
-                        }
-                    } else if (instruction instanceof UnaryInstruction) {
-                        SymbolVariable param = ((UnaryInstruction) instruction).getParameter();
-
-                        if (param.getValue() == null) {
-                            codeEliminationTable.put(param, true);
-                        }
-                    } else if (instruction instanceof MethodInvocationInstruction) {
-                        ((MethodInvocationInstruction) instruction).getParams().forEach(
-                                param -> codeEliminationTable.put(param, true)
-                        );
-                    }
-
-                    optimizedInstructions.addFirst(instruction);
-                } else {
-                    if (instruction instanceof ReturnInstruction) {
-                        SymbolVariable retVal = ((ReturnInstruction) instruction).getReturnValue();
-                        if (retVal.getValue() == null) {
-                            codeEliminationTable.put(retVal, true);
-                        }
-                        optimizedInstructions.addFirst(instruction);
-                    } else {
-                        optimized_in_last_round = true;
-                    }
-                }
-            }
-        }
-*/
             listIterator = optimizedInstructions.listIterator(optimizedInstructions.size());
         }
 
