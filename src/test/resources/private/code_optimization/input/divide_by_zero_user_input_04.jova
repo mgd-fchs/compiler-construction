@@ -1,0 +1,15 @@
+class Main {
+  public int main() {
+    int a, b, c, d, e, f, g;
+    int result;
+
+    a = 1;
+    d = print("give a number: ");
+    b = readInt();
+    d = print("\nno lets fail");
+    c = a / b;
+    d = print("this should not be reached");
+
+    return 0;
+  }
+}

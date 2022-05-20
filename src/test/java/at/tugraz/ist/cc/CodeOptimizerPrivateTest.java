@@ -10,74 +10,97 @@ public class CodeOptimizerPrivateTest {
     private static final String BASE_PATH_NORMAL_OUTPUT = "src/test/resources/private/code_optimization/output/normal/";
     private static final String BASE_PATH_NORMAL_OPTIMIZED= "src/test/resources/private/code_optimization/output/optimized/";
     private static final String[] PROGRAMS = {
-            "constantFolding01.jova",
-            "constantFolding02.jova",
-            "constantFolding03.jova",
-            "constantFolding04.jova",
-            "constantFolding05_divide_zero.jova",
-            "constantFolding06_divide_zero.jova",
-            "constantPropagation01.jova",
-            "deadCodeElimination01.jova",
-            "print01.jova",
-
+            "constant_folding_01.jova",
+            "constant_folding_02.jova",
+            "constant_folding_03.jova",
+            "constant_folding_04.jova",
+            "constant_folding_05.jova",
+            "constant_propagation_01.jova",
+            "constant_propagation_02.jova",
+            "constant_propagation_03.jova",
+            "divide_by_zero_01.jova",
+            "divide_by_zero_02.jova",
+            "modulo_by_zero_01.jova",
+            "modulo_by_zero_02.jova",
+            "deadcode_elimination_01.jova",
+            "print_01.jova",
     };
+
+    private static final String[] PROGRAMS_WITH_USER_INTERACTION = {
+            "divide_by_zero_user_input_03.jova",
+            "divide_by_zero_user_input_04.jova",
+            "modulo_by_zero_user_input_03.jova",
+            "modulo_by_zero_user_input_04.jova"
+    };
+
 
     private final CodeGenerator codeGenerator = new CodeGenerator();
     private final CodeOpt codeOpt = new CodeOpt();
 
-    private void createCodeNormal(String program_name) {
-        codeGenerator.createCode(BASE_PATH_INPUT + program_name, BASE_PATH_NORMAL_OUTPUT + program_name.replace(".jova", ""));
+    private int createCodeNormal(String program_name) {
+        return codeGenerator.createCode(BASE_PATH_INPUT + program_name, BASE_PATH_NORMAL_OUTPUT + program_name.replace(".jova", ""));
     }
 
-    private void createCodeOptimized(String program_name) {
-        codeOpt.optimizeCode(BASE_PATH_INPUT + program_name, true, BASE_PATH_NORMAL_OPTIMIZED + program_name.replace(".jova", ""));
+    private int createCodeOptimized(String program_name) {
+        return codeOpt.optimizeCode(BASE_PATH_INPUT + program_name, false, BASE_PATH_NORMAL_OPTIMIZED + program_name.replace(".jova", ""));
+    }
+
+    private void build(String[] programms) {
+        Arrays.stream(programms).forEach(program -> {
+            try {
+                if (createCodeNormal(program) != 0) {
+                    System.out.println("\nERROR at: " + program + "\n");
+                }
+
+                if (createCodeOptimized(program) != 0) {
+                    System.out.println("\nERROR at: " + program + "\n");
+                }                ;
+            } catch (Exception e) {
+                System.out.println("\nERROR at: " + program + "\n");
+                e.printStackTrace();
+            }
+        });
+    }
+    @Test
+    public void buildAllAutomatedTest() {
+        build(PROGRAMS);
     }
 
     @Test
-    public void buildAll() {
-        Arrays.stream(PROGRAMS).forEach(program -> {
-            try {
-                createCodeNormal(program);
-                createCodeOptimized(program);
-            } catch (Exception e) {
-                System.out.println("\nERROR at: " + program);
-                e.printStackTrace();
-                System.out.println("");
-            }
-        });
-
+    public void buildWithUserInput() {
+        build(PROGRAMS_WITH_USER_INTERACTION);
     }
 
     @Test
     public void deadCodeElimination01() {
-        String program_name = "deadCodeElimination01.jova";
+        String program_name = "deadcode_elimination_01.jova";
         createCodeNormal(program_name);
         createCodeOptimized(program_name);
     }
 
     @Test
     public void constantFolding04() {
-        String program_name = "constantFolding04.jova";
+        String program_name = "constant_folding_04.jova";
         createCodeNormal(program_name);
         createCodeOptimized(program_name);
     }
 
     @Test
     public void constantFolding01() {
-        String program_name = "constantFolding01.jova";
+        String program_name = "constant_folding_01.jova";
         createCodeNormal(program_name);
         createCodeOptimized(program_name);
     }
 
     @Test
-    public void constantFolding05_divide_zero() {
-        String program_name = "constantFolding05_divide_zero.jova";
+    public void divide_by_zero_01() {
+        String program_name = "divide_by_zero_01.jova";
         createCodeNormal(program_name);
         createCodeOptimized(program_name);
     }
     @Test
-    public void constantFolding06_divide_zero() {
-        String program_name = "constantFolding06_divide_zero.jova";
+    public void divide_by_zero_02() {
+        String program_name = "divide_by_zero_02.jova";
         createCodeNormal(program_name);
         createCodeOptimized(program_name);
     }

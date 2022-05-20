@@ -144,12 +144,12 @@ public class OptimizerUtils {
                     );
 
                     optimizedInstructions.addFirst(instruction);
-                } else if (instruction instanceof ArithmeticBinaryInstruction &&
-                        ((((ArithmeticBinaryInstruction) instruction).operator == OperatorTypes.DIV || (((ArithmeticBinaryInstruction) instruction).operator == OperatorTypes.MOD))
-                                && ((ArithmeticBinaryInstruction) instruction).rightParam.getValue() != null
-                                && (Integer) ((ArithmeticBinaryInstruction) instruction).rightParam.getValue() == 0)) {
-                        optimizedInstructions.addFirst(instruction);
-
+                } else if (instruction instanceof ArithmeticBinaryInstruction
+                        &&
+                        (((ArithmeticBinaryInstruction) instruction).operator == OperatorTypes.DIV || (((ArithmeticBinaryInstruction) instruction).operator == OperatorTypes.MOD))
+                        &&
+                        (((ArithmeticBinaryInstruction) instruction).rightParam.getValue() == null || (Integer) ((ArithmeticBinaryInstruction) instruction).rightParam.getValue() == 0)) {
+                    optimizedInstructions.addFirst(instruction);
                 } else if (codeEliminationTable.get(instruction.getResult())) {
                     if (instruction instanceof BinaryInstruction) {
                         SymbolVariable lhs = ((BinaryInstruction) instruction).leftParam;

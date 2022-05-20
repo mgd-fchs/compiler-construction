@@ -1,0 +1,10 @@
+class Main {
+  public int main() {
+    int a, result;
+    a = 1;
+    a = 4 + 5 * 3 - 4 + print(a) / 27 % 3 + 5 * 27 - print("69") * 5;
+    result = print(a);
+
+    return result;
+  }
+}
