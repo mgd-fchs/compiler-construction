@@ -1,0 +1,9 @@
+class Main {
+  public int main() {
+    bool a, b, c;
+    b = true;
+    a = false || b;
+    c = a;
+    return c;
+  }
+}

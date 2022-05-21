@@ -47,6 +47,9 @@ public class CodeOptimizerPrivateTest {
     private static final String[] PROGRAMS_BONUS = {
             "constant_folding_bonus_01.jova",
             "constant_folding_bonus_02.jova",
+            "constant_propagation_bonus_01.jova",
+            "constant_propagation_bonus_02.jova",
+            "constant_propagation_bonus_03.jova",
     };
 
 
