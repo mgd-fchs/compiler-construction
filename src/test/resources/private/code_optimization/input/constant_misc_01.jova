@@ -1,0 +1,17 @@
+class Main {
+  public int main() {
+    int a,b,c,d,result;
+    a = 10;
+    b = a + 15;
+    c = b - a;
+    d = c * 55;
+
+
+    result = print(a);
+    result = print(b);
+    result = print(c);
+    result = print(d);
+
+    return result;
+  }
+}

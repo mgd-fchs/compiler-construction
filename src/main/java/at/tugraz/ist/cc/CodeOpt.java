@@ -64,8 +64,8 @@ public class CodeOpt {
                         OptimizerUtils.constantFoldingConstantPropagationCopyPropagation(method.getInstructions());
 
                 // optimize dead code elimination
-                 optimizedInstructions = OptimizerUtils.deadCodeElimination(optimizedInstructions, method);
-                 method.setInstructions(optimizedInstructions);
+                optimizedInstructions = OptimizerUtils.deadCodeElimination(optimizedInstructions, method);
+                method.setInstructions(optimizedInstructions);
 
 
                 OptimizerUtils.reorderLocalArrayVars(method);
