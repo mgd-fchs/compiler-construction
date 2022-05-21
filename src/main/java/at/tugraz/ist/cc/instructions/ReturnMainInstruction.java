@@ -44,7 +44,7 @@ public class ReturnMainInstruction extends BaseInstruction {
 
     @Override
     public int getNeededStackSize() {
-        return (returnValue.getValue() != null && (Integer) returnValue.getValue() != 0) ? 1 : 0;
+        return (returnValue.getValue() != null && (Integer) returnValue.getValue() == 0) ? 0 : 1;
     }
 
     @Override
