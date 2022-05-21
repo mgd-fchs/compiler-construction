@@ -1,9 +1,13 @@
 class Main {
   public int main() {
     bool a, b, c;
+    int ret;
+
     b = true;
     a = false || b;
     c = a;
-    return c;
+
+    ret = print(c);
+    return ret;
   }
 }

@@ -124,8 +124,9 @@ Implemented BONUS tasks:
     - Copy propagation: str, int, bool
 
 - Limitations:
-    - Not implemented for ternary operator
+    - Not implemented for ternary operator.
     - Not implemented for bonus data types (float, char) as these were not handled in Assignment 2.
+    - Type coercion is not supported.
 
 - Test cases:
     - Test cases are located in the main test input folder for this assignment:

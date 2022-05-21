@@ -80,7 +80,10 @@ public class OptimizerUtils {
                 SymbolVariable lhs = ((LogicalBinaryInstruction) instruction).leftParam;
                 SymbolVariable rhs = ((LogicalBinaryInstruction) instruction).rightParam;
                 OperatorTypes operator = ((LogicalBinaryInstruction) instruction).operator;
+                Boolean rhsVal;
+                Boolean lhsVal;
                 Boolean result = null;
+                int res;
 
                 if (optimizerSymbolTable.get(lhs) != null) {
                     lhs = optimizerSymbolTable.get(lhs);
@@ -92,17 +95,42 @@ public class OptimizerUtils {
                     ((LogicalBinaryInstruction) instruction).setRhs(rhs);
                 }
 
-                if (lhs.getValue() != null && rhs.getValue() != null) {
+                if (lhs.getValue() instanceof Integer){
+                    if (((Integer)lhs.getValue()) != 0){
+                        lhsVal = true;
+                    } else {
+                        lhsVal = false;
+                    }
+                } else {
+                    lhsVal = (Boolean) lhs.getValue();
+                }
+
+                if (rhs.getValue() instanceof Integer){
+                    if (((Integer)rhs.getValue()) != 0){
+                        rhsVal = true;
+                    } else {
+                        rhsVal = false;
+                    }
+                } else {
+                    rhsVal = (Boolean) rhs.getValue();
+                }
+
+                if (lhsVal != null && rhsVal != null) {
                     switch (operator) {
                         case AND:
-                            result = (Boolean) lhs.getValue() && (Boolean) rhs.getValue();
+                            result = lhsVal && rhsVal;
                             break;
 
                         case OR:
-                            result = (Boolean) lhs.getValue() || (Boolean) rhs.getValue();
+                            result = lhsVal || rhsVal;
                             break;
                     }
-                    instruction.getResult().setValue(result);
+                    if (result){
+                        res = 1;
+                    } else {
+                        res = 0;
+                    }
+                    instruction.getResult().setValue(res);
 
                 } else {
                     optimizedInstructions.add(instruction);
