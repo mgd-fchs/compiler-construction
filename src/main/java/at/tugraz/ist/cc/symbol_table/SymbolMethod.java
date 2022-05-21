@@ -11,21 +11,23 @@ public class SymbolMethod extends SymbolCallable {
 
 
     static {
-        SymbolVariable returnValue = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.INT, "returnValue");
+        SymbolVariable returnValuePrint = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.INT, "returnValuePrint", 0);
 
         SymbolVariable param = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.STRING, "param");
-        IO_METHODS.add(new SymbolMethod(SymbolModifier.PUBLIC, PRINT, returnValue, List.of(param), null));
+        IO_METHODS.add(new SymbolMethod(SymbolModifier.PUBLIC, PRINT, returnValuePrint, List.of(param), null));
 
         param = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.INT, "param");
-        IO_METHODS.add(new SymbolMethod(SymbolModifier.PUBLIC, PRINT, returnValue, List.of(param), null));
+        IO_METHODS.add(new SymbolMethod(SymbolModifier.PUBLIC, PRINT, returnValuePrint, List.of(param), null));
 
         param = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.BOOL, "param");
-        IO_METHODS.add(new SymbolMethod(SymbolModifier.PUBLIC, PRINT, returnValue, List.of(param), null));
+        IO_METHODS.add(new SymbolMethod(SymbolModifier.PUBLIC, PRINT, returnValuePrint, List.of(param), null));
 
-        IO_METHODS.add(new SymbolMethod(SymbolModifier.PUBLIC, READ_INT, returnValue, new ArrayList<>(), null));
+        SymbolVariable returnValueRead = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.INT, "returnValueRead");
 
-        returnValue = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.STRING, "returnValue");
-        IO_METHODS.add(new SymbolMethod(SymbolModifier.PUBLIC, READ_STRING, returnValue, new ArrayList<>(), null));
+        IO_METHODS.add(new SymbolMethod(SymbolModifier.PUBLIC, READ_INT, returnValueRead, new ArrayList<>(), null));
+
+        returnValueRead = new SymbolVariable(SymbolType.PRIMITIVE, SymbolPrimitiveType.STRING, "returnValueRead");
+        IO_METHODS.add(new SymbolMethod(SymbolModifier.PUBLIC, READ_STRING, returnValueRead, new ArrayList<>(), null));
     }
 
     private final SymbolModifier accessSymbol;
