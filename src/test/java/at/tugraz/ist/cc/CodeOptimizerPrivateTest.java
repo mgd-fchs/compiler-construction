@@ -18,6 +18,9 @@ public class CodeOptimizerPrivateTest {
             "constant_propagation_01.jova",
             "constant_propagation_02.jova",
             "constant_propagation_03.jova",
+            "constant_misc_01.jova",
+            "constant_misc_02.jova",
+            "constant_misc_03.jova",
             "divide_by_zero_01.jova",
             "divide_by_zero_02.jova",
             "modulo_by_zero_01.jova",
@@ -131,6 +134,12 @@ public class CodeOptimizerPrivateTest {
     @Test
     public void constant_propagation_02() {
         String program_name = "constant_propagation_02.jova";
+        createCodeOptimized(program_name);
+    }
+
+    @Test
+    public void no_print_or_read_empty() {
+        String program_name = "no_print_or_read_empty.jova";
         createCodeOptimized(program_name);
     }
 }

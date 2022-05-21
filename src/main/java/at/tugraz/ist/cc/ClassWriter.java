@@ -91,8 +91,6 @@ public class ClassWriter implements AutoCloseable {
     }
 
     private void writeMainMethod(SymbolMethod symbolMethod) {
-        int stack_limit = symbolMethod.getStackSize();
-        int local_limit = symbolMethod.getLocalArraySize();
 
         List<BaseInstruction> instructions = symbolMethod.instructions;
         BaseInstruction instruction = instructions.get(instructions.size() - 1);
@@ -102,6 +100,9 @@ public class ClassWriter implements AutoCloseable {
             ReturnMainInstruction replaced = new ReturnMainInstruction((ReturnInstruction) instruction);
             instructions.add(replaced);
         }
+
+        int stack_limit = symbolMethod.getStackSize();
+        int local_limit = symbolMethod.getLocalArraySize();
 
         writer.printf("" +
                 ".method public static main([Ljava/lang/String;)V\n" +

@@ -1,0 +1,26 @@
+class Main {
+  public int main() {
+    int a,b,c,d,e,f,g,h,result;
+    a = 10;
+    b = a + 15;
+    c = b % a;
+    d = c * -1;
+
+    e = d * 5;
+    f = d * -1;
+    g = e / 5;
+    h = a - g;
+
+
+    result = print(a);
+    result = print(b);
+    result = print(c);
+    result = print(d);
+    result = print(e);
+    result = print(f);
+    result = print(g);
+    result = print(h);
+
+    return result;
+  }
+}
