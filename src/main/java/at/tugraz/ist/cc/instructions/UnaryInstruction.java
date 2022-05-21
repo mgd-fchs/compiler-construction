@@ -12,8 +12,12 @@ public abstract class UnaryInstruction extends BaseInstruction {
         return parameter;
     }
 
-    protected SymbolVariable parameter;
-    protected OperatorTypes operator;
+    public void setParameter(SymbolVariable parameter) {
+        this.parameter = parameter;
+    }
+
+    public SymbolVariable parameter;
+    public OperatorTypes operator;
 
     public UnaryInstruction(SymbolCallable associatedCallable, SymbolVariable result,
                             SymbolVariable parameter, OperatorTypes operator) {

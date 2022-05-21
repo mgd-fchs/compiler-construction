@@ -1,0 +1,13 @@
+class Main {
+  public int main() {
+    int a, b, c;
+    int result;
+
+    a = 3;
+    c = -a;
+    b = +a - (-c); // zero
+    result = print(b);
+
+    return result;
+  }
+}
