@@ -116,4 +116,11 @@ public class CodeOptimizerPrivateTest {
         createCodeNormal(program_name);
         createCodeOptimized(program_name);
     }
+
+    @Test
+    public void constant_folding_01() {
+        String program_name = "constant_folding_01.jova";
+        createCodeNormal(program_name);
+        createCodeOptimized(program_name);
+    }
 }

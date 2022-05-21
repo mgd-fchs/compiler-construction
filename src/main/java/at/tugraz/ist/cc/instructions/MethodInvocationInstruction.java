@@ -10,12 +10,7 @@ import java.util.*;
 public class MethodInvocationInstruction extends BaseInstruction {
     private final SymbolVariable classRef;
     private final SymbolCallable invokedMethod;
-
-    public List<SymbolVariable> getParams() {
-        return params;
-    }
-
-    private final List<SymbolVariable> params;
+    private List<SymbolVariable> params;
 
     private boolean ignoreResult;
 
@@ -140,5 +135,13 @@ public class MethodInvocationInstruction extends BaseInstruction {
 
     public void setIgnoreResult() {
         ignoreResult = true;
+    }
+
+    public List<SymbolVariable> getParams() {
+        return params;
+    }
+
+    public void setParams(List<SymbolVariable> params) {
+        this.params = params;
     }
 }
