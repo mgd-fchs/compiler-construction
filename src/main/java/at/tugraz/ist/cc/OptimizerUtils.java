@@ -75,7 +75,41 @@ public class OptimizerUtils {
                     optimizedInstructions.add(instruction);
                 }
 
-            } else if (instruction instanceof AssignLocalInstruction) {
+            } else if (instruction instanceof LogicalBinaryInstruction){
+
+                SymbolVariable lhs = ((LogicalBinaryInstruction) instruction).leftParam;
+                SymbolVariable rhs = ((LogicalBinaryInstruction) instruction).rightParam;
+                OperatorTypes operator = ((LogicalBinaryInstruction) instruction).operator;
+                Boolean result = null;
+
+                if (optimizerSymbolTable.get(lhs) != null) {
+                    lhs = optimizerSymbolTable.get(lhs);
+                    ((LogicalBinaryInstruction) instruction).setLhs(lhs);
+                }
+
+                if (optimizerSymbolTable.get(rhs) != null) {
+                    rhs = optimizerSymbolTable.get(rhs);
+                    ((LogicalBinaryInstruction) instruction).setRhs(rhs);
+                }
+
+                if (lhs.getValue() != null && rhs.getValue() != null) {
+                    switch (operator) {
+                        case AND:
+                            result = (Boolean) lhs.getValue() && (Boolean) rhs.getValue();
+                            break;
+
+                        case OR:
+                            result = (Boolean) lhs.getValue() || (Boolean) rhs.getValue();
+                            break;
+                    }
+                    instruction.getResult().setValue(result);
+
+                } else {
+                    optimizedInstructions.add(instruction);
+                }
+
+            }
+            else if (instruction instanceof AssignLocalInstruction) {
                 SymbolVariable lhs = ((AssignLocalInstruction) instruction).lhs;
                 SymbolVariable rhs = ((AssignLocalInstruction) instruction).rhs;
 
@@ -123,7 +157,33 @@ public class OptimizerUtils {
                     ((ArithmeticUnaryInstruction) instruction).setParameter(param);
                 }
 
-                // TODO: Ask if we need to do this for logic operators as well
+                if (param.getValue() != null) {
+                    switch (operator) {
+                        case ADD:
+                            result = (Integer) param.getValue();
+                            break;
+
+                        case SUB:
+                            result = -(Integer) param.getValue();
+                            break;
+                    }
+                    instruction.getResult().setValue(result);
+
+                } else {
+                    optimizedInstructions.add(instruction);
+                }
+
+            } else if (instruction instanceof LogicalUnaryInstruction){
+                LogicalUnaryInstruction unaryInstruction = (LogicalUnaryInstruction) instruction;
+                OperatorTypes operator = unaryInstruction.operator;
+                SymbolVariable param = unaryInstruction.parameter;
+                Integer result = null;
+
+                if (optimizerSymbolTable.get(param) != null) {
+                    param = optimizerSymbolTable.get(param);
+                    ((LogicalUnaryInstruction) instruction).setParameter(param);
+                }
+
                 if (param.getValue() != null) {
                     switch (operator) {
                         case ADD:

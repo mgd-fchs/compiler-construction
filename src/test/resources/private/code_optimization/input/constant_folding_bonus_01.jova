@@ -1,0 +1,12 @@
+class Main {
+  public int main() {
+    bool a, b;
+    int result;
+
+    a = !true;
+    b = a && (3>2);
+    result = print(b);
+
+    return result;
+  }
+}

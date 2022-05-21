@@ -44,6 +44,10 @@ public class CodeOptimizerPrivateTest {
             "misc_04_user_input.jova"
     };
 
+    private static final String[] PROGRAMS_BONUS = {
+            "constant_folding_bonus_01.jova"
+    };
+
 
     private final CodeGenerator codeGenerator = new CodeGenerator();
     private final CodeOpt codeOpt = new CodeOpt();
@@ -80,6 +84,11 @@ public class CodeOptimizerPrivateTest {
     @Test
     public void buildWithUserInput() {
         build(PROGRAMS_WITH_USER_INTERACTION);
+    }
+
+    @Test
+    public void buildBonusTests() {
+        build(PROGRAMS_BONUS);
     }
 
     @Test
