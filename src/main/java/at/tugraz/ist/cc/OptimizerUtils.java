@@ -109,6 +109,56 @@ public class OptimizerUtils {
                 }
 
             }
+            else if (instruction instanceof RelationalBinaryInstruction){
+
+                SymbolVariable lhs = ((RelationalBinaryInstruction) instruction).leftParam;
+                SymbolVariable rhs = ((RelationalBinaryInstruction) instruction).rightParam;
+                OperatorTypes operator = ((RelationalBinaryInstruction) instruction).operator;
+                Boolean result = null;
+
+                if (optimizerSymbolTable.get(lhs) != null) {
+                    lhs = optimizerSymbolTable.get(lhs);
+                    ((RelationalBinaryInstruction) instruction).setLhs(lhs);
+                }
+
+                if (optimizerSymbolTable.get(rhs) != null) {
+                    rhs = optimizerSymbolTable.get(rhs);
+                    ((RelationalBinaryInstruction) instruction).setRhs(rhs);
+                }
+
+                if (lhs.getValue() != null && rhs.getValue() != null) {
+                    switch (operator) {
+                        case SMALLER:
+                            result = (Integer) lhs.getValue() < (Integer) rhs.getValue();
+                            break;
+
+                        case SMALLER_EQUAL:
+                            result = (Integer) lhs.getValue() <= (Integer) rhs.getValue();
+                            break;
+
+                        case GREATER:
+                            result = (Integer) lhs.getValue() > (Integer) rhs.getValue();
+                            break;
+
+                        case GREATER_EQUAL:
+                            result = (Integer) lhs.getValue() >= (Integer) rhs.getValue();
+                            break;
+
+                        case EQUAL:
+                            result = (Integer) lhs.getValue() == (Integer) rhs.getValue();
+                            break;
+
+                        case UNEQUAL:
+                            result = (Integer) lhs.getValue() != (Integer) rhs.getValue();
+                            break;
+                    }
+                    instruction.getResult().setValue(result);
+
+                } else {
+                    optimizedInstructions.add(instruction);
+                }
+
+            }
             else if (instruction instanceof AssignLocalInstruction) {
                 SymbolVariable lhs = ((AssignLocalInstruction) instruction).lhs;
                 SymbolVariable rhs = ((AssignLocalInstruction) instruction).rhs;
