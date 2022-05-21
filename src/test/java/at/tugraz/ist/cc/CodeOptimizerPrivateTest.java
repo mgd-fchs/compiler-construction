@@ -38,7 +38,8 @@ public class CodeOptimizerPrivateTest {
             "divide_by_zero_user_input_04.jova",
             "modulo_by_zero_user_input_03.jova",
             "modulo_by_zero_user_input_04.jova",
-            "misc_04_user_input.jova"
+            "misc_04_user_input.jova",
+            "misc_05_user_input.jova"
     };
 
 

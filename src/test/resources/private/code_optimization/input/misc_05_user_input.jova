@@ -1,0 +1,38 @@
+class Main {
+  public int main() {
+    int a, b, c, d, e, f, g, h, i,j ,k ,l ,m ,n , result, z, neverUsed;
+    int aNeverUsed, bNeverUsed, cNeverUsed, dNeverUsed, eNeverUsed, fNeverUsed, gNeverUsed, hNeverUsed, iNeverUsed,jNeverUsed ,kNeverUsed;
+
+    a = 60;
+    b = 9;
+    c = readInt();
+    d = readInt();
+    f = a * d - b / d;
+    f = a * d - b / d;
+    g = a * d - b / d;
+    g = a * d - b / d;
+    e = print(f % 4);
+
+    h = (a + b) / c;
+
+    h = (a + b) / 0;
+    h = (a + b) / 3;
+
+    e = readInt();
+
+    a = 18 + 2;
+    b = a + 1;
+    c = e;
+    d = c * 2;
+    k = d;
+    //c = 13;
+
+    a =  print(a);
+    a =  print(b);
+    a =  print(c);
+    a =  print(d);
+    a =  print(k);
+    a =  print(c);
+    return c;
+  }
+}
