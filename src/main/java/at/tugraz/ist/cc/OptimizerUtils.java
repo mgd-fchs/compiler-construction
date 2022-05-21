@@ -111,6 +111,35 @@ public class OptimizerUtils {
                         .collect(Collectors.toList());
                 methodInvocationInstruction.setParams(copiedParams);
                 optimizedInstructions.add(instruction);
+
+            } else if (instruction instanceof ArithmeticUnaryInstruction){
+                ArithmeticUnaryInstruction unaryInstruction = (ArithmeticUnaryInstruction) instruction;
+                OperatorTypes operator = unaryInstruction.operator;
+                SymbolVariable param = unaryInstruction.parameter;
+                Integer result = null;
+
+                if (optimizerSymbolTable.get(param) != null) {
+                    param = optimizerSymbolTable.get(param);
+                    ((ArithmeticUnaryInstruction) instruction).setParameter(param);
+                }
+
+                // TODO: Ask if we need to do this for logic operators as well
+                if (param.getValue() != null) {
+                    switch (operator) {
+                        case ADD:
+                            result = (Integer) param.getValue();
+                            break;
+
+                        case SUB:
+                            result = -(Integer) param.getValue();
+                            break;
+                    }
+                    instruction.getResult().setValue(result);
+
+                } else {
+                    optimizedInstructions.add(instruction);
+                }
+
             } else {
                 optimizedInstructions.add(instruction);
             }

@@ -29,6 +29,7 @@ public class CodeOptimizerPrivateTest {
             "misc_01.jova",
             "misc_02.jova",
             "misc_03.jova",
+            "constant_folding_unary_01.jova",
     };
 
     private static final String[] PROGRAMS_WITH_USER_INTERACTION = {

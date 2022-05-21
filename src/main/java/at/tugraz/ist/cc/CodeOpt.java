@@ -40,7 +40,7 @@ public class CodeOpt {
         codeVisitor.visit(parseTree);
 
         // optimize code
-        optimizeBinaryInstruction();
+        optimizeInstructions();
 
         Collection<SymbolClass> symbolClasses = SymbolTable.getInstance().getClasses();
         symbolClasses.forEach(symbolClass -> {
@@ -56,14 +56,17 @@ public class CodeOpt {
         return 0;
     }
 
-    public void optimizeBinaryInstruction() {
+    public void optimizeInstructions() {
         SymbolTable symbolTable = SymbolTable.getInstance();
         symbolTable.getClasses().forEach(clazz -> clazz.getMethods().forEach(method -> {
+                // optimize constants and copy propagation
                 LinkedList<BaseInstruction> optimizedInstructions =
                         OptimizerUtils.constantFoldingConstantPropagationCopyPropagation(method.getInstructions());
 
-                optimizedInstructions = OptimizerUtils.deadCodeElimination(optimizedInstructions, method);
-                method.setInstructions(optimizedInstructions);
+                // optimize dead code elimination
+                 optimizedInstructions = OptimizerUtils.deadCodeElimination(optimizedInstructions, method);
+                 method.setInstructions(optimizedInstructions);
+
 
                 OptimizerUtils.reorderLocalArrayVars(method);
             })
