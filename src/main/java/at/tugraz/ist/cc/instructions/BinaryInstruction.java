@@ -41,7 +41,7 @@ public abstract class BinaryInstruction extends BaseInstruction {
             usedVariablesOnLocal.add(leftParam);
         }
 
-        if (leftParam.getValue() == null) {
+        if (rightParam.getValue() == null) {
             usedVariablesOnLocal.add(rightParam);
         }
 
