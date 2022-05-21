@@ -26,11 +26,17 @@ public class ReturnMainInstruction extends BaseInstruction {
 
             StringBuilder builder = new StringBuilder();
 
-            builder.append(pushVariableOntoStack(returnValue));
-            builder.append("    ifeq ").append(trueLabel).append("\n");
-            builder.append(pushVariableOntoStack(returnValue));
-            builder.append("    invokestatic java/lang/System/exit(I)V\n");
-            builder.append(trueLabel).append(":").append("\n");
+            if (returnValue.getValue() == null) {
+                builder.append(pushVariableOntoStack(returnValue));
+                builder.append("    ifeq ").append(trueLabel).append("\n");
+                builder.append(pushVariableOntoStack(returnValue));
+                builder.append("    invokestatic java/lang/System/exit(I)V\n");
+                builder.append(trueLabel).append(":").append("\n");
+            } else {
+                builder.append(pushVariableOntoStack(returnValue));
+                builder.append("    invokestatic java/lang/System/exit(I)V\n");
+            }
+
 
             return  builder.toString();
         }
