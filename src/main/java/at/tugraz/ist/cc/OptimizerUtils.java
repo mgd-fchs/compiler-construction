@@ -7,6 +7,7 @@ import at.tugraz.ist.cc.symbol_table.SymbolVariable;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class OptimizerUtils {
     public static HashMap<SymbolVariable, SymbolVariable> optimizerSymbolTable = new HashMap<>();
@@ -96,6 +97,20 @@ public class OptimizerUtils {
 
                 optimizedInstructions.add(instruction);
 
+            } else if (instruction instanceof MethodInvocationInstruction) {
+                MethodInvocationInstruction methodInvocationInstruction = (MethodInvocationInstruction) instruction;
+                List<SymbolVariable> copiedParams = methodInvocationInstruction.getParams()
+                        .stream()
+                        .map(param -> {
+                            if (optimizerSymbolTable.get(param) != null) {
+                                return optimizerSymbolTable.get(param);
+                            } else {
+                                return param;
+                            }
+                        })
+                        .collect(Collectors.toList());
+                methodInvocationInstruction.setParams(copiedParams);
+                optimizedInstructions.add(instruction);
             } else {
                 optimizedInstructions.add(instruction);
             }

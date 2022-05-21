@@ -10,12 +10,7 @@ import java.util.*;
 public class MethodInvocationInstruction extends BaseInstruction {
     private final SymbolVariable classRef;
     private final SymbolCallable invokedMethod;
-
-    public List<SymbolVariable> getParams() {
-        return params;
-    }
-
-    private final List<SymbolVariable> params;
+    private List<SymbolVariable> params;
 
     public MethodInvocationInstruction(SymbolCallable associatedCallable, SymbolVariable classRef,
                                        SymbolCallable invokedMethod, List<SymbolVariable> params) {
@@ -123,5 +118,13 @@ public class MethodInvocationInstruction extends BaseInstruction {
         usedVariablesOnLocal.add(result);
 
         return usedVariablesOnLocal;
+    }
+
+    public List<SymbolVariable> getParams() {
+        return params;
+    }
+
+    public void setParams(List<SymbolVariable> params) {
+        this.params = params;
     }
 }
