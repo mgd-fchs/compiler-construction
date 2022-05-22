@@ -1,0 +1,10 @@
+class Main {
+  public int main() {
+    int a, b;
+
+    a = !true;
+    b = false;
+
+    return ( b || !a );
+  }
+}

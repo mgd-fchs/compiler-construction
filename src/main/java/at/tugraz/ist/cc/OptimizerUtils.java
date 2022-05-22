@@ -37,8 +37,6 @@ public class OptimizerUtils {
                     ((ArithmeticBinaryInstruction) instruction).setRhs(rhs);
                 }
 
-
-                // TODO: Ask if we need to do this for logic operators as well
                 if (lhs.getValue() != null && rhs.getValue() != null) {
                     switch (operator) {
                         case ADD:

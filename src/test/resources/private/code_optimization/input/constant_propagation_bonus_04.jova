@@ -1,0 +1,16 @@
+class Cls {
+}
+
+class Main {
+  public int main() {
+    Cls c1;
+    Cls c2;
+    int ret;
+
+    c1 = new Cls;
+    c2 = new Cls;
+
+    ret = print(c1 == c2);
+    return ret;
+  }
+}

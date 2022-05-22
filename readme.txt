@@ -138,6 +138,9 @@ Implemented BONUS tasks:
     - Test cases:
         - constant_folding_bonus_01.jova: Check constant folding in logical operations
         - constant_folding_bonus_02.jova: Check constant folding in relational operations
+        - constant_folding_bonus_03.jova: Check constant folding in return statement
+        - constant_folding_bonus_04.jova: Check constant folding in method call
         - constant_propagation_bonus_01.jova: Check copy propagation for string
         - constant_propagation_bonus_02.jova: Check constant propagation for bool
         - constant_propagation_bonus_03.jova: Check copy propagation for bool
+        - constant_propagation_bonus_04.jova: Check copy propagation for class type
